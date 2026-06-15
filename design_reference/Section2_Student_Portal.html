@@ -1,0 +1,1698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTEPath — Section 2: Student Portal Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0F1B4C;--navy2:#152260;--blue:#2563EB;--blue2:#3B82F6;--blue-pale:#EFF6FF;
+  --amber:#F59E0B;--amber-pale:#FFFBEB;
+  --white:#FFFFFF;--off:#F8FAFF;--off2:#F1F5FF;
+  --border:#E2E8F0;--border2:#CBD5E1;
+  --slate:#64748B;--dark:#1E293B;--muted:#94A3B8;
+  --success:#10B981;--success-bg:#ECFDF5;
+  --error:#EF4444;--error-bg:#FEF2F2;
+  --warning:#F59E0B;--warning-bg:#FFFBEB;
+  --speaking:#2563EB;--writing:#7C3AED;--reading:#059669;--listening:#DC2626;
+  --fd:'Outfit',sans-serif;--fb:'Inter',sans-serif;
+  --rc:12px;--rb:8px;--ri:8px;--rp:100px;
+  --sh:0 2px 8px rgba(15,27,76,0.07);
+  --sh2:0 8px 24px rgba(15,27,76,0.12);
+}
+body{font-family:var(--fb);background:#DDE3EF;color:var(--dark);line-height:1.6;padding:40px 24px;}
+
+/* ── PAGE LABEL ────────────────────────── */
+.pg-label{
+  font-family:var(--fd);font-size:0.68rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:2px;color:var(--slate);
+  text-align:center;margin-bottom:6px;margin-top:60px;
+}
+.pg-label:first-of-type{margin-top:0;}
+.pg-title{
+  font-family:var(--fd);font-size:1.1rem;font-weight:700;
+  color:var(--navy);text-align:center;margin-bottom:8px;
+}
+.ref-note{
+  background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.18);
+  border-radius:8px;padding:9px 14px;font-size:0.76rem;color:#1E40AF;
+  margin-bottom:20px;max-width:1100px;margin-left:auto;margin-right:auto;
+  display:flex;align-items:center;gap:8px;
+}
+.ref-note strong{font-weight:600;}
+.divider{height:1px;background:var(--border);margin:48px auto;max-width:1100px;}
+
+/* ── BROWSER SHELL ─────────────────────── */
+.browser{
+  max-width:1100px;margin:0 auto;
+  background:#CDD4E0;border-radius:12px;overflow:hidden;
+  box-shadow:0 4px 32px rgba(0,0,0,0.16);
+}
+.bbar{
+  background:#E4E9F1;padding:9px 14px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid #C4CBD8;
+}
+.dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot.r{background:#FF5F57;}.dot.y{background:#FFBD2E;}.dot.g{background:#28C840;}
+.ubar{
+  flex:1;background:#EDF0F5;border-radius:5px;
+  padding:4px 10px;font-size:0.75rem;color:var(--slate);border:1px solid #CDD3DC;
+}
+
+/* ── APP SHELL (Sidebar + Content) ─────── */
+.app{display:flex;min-height:580px;background:var(--off);}
+
+/* ── SIDEBAR ───────────────────────────── */
+.sidebar{
+  width:240px;flex-shrink:0;
+  background:var(--navy);
+  display:flex;flex-direction:column;
+  padding:0;
+}
+.sb-logo{
+  padding:20px 20px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-logo-icon{
+  width:30px;height:30px;background:var(--blue);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:0.65rem;font-weight:800;color:#fff;
+}
+.sb-logo-text{font-family:var(--fd);font-weight:800;font-size:1.05rem;color:#fff;}
+.sb-logo-text span{color:var(--amber);}
+.sb-user{
+  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.06);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(37,99,235,0.35);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.72rem;font-weight:700;color:var(--blue2);flex-shrink:0;
+}
+.sb-user-info{}
+.sb-user-name{color:#fff;font-size:0.82rem;font-weight:600;}
+.sb-user-role{color:rgba(255,255,255,0.35);font-size:0.7rem;}
+.sb-nav{flex:1;padding:12px 0;}
+.sb-section-label{
+  padding:10px 20px 4px;
+  color:rgba(255,255,255,0.3);font-size:0.65rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;
+}
+.sb-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 20px;font-size:0.82rem;font-weight:500;
+  color:rgba(255,255,255,0.55);cursor:pointer;
+  transition:all 0.15s;position:relative;
+  border:none;background:none;width:100%;text-align:left;
+}
+.sb-item:hover{color:rgba(255,255,255,0.9);background:rgba(255,255,255,0.05);}
+.sb-item.active{
+  color:#fff;background:rgba(37,99,235,0.25);
+}
+.sb-item.active::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:var(--blue);border-radius:0 2px 2px 0;
+}
+.sb-item-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0;}
+.sb-item-badge{
+  margin-left:auto;background:rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.5);padding:1px 7px;border-radius:var(--rp);
+  font-size:0.65rem;font-weight:600;
+}
+.sb-item-badge.blue{background:rgba(37,99,235,0.3);color:var(--blue2);}
+.sb-bottom{
+  padding:12px;border-top:1px solid rgba(255,255,255,0.06);
+}
+.sb-logout{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:8px;
+  color:rgba(255,255,255,0.4);font-size:0.82rem;
+  cursor:pointer;transition:all 0.15s;
+  border:none;background:none;width:100%;text-align:left;
+}
+.sb-logout:hover{color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.05);}
+
+/* ── CONTENT AREA ──────────────────────── */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* ── TOP BAR ───────────────────────────── */
+.topbar{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:0 28px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.topbar-left{display:flex;align-items:center;gap:8px;}
+.topbar-breadcrumb{font-size:0.82rem;color:var(--muted);}
+.topbar-breadcrumb span{color:var(--dark);font-weight:500;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-greeting{font-size:0.82rem;color:var(--slate);}
+.topbar-greeting strong{color:var(--dark);}
+
+/* ── PAGE CONTENT ──────────────────────── */
+.page-content{
+  flex:1;padding:24px 28px;overflow-y:auto;
+  background:var(--off);
+}
+.page-heading{font-family:var(--fd);font-size:1.4rem;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.page-sub{color:var(--slate);font-size:0.85rem;margin-bottom:24px;}
+
+/* ── DASHBOARD STATS ───────────────────── */
+.dash-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.dash-stat{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:18px 20px;
+}
+.dash-stat-val{font-family:var(--fd);font-size:1.7rem;font-weight:800;color:var(--navy);letter-spacing:-0.5px;}
+.dash-stat-val span{color:var(--blue);font-size:1rem;}
+.dash-stat-label{color:var(--slate);font-size:0.75rem;margin-top:3px;}
+.dash-stat-sub{font-size:0.72rem;color:var(--success);margin-top:4px;font-weight:500;}
+
+/* ── MODULE CARDS (dashboard) ──────────── */
+.dash-modules{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.dash-mod{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:20px;
+  cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;
+}
+.dash-mod::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--mc,var(--blue));
+}
+.dash-mod.sp{--mc:var(--speaking);}
+.dash-mod.wr{--mc:var(--writing);}
+.dash-mod.rd{--mc:var(--reading);}
+.dash-mod.li{--mc:var(--listening);}
+.dash-mod:hover{transform:translateY(-3px);box-shadow:var(--sh2);}
+.dash-mod-icon{font-size:1.4rem;margin-bottom:10px;}
+.dash-mod-name{font-family:var(--fd);font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:3px;}
+.dash-mod-count{color:var(--slate);font-size:0.75rem;}
+.dash-mod-arrow{
+  position:absolute;bottom:16px;right:16px;
+  color:var(--muted);font-size:0.75rem;
+}
+
+/* ── RECENT + MOCK GRID ─────────────────── */
+.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dash-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:20px;
+}
+.dash-card-title{font-family:var(--fd);font-size:0.88rem;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.empty-state{
+  text-align:center;padding:20px;color:var(--muted);font-size:0.82rem;
+}
+.empty-icon{font-size:1.8rem;margin-bottom:8px;display:block;}
+.mock-cta-card{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  color:#fff;
+}
+.mock-cta-card .dash-card-title{color:rgba(255,255,255,0.7);}
+.mock-cta-desc{color:rgba(255,255,255,0.55);font-size:0.82rem;line-height:1.6;margin-bottom:16px;}
+.btn-sm-white{
+  background:#fff;color:var(--navy);padding:8px 16px;border-radius:var(--rb);
+  font-size:0.8rem;font-weight:600;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+}
+.mock-stats-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;}
+.mock-stat-mini{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  border-radius:8px;padding:10px 12px;
+}
+.mock-stat-mini-val{font-family:var(--fd);font-size:1.1rem;font-weight:800;color:#fff;}
+.mock-stat-mini-val span{color:var(--amber);font-size:0.75rem;}
+.mock-stat-mini-label{color:rgba(255,255,255,0.35);font-size:0.68rem;margin-top:1px;}
+
+/* ── MODULE HOME ───────────────────────── */
+.mod-home-header{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:24px;margin-bottom:20px;
+  display:flex;align-items:center;gap:16px;
+}
+.mod-home-icon{
+  width:52px;height:52px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;
+}
+.mod-home-icon.sp{background:#EFF6FF;}
+.mod-home-icon.wr{background:#F5F3FF;}
+.mod-home-icon.rd{background:#ECFDF5;}
+.mod-home-icon.li{background:#FEF2F2;}
+.mod-home-name{font-family:var(--fd);font-size:1.2rem;font-weight:800;color:var(--navy);}
+.mod-home-sub{color:var(--slate);font-size:0.82rem;margin-top:2px;}
+.qtypes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.qtype-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:20px;
+  cursor:pointer;transition:all 0.2s;
+}
+.qtype-card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:var(--sh2);}
+.qtype-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:6px;
+  background:var(--off2);color:var(--blue);
+  font-size:0.75rem;font-weight:700;margin-bottom:10px;
+}
+.qtype-name{font-family:var(--fd);font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.qtype-desc{color:var(--slate);font-size:0.75rem;line-height:1.55;margin-bottom:10px;}
+.qtype-count{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--off2);border:1px solid var(--border);
+  color:var(--slate);padding:2px 8px;border-radius:var(--rp);font-size:0.7rem;font-weight:500;
+}
+.qtype-arrow{color:var(--muted);font-size:0.75rem;margin-top:8px;}
+
+/* ── QUESTION LIST ─────────────────────── */
+.qlist-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;
+}
+.qlist-breadcrumb{
+  display:flex;align-items:center;gap:6px;
+  color:var(--slate);font-size:0.8rem;
+}
+.qlist-breadcrumb a{color:var(--blue);text-decoration:none;font-weight:500;}
+.qlist-breadcrumb span{color:var(--muted);}
+.qlist-count{
+  background:var(--off2);border:1px solid var(--border);
+  color:var(--slate);padding:4px 12px;border-radius:var(--rp);font-size:0.76rem;
+}
+.qlist-grid{display:flex;flex-direction:column;gap:8px;}
+.qlist-item{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;transition:all 0.2s;
+}
+.qlist-item:hover{border-color:var(--blue);box-shadow:var(--sh);}
+.qlist-item-left{display:flex;align-items:center;gap:12px;}
+.qlist-index{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--off2);color:var(--slate);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.78rem;font-weight:600;flex-shrink:0;
+}
+.qlist-item-text{font-size:0.85rem;color:var(--dark);font-weight:500;}
+.qlist-item-sub{font-size:0.75rem;color:var(--muted);margin-top:2px;}
+.qlist-item-right{display:flex;align-items:center;gap:8px;}
+.btn-attempt{
+  background:var(--blue);color:#fff;padding:6px 14px;
+  border-radius:6px;font-size:0.78rem;font-weight:600;border:none;cursor:pointer;
+}
+.btn-attempt:hover{background:var(--blue2);}
+
+/* ── ATTEMPT PAGE SHARED ───────────────── */
+.attempt-wrap{display:grid;grid-template-columns:1fr 320px;gap:16px;}
+.attempt-main{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:24px;
+}
+.attempt-sidebar-panel{display:flex;flex-direction:column;gap:12px;}
+.attempt-type-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--blue-pale);border:1px solid rgba(37,99,235,0.2);
+  color:var(--blue);padding:4px 10px;border-radius:var(--rp);
+  font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;
+  margin-bottom:14px;
+}
+.attempt-question-text{
+  font-size:0.95rem;color:var(--dark);line-height:1.75;
+  padding:16px;background:var(--off);border-radius:8px;border:1px solid var(--border);
+  margin-bottom:16px;
+}
+.attempt-instruction{
+  font-size:0.78rem;color:var(--slate);margin-bottom:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.attempt-instruction::before{content:'ℹ';color:var(--blue);font-size:0.85rem;}
+
+/* Timer + info panel */
+.info-panel{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:16px;
+}
+.info-panel-title{font-family:var(--fd);font-size:0.78rem;font-weight:700;color:var(--navy);margin-bottom:12px;}
+.timer-display{
+  font-family:var(--fd);font-size:2rem;font-weight:800;
+  color:var(--navy);text-align:center;padding:12px;
+  background:var(--off);border-radius:8px;border:1px solid var(--border);
+  margin-bottom:12px;letter-spacing:2px;
+}
+.timer-display.warning{color:var(--warning);border-color:rgba(245,158,11,0.3);background:var(--warning-bg);}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid var(--border);font-size:0.78rem;}
+.info-row:last-child{border-bottom:none;}
+.info-row-label{color:var(--slate);}
+.info-row-val{color:var(--dark);font-weight:500;}
+
+/* ── SPEAKING ATTEMPT ──────────────────── */
+.record-area{
+  display:flex;flex-direction:column;align-items:center;
+  padding:24px;background:var(--off);border-radius:10px;border:1px solid var(--border);
+  margin-bottom:16px;
+}
+.record-status{font-size:0.8rem;color:var(--slate);margin-bottom:14px;text-align:center;}
+.record-btn{
+  width:68px;height:68px;border-radius:50%;
+  background:var(--blue);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(37,99,235,0.4);
+  transition:all 0.2s;margin-bottom:12px;
+}
+.record-btn.recording{background:var(--error);animation:pulse-rec 1.5s infinite;}
+@keyframes pulse-rec{0%,100%{box-shadow:0 4px 16px rgba(239,68,68,0.4);}50%{box-shadow:0 4px 28px rgba(239,68,68,0.7);}}
+.record-icon{color:#fff;font-size:1.3rem;}
+.waveform{
+  display:flex;align-items:center;gap:3px;height:32px;
+}
+.wave-bar{
+  width:3px;border-radius:2px;background:var(--blue2);
+  animation:waveanim 0.8s ease infinite alternate;
+}
+.wave-bar:nth-child(2){animation-delay:0.1s;height:60%;}
+.wave-bar:nth-child(3){animation-delay:0.2s;height:100%;}
+.wave-bar:nth-child(4){animation-delay:0.3s;height:70%;}
+.wave-bar:nth-child(5){animation-delay:0.4s;height:45%;}
+.wave-bar:nth-child(6){animation-delay:0.2s;height:85%;}
+.wave-bar:nth-child(7){animation-delay:0.1s;height:55%;}
+.wave-bar:nth-child(8){animation-delay:0.3s;height:90%;}
+@keyframes waveanim{from{height:20%;}to{height:100%;}}
+.prep-countdown{
+  font-family:var(--fd);font-size:3rem;font-weight:900;
+  color:var(--navy);text-align:center;margin:8px 0;
+}
+.prep-label{color:var(--slate);font-size:0.8rem;text-align:center;}
+
+/* ── WRITING ATTEMPT ───────────────────── */
+.writing-area{
+  border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;
+}
+.writing-toolbar{
+  background:var(--off);border-bottom:1px solid var(--border);
+  padding:8px 12px;display:flex;align-items:center;gap:8px;
+}
+.writing-toolbar span{color:var(--muted);font-size:0.75rem;}
+.writing-textarea{
+  width:100%;padding:14px;font-family:var(--fb);font-size:0.88rem;
+  border:none;outline:none;resize:none;height:140px;color:var(--dark);
+  background:var(--white);line-height:1.7;
+}
+.word-counter-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;background:var(--off);border-top:1px solid var(--border);
+}
+.word-count-display{font-size:0.78rem;font-weight:600;}
+.word-count-display.ok{color:var(--success);}
+.word-count-display.low{color:var(--muted);}
+.word-count-display.max{color:var(--error);}
+.word-count-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin:0 12px;}
+.word-count-fill{height:100%;background:var(--success);border-radius:2px;transition:width 0.3s;}
+
+/* ── READING ATTEMPT ───────────────────── */
+.passage-box{
+  background:var(--off);border:1px solid var(--border);border-radius:8px;
+  padding:16px;font-size:0.88rem;line-height:1.8;color:var(--dark);margin-bottom:16px;
+  max-height:160px;overflow-y:auto;
+}
+.blank-inline{
+  display:inline-block;min-width:80px;height:26px;
+  border-bottom:2px solid var(--blue);margin:0 4px;
+  vertical-align:middle;
+  background:var(--blue-pale);border-radius:4px;padding:0 8px;
+  font-size:0.82rem;color:var(--blue);font-weight:500;text-align:center;line-height:26px;
+}
+.blank-inline.empty{
+  background:transparent;border-bottom-color:var(--border2);color:var(--muted);
+}
+.drag-pool{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:12px;background:var(--off);border-radius:8px;border:1px solid var(--border);
+  margin-bottom:14px;
+}
+.drag-word{
+  background:var(--white);border:1px solid var(--border);
+  color:var(--dark);padding:5px 12px;border-radius:6px;
+  font-size:0.8rem;font-weight:500;cursor:grab;
+}
+.drag-word.used{opacity:0.35;}
+.mcq-options{display:flex;flex-direction:column;gap:8px;margin-bottom:14px;}
+.mcq-opt{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border:1px solid var(--border);border-radius:8px;
+  cursor:pointer;transition:all 0.15s;background:var(--white);
+}
+.mcq-opt:hover{border-color:var(--blue);background:var(--blue-pale);}
+.mcq-opt.selected{border-color:var(--blue);background:var(--blue-pale);}
+.mcq-opt.correct{border-color:var(--success);background:var(--success-bg);}
+.mcq-opt.wrong{border-color:var(--error);background:var(--error-bg);}
+.mcq-opt.missed{border-color:var(--warning);background:var(--warning-bg);}
+.opt-marker{
+  width:20px;height:20px;border-radius:50%;border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  font-size:0.65rem;font-weight:700;
+}
+.mcq-opt.selected .opt-marker{border-color:var(--blue);background:var(--blue);color:#fff;}
+.mcq-opt.correct .opt-marker{border-color:var(--success);background:var(--success);color:#fff;}
+.mcq-opt.wrong .opt-marker{border-color:var(--error);background:var(--error);color:#fff;}
+.mcq-opt-text{font-size:0.82rem;color:var(--dark);}
+.mcq-opt-result{margin-left:auto;font-size:0.7rem;font-weight:600;}
+.mcq-opt.correct .mcq-opt-result{color:var(--success);}
+.mcq-opt.wrong .mcq-opt-result{color:var(--error);}
+.mcq-opt.missed .mcq-opt-result{color:var(--warning);}
+
+/* Reorder */
+.reorder-panels{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.reorder-panel{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.reorder-panel-header{
+  background:var(--off);padding:8px 12px;
+  font-size:0.72rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:0.5px;
+  border-bottom:1px solid var(--border);
+}
+.reorder-panel-body{padding:8px;display:flex;flex-direction:column;gap:6px;min-height:80px;}
+.reorder-item{
+  background:var(--white);border:1px solid var(--border);border-radius:6px;
+  padding:8px 10px;font-size:0.78rem;color:var(--dark);cursor:grab;
+  display:flex;align-items:flex-start;gap:8px;
+}
+.reorder-item-handle{color:var(--muted);font-size:0.7rem;margin-top:2px;}
+.reorder-drop-zone{
+  border:2px dashed var(--border);border-radius:6px;
+  height:40px;display:flex;align-items:center;justify-content:center;
+  color:var(--muted);font-size:0.72rem;
+}
+
+/* ── LISTENING ATTEMPT ─────────────────── */
+.audio-player{
+  background:var(--off);border:1px solid var(--border);border-radius:10px;
+  padding:16px;margin-bottom:16px;display:flex;align-items:center;gap:14px;
+}
+.play-btn{
+  width:40px;height:40px;border-radius:50%;background:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  border:none;cursor:pointer;flex-shrink:0;
+}
+.play-icon{color:#fff;font-size:0.85rem;}
+.audio-progress-wrap{flex:1;}
+.audio-waveform{
+  display:flex;align-items:center;gap:2px;height:28px;margin-bottom:6px;
+}
+.aw-bar{width:3px;border-radius:1px;background:var(--border);}
+.aw-bar.played{background:var(--blue);}
+.audio-time{display:flex;justify-content:space-between;font-size:0.7rem;color:var(--muted);}
+.audio-play-limit{
+  background:var(--amber-pale);border:1px solid rgba(245,158,11,0.25);
+  color:#92400E;padding:4px 10px;border-radius:var(--rp);
+  font-size:0.7rem;font-weight:600;flex-shrink:0;
+}
+
+/* Highlight incorrect words */
+.highlight-text{
+  font-size:0.88rem;line-height:2;color:var(--dark);
+  padding:14px;background:var(--off);border-radius:8px;border:1px solid var(--border);
+  margin-bottom:14px;
+}
+.hw-word{cursor:pointer;padding:1px 2px;border-radius:3px;}
+.hw-word:hover{background:rgba(245,158,11,0.15);}
+.hw-word.clicked{
+  background:rgba(239,68,68,0.12);color:var(--error);
+  text-decoration:underline;text-decoration-style:wavy;text-decoration-color:var(--error);
+}
+.hw-word.correct-click{background:rgba(16,185,129,0.12);color:var(--success);}
+.hw-word.missed{background:rgba(245,158,11,0.15);color:#92400E;}
+
+/* Write from dictation */
+.dictation-input{
+  width:100%;padding:12px 14px;border:1px solid var(--border);
+  border-radius:8px;font-size:0.88rem;font-family:var(--fb);
+  background:var(--white);outline:none;color:var(--dark);
+  transition:border-color 0.2s;
+}
+.dictation-input:focus{border-color:var(--blue);}
+
+/* ── SCORE RESULT PANEL ─────────────────── */
+.score-result{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--rc);padding:20px;
+}
+.score-result-title{font-family:var(--fd);font-size:0.82rem;font-weight:700;color:var(--navy);margin-bottom:16px;}
+.score-big-display{
+  display:flex;align-items:center;gap:16px;
+  padding:16px;background:var(--off);border-radius:8px;margin-bottom:16px;
+}
+.score-num{font-family:var(--fd);font-size:2.4rem;font-weight:900;color:var(--success);letter-spacing:-1px;line-height:1;}
+.score-out-of{color:var(--muted);font-size:0.78rem;margin-top:3px;}
+.score-bars-result{display:flex;flex-direction:column;flex:1;gap:8px;}
+.sbr-row{display:flex;align-items:center;gap:8px;}
+.sbr-label{font-size:0.7rem;color:var(--slate);width:80px;flex-shrink:0;}
+.sbr-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+.sbr-fill{height:100%;border-radius:3px;}
+.sbr-fill.high{background:var(--success);}
+.sbr-fill.mid{background:var(--warning);}
+.sbr-fill.low{background:var(--error);}
+.sbr-val{font-size:0.7rem;font-weight:600;width:28px;text-align:right;}
+.sbr-val.high{color:var(--success);}
+.sbr-val.mid{color:var(--warning);}
+.sbr-val.low{color:var(--error);}
+.score-feedback{
+  background:var(--blue-pale);border:1px solid rgba(37,99,235,0.2);
+  border-radius:8px;padding:10px 12px;font-size:0.78rem;color:#1E40AF;
+  margin-bottom:14px;
+}
+.score-feedback strong{display:block;margin-bottom:3px;}
+.btn-next{
+  width:100%;padding:10px;background:var(--navy);color:#fff;
+  border:none;border-radius:var(--rb);font-size:0.85rem;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.btn-next:hover{background:var(--navy2);}
+
+/* ── MOCK TEST IN PROGRESS ─────────────── */
+.mock-progress-bar{
+  background:var(--navy);padding:12px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.mock-prog-left{display:flex;align-items:center;gap:16px;}
+.mock-title-label{color:rgba(255,255,255,0.6);font-size:0.78rem;}
+.mock-title-val{color:#fff;font-size:0.9rem;font-weight:600;}
+.mock-prog-tracker{display:flex;align-items:center;gap:8px;}
+.mock-prog-text{color:rgba(255,255,255,0.5);font-size:0.75rem;}
+.mock-prog-dots{display:flex;gap:3px;}
+.mock-dot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.mock-dot.done{background:var(--success);}
+.mock-dot.active{background:var(--blue2);}
+.mock-timer-display{
+  font-family:var(--fd);font-size:1.1rem;font-weight:800;color:#fff;
+  background:rgba(255,255,255,0.08);padding:4px 14px;border-radius:6px;
+  border:1px solid rgba(255,255,255,0.12);
+}
+.mock-timer-display.warn{color:var(--amber);}
+.mock-content{padding:20px 24px;}
+.mock-q-label{
+  display:flex;align-items:center;gap:8px;margin-bottom:16px;
+}
+.mock-q-badge{
+  background:var(--navy);color:#fff;padding:3px 10px;border-radius:var(--rp);
+  font-size:0.72rem;font-weight:700;
+}
+.mock-q-type{
+  background:var(--blue-pale);border:1px solid rgba(37,99,235,0.2);
+  color:var(--blue);padding:3px 10px;border-radius:var(--rp);
+  font-size:0.72rem;font-weight:600;
+}
+.mock-nav{
+  display:flex;justify-content:flex-end;padding:12px 24px;
+  border-top:1px solid var(--border);background:var(--white);
+  gap:10px;
+}
+.btn-mock-next{
+  background:var(--blue);color:#fff;padding:9px 20px;
+  border-radius:var(--rb);font-size:0.85rem;font-weight:600;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-mock-skip{
+  background:transparent;color:var(--slate);padding:9px 16px;
+  border-radius:var(--rb);font-size:0.82rem;border:1px solid var(--border);cursor:pointer;
+}
+
+/* ── MOCK RESULT ───────────────────────── */
+.result-hero{
+  background:linear-gradient(135deg,var(--navy),var(--navy2));
+  padding:28px;border-radius:var(--rc);margin-bottom:16px;text-align:center;
+}
+.result-overall-label{color:rgba(255,255,255,0.5);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;}
+.result-score{font-family:var(--fd);font-size:4.5rem;font-weight:900;color:#fff;letter-spacing:-3px;line-height:1;}
+.result-score-out{color:rgba(255,255,255,0.4);font-size:0.88rem;margin-top:4px;}
+.result-meta{display:flex;justify-content:center;gap:20px;margin-top:16px;}
+.result-meta-item{color:rgba(255,255,255,0.45);font-size:0.78rem;}
+.result-meta-item strong{color:rgba(255,255,255,0.7);display:block;font-family:var(--fd);font-size:1rem;}
+.result-modules{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.result-mod-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:14px;text-align:center;
+}
+.result-mod-name{font-size:0.72rem;color:var(--slate);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.result-mod-score{font-family:var(--fd);font-size:1.4rem;font-weight:800;letter-spacing:-0.5px;}
+.result-mod-score.high{color:var(--success);}
+.result-mod-score.mid{color:var(--warning);}
+.result-mod-score.low{color:var(--error);}
+.result-mod-out{font-size:0.68rem;color:var(--muted);}
+.result-mod-bar{height:4px;border-radius:2px;margin-top:8px;}
+.result-mod-bar.high{background:var(--success);}
+.result-mod-bar.mid{background:var(--warning);}
+.result-actions{display:flex;gap:10px;}
+.btn-result-primary{
+  flex:1;padding:11px;background:var(--navy);color:#fff;
+  border:none;border-radius:var(--rb);font-size:0.85rem;font-weight:600;cursor:pointer;
+}
+.btn-result-outline{
+  flex:1;padding:11px;background:transparent;color:var(--navy);
+  border:1px solid var(--border);border-radius:var(--rb);font-size:0.85rem;font-weight:500;cursor:pointer;
+}
+
+/* ── SETTINGS ──────────────────────────── */
+.settings-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:28px;max-width:500px;
+}
+.settings-section-title{
+  font-family:var(--fd);font-size:0.9rem;font-weight:700;color:var(--navy);
+  margin-bottom:4px;padding-bottom:14px;border-bottom:1px solid var(--border);margin-bottom:20px;
+}
+.form-group{margin-bottom:16px;}
+.form-label{display:block;font-size:0.78rem;font-weight:600;color:var(--dark);margin-bottom:6px;}
+.form-input{
+  width:100%;padding:10px 12px;border:1px solid var(--border);
+  border-radius:var(--ri);font-size:0.85rem;font-family:var(--fb);
+  color:var(--dark);background:var(--off);outline:none;
+  transition:border-color 0.2s;
+}
+.form-input:focus{border-color:var(--blue);background:#fff;}
+.form-hint{font-size:0.72rem;color:var(--muted);margin-top:4px;}
+.form-error{font-size:0.72rem;color:var(--error);margin-top:4px;}
+.pwd-reqs{
+  margin-top:8px;padding:10px 12px;
+  background:var(--off);border-radius:6px;border:1px solid var(--border);
+}
+.req-item{display:flex;align-items:center;gap:6px;font-size:0.72rem;color:var(--slate);margin-bottom:3px;}
+.req-item:last-child{margin-bottom:0;}
+.req-item.met{color:var(--success);}
+.req-dot{width:5px;height:5px;border-radius:50%;background:var(--border);flex-shrink:0;}
+.req-item.met .req-dot{background:var(--success);}
+.btn-save{
+  background:var(--blue);color:#fff;padding:10px 24px;
+  border-radius:var(--rb);font-size:0.85rem;font-weight:600;
+  border:none;cursor:pointer;margin-top:4px;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-save:hover{background:var(--blue2);}
+.settings-user-info{
+  display:flex;align-items:center;gap:14px;
+  padding:16px;background:var(--off);border-radius:8px;border:1px solid var(--border);
+  margin-bottom:20px;
+}
+.settings-avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:rgba(37,99,235,0.12);border:2px solid rgba(37,99,235,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:1rem;font-weight:800;color:var(--blue);
+}
+.settings-user-name{font-size:0.92rem;font-weight:600;color:var(--dark);}
+.settings-user-email{font-size:0.78rem;color:var(--muted);margin-top:2px;}
+
+/* Shared button */
+.btn-primary-sm{
+  background:var(--blue);color:#fff;padding:8px 16px;
+  border-radius:var(--rb);font-size:0.8rem;font-weight:600;border:none;cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 1 — STUDENT DASHBOARD
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 1 of 10 — Student Portal</div>
+<div class="pg-title">Student Dashboard</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Sidebar navigation (reused on ALL student pages), topbar, stat cards, module shortcut cards with question counts, mock test CTA card, empty recent activity state.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/dashboard</div></div>
+  <div class="app">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">PP</div>
+        <span class="sb-logo-text">PTE<span>Path</span></span>
+      </div>
+      <div class="sb-user">
+        <div class="sb-avatar">RS</div>
+        <div class="sb-user-info">
+          <div class="sb-user-name">Rahul Shah</div>
+          <div class="sb-user-role">Student</div>
+        </div>
+      </div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Main</div>
+        <button class="sb-item active"><span class="sb-item-icon">🏠</span> Dashboard</button>
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item"><span class="sb-item-icon">🎤</span> Speaking <span class="sb-item-badge">5</span></button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing <span class="sb-item-badge">2</span></button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading <span class="sb-item-badge">5</span></button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening <span class="sb-item-badge">8</span></button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom">
+        <button class="sb-logout"><span>↩</span> Logout</button>
+      </div>
+    </div>
+    <!-- CONTENT -->
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb"><span>Dashboard</span></span>
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-greeting">Good morning, <strong>Rahul</strong> 👋</span>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="page-heading">Dashboard</div>
+        <div class="page-sub">Welcome back. Your practice platform is ready.</div>
+
+        <div class="dash-stats">
+          <div class="dash-stat">
+            <div class="dash-stat-val">4<span>+</span></div>
+            <div class="dash-stat-label">Practice Modules</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-val">20</div>
+            <div class="dash-stat-label">Question Types</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-val">0</div>
+            <div class="dash-stat-label">Total Attempts</div>
+            <div class="dash-stat-sub">Start practising today</div>
+          </div>
+          <div class="dash-stat">
+            <div class="dash-stat-val">0</div>
+            <div class="dash-stat-label">Mock Tests Attempted</div>
+          </div>
+        </div>
+
+        <div style="font-family:var(--fd);font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Practice Modules</div>
+        <div class="dash-modules">
+          <div class="dash-mod sp">
+            <div class="dash-mod-icon">🎤</div>
+            <div class="dash-mod-name">Speaking</div>
+            <div class="dash-mod-count">5 question types</div>
+            <div class="dash-mod-arrow">→</div>
+          </div>
+          <div class="dash-mod wr">
+            <div class="dash-mod-icon">✍️</div>
+            <div class="dash-mod-name">Writing</div>
+            <div class="dash-mod-count">2 question types</div>
+            <div class="dash-mod-arrow">→</div>
+          </div>
+          <div class="dash-mod rd">
+            <div class="dash-mod-icon">📖</div>
+            <div class="dash-mod-name">Reading</div>
+            <div class="dash-mod-count">5 question types</div>
+            <div class="dash-mod-arrow">→</div>
+          </div>
+          <div class="dash-mod li">
+            <div class="dash-mod-icon">🎧</div>
+            <div class="dash-mod-name">Listening</div>
+            <div class="dash-mod-count">8 question types</div>
+            <div class="dash-mod-arrow">→</div>
+          </div>
+        </div>
+
+        <div class="dash-bottom">
+          <div class="dash-card">
+            <div class="dash-card-title">Recent Activity</div>
+            <div class="empty-state">
+              <span class="empty-icon">📊</span>
+              No attempts yet. Start practising to see your activity here.
+            </div>
+          </div>
+          <div class="dash-card mock-cta-card">
+            <div class="dash-card-title">Mock Tests</div>
+            <div class="mock-cta-desc">Take a full-length mock test covering all four modules under real exam time pressure.</div>
+            <button class="btn-sm-white">Start Mock Test →</button>
+            <div class="mock-stats-mini">
+              <div class="mock-stat-mini"><div class="mock-stat-mini-val">18<span>+</span></div><div class="mock-stat-mini-label">Questions</div></div>
+              <div class="mock-stat-mini"><div class="mock-stat-mini-val">90<span>min</span></div><div class="mock-stat-mini-label">Duration</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 2 — MODULE HOME
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 2 of 10 — Student Portal</div>
+<div class="pg-title">Module Home Page (Speaking shown — same layout for Writing, Reading, Listening)</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Module header with icon, question type cards grid. Writing shows 2 cards, Reading 5, Listening 8 — same card layout.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/speaking</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Main</div>
+        <button class="sb-item"><span class="sb-item-icon">🏠</span> Dashboard</button>
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item active"><span class="sb-item-icon">🎤</span> Speaking <span class="sb-item-badge blue">5</span></button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing <span class="sb-item-badge">2</span></button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading <span class="sb-item-badge">5</span></button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening <span class="sb-item-badge">8</span></button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb">Dashboard → <span>Speaking</span></span>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="mod-home-header">
+          <div class="mod-home-icon sp">🎤</div>
+          <div>
+            <div class="mod-home-name">Speaking Module</div>
+            <div class="mod-home-sub">5 question types · Select a type to view all available questions</div>
+          </div>
+        </div>
+        <div class="qtypes-grid">
+          <div class="qtype-card">
+            <div class="qtype-num">1</div>
+            <div class="qtype-name">Read Aloud</div>
+            <p class="qtype-desc">A text is shown. Read it aloud clearly within the time given.</p>
+            <span class="qtype-count">📄 12 questions</span>
+            <div class="qtype-arrow">View questions →</div>
+          </div>
+          <div class="qtype-card">
+            <div class="qtype-num">2</div>
+            <div class="qtype-name">Repeat Sentence</div>
+            <p class="qtype-desc">Listen to a sentence and repeat it exactly as heard.</p>
+            <span class="qtype-count">📄 18 questions</span>
+            <div class="qtype-arrow">View questions →</div>
+          </div>
+          <div class="qtype-card">
+            <div class="qtype-num">3</div>
+            <div class="qtype-name">Describe Image</div>
+            <p class="qtype-desc">Study an image or chart and describe what you see in detail.</p>
+            <span class="qtype-count">📄 10 questions</span>
+            <div class="qtype-arrow">View questions →</div>
+          </div>
+          <div class="qtype-card">
+            <div class="qtype-num">4</div>
+            <div class="qtype-name">Respond to Situation</div>
+            <p class="qtype-desc">Read a situation and respond as you would in real life.</p>
+            <span class="qtype-count">📄 8 questions</span>
+            <div class="qtype-arrow">View questions →</div>
+          </div>
+          <div class="qtype-card">
+            <div class="qtype-num">5</div>
+            <div class="qtype-name">Answer Short Question</div>
+            <p class="qtype-desc">Listen to a question and give a short spoken answer.</p>
+            <span class="qtype-count">📄 24 questions</span>
+            <div class="qtype-arrow">View questions →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 3 — QUESTION LIST
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 3 of 10 — Student Portal</div>
+<div class="pg-title">Question List Page (Read Aloud shown — same layout for all question types across all modules)</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Breadcrumb navigation, question count badge, list of all questions with attempt button. Same layout for Writing, Reading, Listening question lists.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/speaking/read-aloud</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Main</div>
+        <button class="sb-item"><span class="sb-item-icon">🏠</span> Dashboard</button>
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item active"><span class="sb-item-icon">🎤</span> Speaking <span class="sb-item-badge blue">5</span></button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing <span class="sb-item-badge">2</span></button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading <span class="sb-item-badge">5</span></button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening <span class="sb-item-badge">8</span></button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-breadcrumb">Speaking → <span>Read Aloud</span></span>
+        </div>
+      </div>
+      <div class="page-content">
+        <div class="qlist-header">
+          <div>
+            <div class="page-heading">Read Aloud</div>
+            <div class="page-sub" style="margin-bottom:0;">Read the passage aloud within the time given. Scored on content, fluency and pronunciation.</div>
+          </div>
+          <span class="qlist-count">12 questions</span>
+        </div>
+        <div style="margin-bottom:16px;"></div>
+        <div class="qlist-grid">
+          <div class="qlist-item">
+            <div class="qlist-item-left">
+              <div class="qlist-index">1</div>
+              <div>
+                <div class="qlist-item-text">Climate change and its global impact on ecosystems</div>
+                <div class="qlist-item-sub">40 seconds · Speaking</div>
+              </div>
+            </div>
+            <div class="qlist-item-right"><button class="btn-attempt">Attempt →</button></div>
+          </div>
+          <div class="qlist-item">
+            <div class="qlist-item-left">
+              <div class="qlist-index">2</div>
+              <div>
+                <div class="qlist-item-text">The role of technology in modern education systems</div>
+                <div class="qlist-item-sub">40 seconds · Speaking</div>
+              </div>
+            </div>
+            <div class="qlist-item-right"><button class="btn-attempt">Attempt →</button></div>
+          </div>
+          <div class="qlist-item">
+            <div class="qlist-item-left">
+              <div class="qlist-index">3</div>
+              <div>
+                <div class="qlist-item-text">Urbanisation trends and sustainable city planning</div>
+                <div class="qlist-item-sub">40 seconds · Speaking</div>
+              </div>
+            </div>
+            <div class="qlist-item-right"><button class="btn-attempt">Attempt →</button></div>
+          </div>
+          <div class="qlist-item">
+            <div class="qlist-item-left">
+              <div class="qlist-index">4</div>
+              <div>
+                <div class="qlist-item-text">Economic growth and poverty reduction strategies</div>
+                <div class="qlist-item-sub">40 seconds · Speaking</div>
+              </div>
+            </div>
+            <div class="qlist-item-right"><button class="btn-attempt">Attempt →</button></div>
+          </div>
+          <div class="qlist-item">
+            <div class="qlist-item-left">
+              <div class="qlist-index">5</div>
+              <div>
+                <div class="qlist-item-text">The importance of biodiversity in natural ecosystems</div>
+                <div class="qlist-item-sub">40 seconds · Speaking</div>
+              </div>
+            </div>
+            <div class="qlist-item-right"><button class="btn-attempt">Attempt →</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 4 — SPEAKING ATTEMPT
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 4 of 10 — Student Portal</div>
+<div class="pg-title">Speaking Attempt Page (Read Aloud shown with score — shell reused for all 5 Speaking types)</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Preparation timer → recording state → score result. Left panel changes per question type (text/image/audio). Right panel (timer info + score) is same across all.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/speaking/read-aloud/attempt/1</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item active"><span class="sb-item-icon">🎤</span> Speaking</button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing</button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading</button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening</button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left"><span class="topbar-breadcrumb">Speaking → Read Aloud → <span>Question 1</span></span></div>
+        <div class="topbar-right"><button class="btn-primary-sm">← Back to List</button></div>
+      </div>
+      <div class="page-content">
+        <div class="attempt-wrap">
+          <div class="attempt-main">
+            <div class="attempt-type-badge">🎤 Read Aloud</div>
+            <div class="attempt-instruction">Read the passage below aloud. Recording starts automatically after preparation time.</div>
+            <div class="attempt-question-text">
+              Climate change represents one of the most significant challenges facing humanity in the twenty-first century. Rising global temperatures, driven primarily by the emission of greenhouse gases from industrial activity and transportation, have led to widespread changes in weather patterns, sea levels, and the distribution of plant and animal species across the planet.
+            </div>
+            <!-- Recording area — shown after prep -->
+            <div class="record-area">
+              <div class="record-status">🔴 Recording — Speak now</div>
+              <button class="record-btn recording" aria-label="Recording in progress">
+                <span class="record-icon">⏹</span>
+              </button>
+              <div class="waveform" aria-hidden="true">
+                <div class="wave-bar" style="height:40%;"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+                <div class="wave-bar"></div>
+              </div>
+            </div>
+          </div>
+          <div class="attempt-sidebar-panel">
+            <div class="info-panel">
+              <div class="info-panel-title">Speaking Timer</div>
+              <div class="timer-display">00:32</div>
+              <div class="info-row"><span class="info-row-label">Type</span><span class="info-row-val">Read Aloud</span></div>
+              <div class="info-row"><span class="info-row-label">Time given</span><span class="info-row-val">40 seconds</span></div>
+              <div class="info-row"><span class="info-row-label">Prep time</span><span class="info-row-val">30 seconds</span></div>
+            </div>
+            <!-- Score panel shown after submission -->
+            <div class="score-result">
+              <div class="score-result-title">Your Score</div>
+              <div class="score-big-display">
+                <div>
+                  <div class="score-num">72</div>
+                  <div class="score-out-of">out of 90</div>
+                </div>
+                <div class="score-bars-result">
+                  <div class="sbr-row">
+                    <span class="sbr-label">Content</span>
+                    <div class="sbr-track"><div class="sbr-fill mid" style="width:78%;"></div></div>
+                    <span class="sbr-val mid">78%</span>
+                  </div>
+                  <div class="sbr-row">
+                    <span class="sbr-label">Fluency</span>
+                    <div class="sbr-track"><div class="sbr-fill high" style="width:85%;"></div></div>
+                    <span class="sbr-val high">85%</span>
+                  </div>
+                  <div class="sbr-row">
+                    <span class="sbr-label">Pronunciation</span>
+                    <div class="sbr-track"><div class="sbr-fill mid" style="width:70%;"></div></div>
+                    <span class="sbr-val mid">70%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="score-feedback">
+                <strong>Feedback</strong>
+                Pronunciation could be clearer. Try to enunciate each word distinctly at a steady pace.
+              </div>
+              <button class="btn-next">Try Another Question →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 5 — WRITING ATTEMPT
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 5 of 10 — Student Portal</div>
+<div class="pg-title">Writing Attempt Page (Summarise Written Text shown — same shell for Write Essay)</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Passage display, textarea with live word counter, timer panel, score result. Write Essay has larger textarea and 20-min timer — same shell.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/writing/summarise/attempt/1</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item"><span class="sb-item-icon">🎤</span> Speaking</button>
+        <button class="sb-item active"><span class="sb-item-icon">✍️</span> Writing</button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading</button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening</button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left"><span class="topbar-breadcrumb">Writing → Summarise Written Text → <span>Question 1</span></span></div>
+        <div class="topbar-right"><button class="btn-primary-sm">← Back to List</button></div>
+      </div>
+      <div class="page-content">
+        <div class="attempt-wrap">
+          <div class="attempt-main">
+            <div class="attempt-type-badge">✍️ Summarise Written Text</div>
+            <div class="attempt-instruction">Read the passage below. Write ONE sentence summarising the main idea. Use 5 to 75 words.</div>
+            <div class="attempt-question-text" style="max-height:130px;overflow-y:auto;">
+              The global shift towards renewable energy sources such as solar and wind power represents a fundamental change in how societies generate and consume electricity. Governments worldwide have committed to reducing carbon emissions by transitioning away from fossil fuels, driven by both environmental concerns and the falling cost of clean energy technologies. However, this transition presents significant challenges including the need for new infrastructure, energy storage solutions, and workforce retraining programmes for workers in traditional energy sectors.
+            </div>
+            <div class="writing-area">
+              <div class="writing-toolbar">
+                <span>Your Response</span>
+              </div>
+              <textarea class="writing-textarea" placeholder="Write your one-sentence summary here...">The global transition to renewable energy, while essential for reducing carbon emissions, faces major challenges including infrastructure development, energy storage, and workforce retraining.</textarea>
+              <div class="word-counter-bar">
+                <span class="word-count-display ok">27 / 75 words</span>
+                <div class="word-count-bar"><div class="word-count-fill" style="width:36%;"></div></div>
+                <button class="btn-primary-sm">Submit →</button>
+              </div>
+            </div>
+          </div>
+          <div class="attempt-sidebar-panel">
+            <div class="info-panel">
+              <div class="info-panel-title">Time Remaining</div>
+              <div class="timer-display">08:42</div>
+              <div class="info-row"><span class="info-row-label">Type</span><span class="info-row-val">Summarise Text</span></div>
+              <div class="info-row"><span class="info-row-label">Time limit</span><span class="info-row-val">10 minutes</span></div>
+              <div class="info-row"><span class="info-row-label">Word limit</span><span class="info-row-val">5 – 75 words</span></div>
+              <div class="info-row"><span class="info-row-label">Sentences</span><span class="info-row-val">Exactly one</span></div>
+            </div>
+            <div class="score-result">
+              <div class="score-result-title">Your Score</div>
+              <div class="score-big-display">
+                <div>
+                  <div class="score-num" style="font-size:2rem;">83</div>
+                  <div class="score-out-of">out of 90</div>
+                </div>
+                <div class="score-bars-result">
+                  <div class="sbr-row">
+                    <span class="sbr-label">Word Count</span>
+                    <div class="sbr-track"><div class="sbr-fill high" style="width:100%;"></div></div>
+                    <span class="sbr-val high">100%</span>
+                  </div>
+                  <div class="sbr-row">
+                    <span class="sbr-label">Spelling</span>
+                    <div class="sbr-track"><div class="sbr-fill high" style="width:96%;"></div></div>
+                    <span class="sbr-val high">96%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="score-feedback"><strong>Feedback</strong>Excellent word count and spelling. Well done!</div>
+              <button class="btn-next">Try Another →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 6 — READING ATTEMPT
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 6 of 10 — Student Portal</div>
+<div class="pg-title">Reading Attempt Page (MCQ Multiple shown with score reveal — shell covers all 5 Reading types)</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Passage, MCQ options with correct/wrong/missed states after submission. Fill-in-blanks uses drag pool. Reorder uses two-panel drag. MCQ Single uses radio buttons.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/reading/mcq-multiple/attempt/3</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item"><span class="sb-item-icon">🎤</span> Speaking</button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing</button>
+        <button class="sb-item active"><span class="sb-item-icon">📖</span> Reading</button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening</button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left"><span class="topbar-breadcrumb">Reading → MCQ Multiple Answers → <span>Question 3</span></span></div>
+        <div class="topbar-right"><button class="btn-primary-sm">← Back to List</button></div>
+      </div>
+      <div class="page-content">
+        <div class="attempt-wrap">
+          <div class="attempt-main">
+            <div class="attempt-type-badge">📖 MCQ — Multiple Answers</div>
+            <div class="attempt-instruction">Read the passage. Select ALL correct answers. More than one option may be correct.</div>
+            <div class="passage-box">
+              The Industrial Revolution, which began in Britain in the late eighteenth century, transformed manufacturing processes and society in profound ways. Steam power replaced human and animal labour, enabling mass production of goods that were previously made by hand. Railways connected cities and enabled the rapid movement of goods and people, while factory systems concentrated workers in urban centres for the first time.
+            </div>
+            <div style="font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:10px;">Which of the following are mentioned as effects of the Industrial Revolution?</div>
+            <div class="mcq-options">
+              <div class="mcq-opt correct">
+                <div class="opt-marker">✓</div>
+                <span class="mcq-opt-text">Steam power replaced human and animal labour</span>
+                <span class="mcq-opt-result">✓ Correct</span>
+              </div>
+              <div class="mcq-opt wrong">
+                <div class="opt-marker">✗</div>
+                <span class="mcq-opt-text">Trade with Asian countries increased significantly</span>
+                <span class="mcq-opt-result">✗ Wrong</span>
+              </div>
+              <div class="mcq-opt correct">
+                <div class="opt-marker">✓</div>
+                <span class="mcq-opt-text">Railways connected cities for movement of goods</span>
+                <span class="mcq-opt-result">✓ Correct</span>
+              </div>
+              <div class="mcq-opt missed">
+                <div class="opt-marker">!</div>
+                <span class="mcq-opt-text">Factory systems concentrated workers in urban areas</span>
+                <span class="mcq-opt-result">! Missed</span>
+              </div>
+              <div class="mcq-opt" style="opacity:0.55;">
+                <div class="opt-marker"></div>
+                <span class="mcq-opt-text">Agriculture became the dominant industry</span>
+                <span class="mcq-opt-result" style="color:var(--muted);">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="attempt-sidebar-panel">
+            <div class="info-panel">
+              <div class="info-panel-title">Question Info</div>
+              <div class="info-row"><span class="info-row-label">Type</span><span class="info-row-val">MCQ Multiple</span></div>
+              <div class="info-row"><span class="info-row-label">Module</span><span class="info-row-val">Reading</span></div>
+              <div class="info-row"><span class="info-row-label">Scoring</span><span class="info-row-val">+1 / −1</span></div>
+            </div>
+            <div class="score-result">
+              <div class="score-result-title">Your Score</div>
+              <div class="score-big-display">
+                <div>
+                  <div class="score-num" style="color:var(--warning);font-size:2rem;">45</div>
+                  <div class="score-out-of">out of 90</div>
+                </div>
+                <div class="score-bars-result">
+                  <div class="sbr-row">
+                    <span class="sbr-label">Accuracy</span>
+                    <div class="sbr-track"><div class="sbr-fill mid" style="width:50%;"></div></div>
+                    <span class="sbr-val mid">50%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="score-feedback"><strong>Feedback</strong>You selected one wrong option. Review the passage carefully to identify all correct answers.</div>
+              <button class="btn-next">Try Another →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 7 — LISTENING ATTEMPT
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 7 of 10 — Student Portal</div>
+<div class="pg-title">Listening Attempt Page (Highlight Incorrect Words shown — audio player is same across all 8 Listening types)</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Audio player with waveform + play limit badge, clickable transcript words (highlighted = selected), score result. Audio player component reused across all 8 Listening question types.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/listening/highlight-incorrect/attempt/2</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item"><span class="sb-item-icon">🎤</span> Speaking</button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing</button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading</button>
+        <button class="sb-item active"><span class="sb-item-icon">🎧</span> Listening</button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left"><span class="topbar-breadcrumb">Listening → Highlight Incorrect Words → <span>Question 2</span></span></div>
+        <div class="topbar-right"><button class="btn-primary-sm">← Back to List</button></div>
+      </div>
+      <div class="page-content">
+        <div class="attempt-wrap">
+          <div class="attempt-main">
+            <div class="attempt-type-badge">🎧 Highlight Incorrect Words</div>
+            <div class="attempt-instruction">Listen to the audio. Click on the words in the transcript below that differ from what you hear.</div>
+            <div class="audio-player">
+              <button class="play-btn" aria-label="Play audio"><span class="play-icon">▶</span></button>
+              <div class="audio-progress-wrap">
+                <div class="audio-waveform" aria-hidden="true">
+                  <div class="aw-bar played" style="height:60%;"></div>
+                  <div class="aw-bar played" style="height:80%;"></div>
+                  <div class="aw-bar played" style="height:50%;"></div>
+                  <div class="aw-bar played" style="height:90%;"></div>
+                  <div class="aw-bar played" style="height:70%;"></div>
+                  <div class="aw-bar played" style="height:55%;"></div>
+                  <div class="aw-bar" style="height:75%;"></div>
+                  <div class="aw-bar" style="height:45%;"></div>
+                  <div class="aw-bar" style="height:85%;"></div>
+                  <div class="aw-bar" style="height:60%;"></div>
+                  <div class="aw-bar" style="height:70%;"></div>
+                  <div class="aw-bar" style="height:50%;"></div>
+                </div>
+                <div class="audio-time"><span>0:18</span><span>0:42</span></div>
+              </div>
+              <span class="audio-play-limit">Plays once</span>
+            </div>
+            <div class="highlight-text">
+              The <span class="hw-word">scientist</span> discovered that the <span class="hw-word clicked">ancient</span> city had been <span class="hw-word correct-click">abandoned</span> due to a <span class="hw-word">prolonged</span> <span class="hw-word clicked">drought</span> that lasted <span class="hw-word">nearly</span> <span class="hw-word">two</span> <span class="hw-word missed">centuries</span>. Archaeological <span class="hw-word">evidence</span> suggests that <span class="hw-word">residents</span> migrated <span class="hw-word">north</span> in search of <span class="hw-word">better</span> agricultural <span class="hw-word">land</span>.
+              <div style="margin-top:10px;font-size:0.72rem;color:var(--muted);">Click words you think differ from the audio. Click again to deselect.</div>
+            </div>
+          </div>
+          <div class="attempt-sidebar-panel">
+            <div class="info-panel">
+              <div class="info-panel-title">Question Info</div>
+              <div class="info-row"><span class="info-row-label">Type</span><span class="info-row-val">Highlight Errors</span></div>
+              <div class="info-row"><span class="info-row-label">Scoring</span><span class="info-row-val">+1 / −1</span></div>
+              <div class="info-row"><span class="info-row-label">Play limit</span><span class="info-row-val">Once</span></div>
+            </div>
+            <div class="score-result">
+              <div class="score-result-title">Your Score</div>
+              <div class="score-big-display">
+                <div>
+                  <div class="score-num" style="color:var(--error);font-size:2rem;">23</div>
+                  <div class="score-out-of">out of 90</div>
+                </div>
+                <div class="score-bars-result">
+                  <div class="sbr-row">
+                    <span class="sbr-label">Accuracy</span>
+                    <div class="sbr-track"><div class="sbr-fill low" style="width:25%;"></div></div>
+                    <span class="sbr-val low">25%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="score-feedback"><strong>Feedback</strong>1 of 4 incorrect words found. Listen carefully to each word as it is spoken.</div>
+              <button class="btn-next">Try Another →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 8 — MOCK TEST IN PROGRESS
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 8 of 10 — Student Portal</div>
+<div class="pg-title">Mock Test — In Progress</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Test progress bar (module + question indicator), overall countdown timer, question attempt area (reuses same question components), Next and Submit navigation.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/mock-test/attempt</div></div>
+  <div class="app" style="flex-direction:column;">
+    <!-- Mock test progress bar replaces sidebar -->
+    <div class="mock-progress-bar">
+      <div class="mock-prog-left">
+        <div>
+          <div class="mock-title-label">Mock Test</div>
+          <div class="mock-title-val">Standard Mock Test</div>
+        </div>
+        <div class="mock-prog-tracker">
+          <span class="mock-prog-text">Q 7 of 18</span>
+          <div class="mock-prog-dots">
+            <div class="mock-dot done"></div>
+            <div class="mock-dot done"></div>
+            <div class="mock-dot done"></div>
+            <div class="mock-dot done"></div>
+            <div class="mock-dot done"></div>
+            <div class="mock-dot done"></div>
+            <div class="mock-dot active"></div>
+            <div class="mock-dot"></div>
+            <div class="mock-dot"></div>
+            <div class="mock-dot"></div>
+            <div class="mock-dot"></div>
+            <div class="mock-dot"></div>
+          </div>
+        </div>
+      </div>
+      <div class="mock-timer-display warn">01:14:22</div>
+    </div>
+
+    <div class="content" style="flex-direction:row;flex:1;">
+      <!-- No sidebar in mock test — full width content -->
+      <div style="flex:1;display:flex;flex-direction:column;">
+        <div class="mock-content" style="flex:1;overflow-y:auto;background:var(--off);">
+          <div class="mock-q-label">
+            <span class="mock-q-badge">Question 7</span>
+            <span class="mock-q-type">📖 Reading — MCQ Single Answer</span>
+          </div>
+          <div class="attempt-wrap">
+            <div class="attempt-main">
+              <div class="attempt-instruction">Read the passage. Select ONE correct answer.</div>
+              <div class="passage-box">
+                The concept of sustainable development was formally defined in the Brundtland Report of 1987 as development that meets the needs of the present without compromising the ability of future generations to meet their own needs. This definition has since guided international policy discussions on economic growth, environmental protection, and social equity.
+              </div>
+              <div style="font-size:0.82rem;font-weight:600;color:var(--dark);margin-bottom:10px;">What is the central idea of the Brundtland Report's definition?</div>
+              <div class="mcq-options">
+                <div class="mcq-opt"><div class="opt-marker">A</div><span class="mcq-opt-text">Economic growth should be prioritised above all other concerns</span></div>
+                <div class="mcq-opt selected"><div class="opt-marker" style="border-color:var(--blue);background:var(--blue);color:#fff;">B</div><span class="mcq-opt-text">Development must balance present needs without harming future generations</span></div>
+                <div class="mcq-opt"><div class="opt-marker">C</div><span class="mcq-opt-text">Environmental protection should halt all industrial development</span></div>
+                <div class="mcq-opt"><div class="opt-marker">D</div><span class="mcq-opt-text">Social equity is more important than economic growth</span></div>
+              </div>
+            </div>
+            <div class="attempt-sidebar-panel">
+              <div class="info-panel">
+                <div class="info-panel-title">Test Progress</div>
+                <div style="text-align:center;padding:12px 0;">
+                  <div style="font-family:var(--fd);font-size:1.8rem;font-weight:800;color:var(--navy);">7<span style="color:var(--muted);font-size:1rem;">/18</span></div>
+                  <div style="font-size:0.72rem;color:var(--slate);margin-top:2px;">Questions completed</div>
+                </div>
+                <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:12px;">
+                  <div style="height:100%;width:38%;background:var(--blue);border-radius:2px;"></div>
+                </div>
+                <div class="info-row"><span class="info-row-label">Module</span><span class="info-row-val">Reading</span></div>
+                <div class="info-row"><span class="info-row-label">Remaining</span><span class="info-row-val">11 questions</span></div>
+                <div class="info-row"><span class="info-row-label">Time left</span><span class="info-row-val" style="color:var(--warning);font-weight:600;">1h 14m</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mock-nav">
+          <button class="btn-mock-skip">Skip question</button>
+          <button class="btn-mock-next">Next Question →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 9 — MOCK TEST RESULT
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 9 of 10 — Student Portal</div>
+<div class="pg-title">Mock Test — Result Page</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Overall score hero, module-by-module breakdown cards with colour-coded scores, time taken, Try Again and View Breakdown actions.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/mock-test/result</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item"><span class="sb-item-icon">🎤</span> Speaking</button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing</button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading</button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening</button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item active"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left"><span class="topbar-breadcrumb">Mock Tests → <span>Result</span></span></div>
+      </div>
+      <div class="page-content">
+        <div class="result-hero">
+          <div class="result-overall-label">Overall Score — Standard Mock Test</div>
+          <div class="result-score">74</div>
+          <div class="result-score-out">out of 90</div>
+          <div class="result-meta">
+            <div class="result-meta-item"><strong>18 / 18</strong>Questions answered</div>
+            <div class="result-meta-item"><strong>67 min</strong>Time taken</div>
+            <div class="result-meta-item"><strong>4</strong>Modules covered</div>
+          </div>
+        </div>
+        <div style="font-family:var(--fd);font-size:0.8rem;font-weight:700;color:var(--navy);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;">Module Breakdown</div>
+        <div class="result-modules">
+          <div class="result-mod-card">
+            <div class="result-mod-name">Speaking</div>
+            <div class="result-mod-score mid">72</div>
+            <div class="result-mod-out">/ 90</div>
+            <div class="result-mod-bar mid" style="width:80%;"></div>
+          </div>
+          <div class="result-mod-card">
+            <div class="result-mod-name">Writing</div>
+            <div class="result-mod-score high">82</div>
+            <div class="result-mod-out">/ 90</div>
+            <div class="result-mod-bar high" style="width:91%;"></div>
+          </div>
+          <div class="result-mod-card">
+            <div class="result-mod-name">Reading</div>
+            <div class="result-mod-score mid">75</div>
+            <div class="result-mod-out">/ 90</div>
+            <div class="result-mod-bar mid" style="width:83%;"></div>
+          </div>
+          <div class="result-mod-card">
+            <div class="result-mod-name">Listening</div>
+            <div class="result-mod-score mid">69</div>
+            <div class="result-mod-out">/ 90</div>
+            <div class="result-mod-bar mid" style="width:77%;"></div>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button class="btn-result-outline">View Question Breakdown</button>
+          <button class="btn-result-primary">Try Again →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- ══════════════════════════════════════════════
+     REFERENCE 10 — SETTINGS
+══════════════════════════════════════════════ -->
+<div class="pg-label">Reference 10 of 10 — Student Portal</div>
+<div class="pg-title">Settings Page — Change Password</div>
+<div class="ref-note">
+  <span>📋</span>
+  <span><strong>Covers:</strong> Student account info display, change password form with live password requirements checklist.</span>
+</div>
+
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/settings</div></div>
+  <div class="app">
+    <div class="sidebar">
+      <div class="sb-logo"><div class="sb-logo-icon">PP</div><span class="sb-logo-text">PTE<span>Path</span></span></div>
+      <div class="sb-user"><div class="sb-avatar">RS</div><div class="sb-user-info"><div class="sb-user-name">Rahul Shah</div><div class="sb-user-role">Student</div></div></div>
+      <nav class="sb-nav">
+        <div class="sb-section-label">Main</div>
+        <button class="sb-item"><span class="sb-item-icon">🏠</span> Dashboard</button>
+        <div class="sb-section-label">Modules</div>
+        <button class="sb-item"><span class="sb-item-icon">🎤</span> Speaking</button>
+        <button class="sb-item"><span class="sb-item-icon">✍️</span> Writing</button>
+        <button class="sb-item"><span class="sb-item-icon">📖</span> Reading</button>
+        <button class="sb-item"><span class="sb-item-icon">🎧</span> Listening</button>
+        <div class="sb-section-label">Tests</div>
+        <button class="sb-item"><span class="sb-item-icon">🎯</span> Mock Tests</button>
+        <div class="sb-section-label">Account</div>
+        <button class="sb-item active"><span class="sb-item-icon">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bottom"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar">
+        <div class="topbar-left"><span class="topbar-breadcrumb"><span>Settings</span></span></div>
+      </div>
+      <div class="page-content">
+        <div class="page-heading">Settings</div>
+        <div class="page-sub">Manage your account details and password.</div>
+        <div class="settings-card">
+          <div class="settings-section-title">Account Information</div>
+          <div class="settings-user-info">
+            <div class="settings-avatar">RS</div>
+            <div>
+              <div class="settings-user-name">Rahul Shah</div>
+              <div class="settings-user-email">rahul.shah@example.com</div>
+            </div>
+          </div>
+          <div class="settings-section-title" style="margin-top:4px;">Change Password</div>
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input class="form-input" type="password" placeholder="Enter current password" value="••••••••">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input class="form-input" type="password" placeholder="Enter new password" value="MyNewPass2">
+            <div class="pwd-reqs">
+              <div class="req-item met"><div class="req-dot"></div> At least 8 characters</div>
+              <div class="req-item met"><div class="req-dot"></div> Contains a number</div>
+              <div class="req-item"><div class="req-dot"></div> Contains a special character (optional)</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input class="form-input" type="password" placeholder="Repeat new password" value="MyNewPass2">
+            <div class="form-hint">Make sure both passwords match.</div>
+          </div>
+          <button class="btn-save">
+            <span>✓</span> Save New Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height:48px;"></div>
+
+</body>
+</html>

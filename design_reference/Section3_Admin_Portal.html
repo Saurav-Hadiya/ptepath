@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTEPath — Section 3: Admin Portal Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0F1B4C;--navy2:#152260;--blue:#2563EB;--blue2:#3B82F6;--blue-pale:#EFF6FF;
+  --amber:#F59E0B;--amber-pale:#FFFBEB;--purple:#7C3AED;--green:#059669;--red:#DC2626;
+  --white:#FFFFFF;--off:#F8FAFF;--off2:#F1F5FF;
+  --border:#E2E8F0;--slate:#64748B;--dark:#1E293B;--muted:#94A3B8;
+  --success:#10B981;--success-bg:#ECFDF5;--error:#EF4444;--error-bg:#FEF2F2;
+  --fd:'Outfit',sans-serif;--fb:'Inter',sans-serif;
+  --rc:12px;--rb:8px;--ri:8px;--rp:100px;
+}
+body{font-family:var(--fb);background:#D5DCE8;color:var(--dark);line-height:1.6;padding:36px 20px;}
+.pg-label{font-family:var(--fd);font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--slate);text-align:center;margin-bottom:5px;margin-top:56px;}
+.pg-label:first-of-type{margin-top:0;}
+.pg-title{font-family:var(--fd);font-size:1.05rem;font-weight:700;color:var(--navy);text-align:center;margin-bottom:8px;}
+.ref-note{background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.18);border-radius:8px;padding:8px 14px;font-size:0.75rem;color:#1E40AF;margin-bottom:18px;max-width:1100px;margin-left:auto;margin-right:auto;display:flex;align-items:center;gap:8px;}
+.ref-note strong{font-weight:600;}
+.divider{height:1px;background:var(--border);margin:44px auto;max-width:1100px;}
+.browser{max-width:1100px;margin:0 auto;background:#C8D0DF;border-radius:12px;overflow:hidden;box-shadow:0 4px 28px rgba(0,0,0,0.16);}
+.bbar{background:#E0E6EF;padding:9px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #B8C2D0;}
+.dots{display:flex;gap:5px;}
+.dot{width:10px;height:10px;border-radius:50%;}
+.dot.r{background:#FF5F57;}.dot.y{background:#FFBD2E;}.dot.g{background:#28C840;}
+.ubar{flex:1;background:#EBF0F7;border-radius:5px;padding:4px 10px;font-size:0.74rem;color:var(--slate);border:1px solid #C8D0DC;}
+.app{display:flex;min-height:560px;background:var(--off);}
+.sb{width:220px;flex-shrink:0;background:var(--navy);display:flex;flex-direction:column;}
+.sb-logo{padding:18px 18px 14px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;gap:8px;}
+.sb-logo-ic{width:28px;height:28px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:#fff;flex-shrink:0;}
+.sb-logo-tx{font-family:var(--fd);font-weight:800;font-size:1rem;color:#fff;}
+.sb-logo-tx span{color:var(--amber);}
+.sb-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.3);color:var(--amber);padding:2px 8px;border-radius:var(--rp);font-size:0.62rem;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin:10px 18px 2px;}
+.sb-nav{flex:1;padding:8px 0;}
+.sb-lbl{padding:8px 18px 3px;color:rgba(255,255,255,0.28);font-size:0.62rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;}
+.sb-it{display:flex;align-items:center;gap:9px;padding:8px 18px;font-size:0.8rem;font-weight:500;color:rgba(255,255,255,0.55);cursor:pointer;position:relative;border:none;background:none;width:100%;text-align:left;}
+.sb-it:hover{color:rgba(255,255,255,0.9);background:rgba(255,255,255,0.05);}
+.sb-it.active{color:#fff;background:rgba(37,99,235,0.22);}
+.sb-it.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--blue);border-radius:0 2px 2px 0;}
+.sb-ic{font-size:0.9rem;width:16px;text-align:center;flex-shrink:0;}
+.sb-bot{padding:10px;border-top:1px solid rgba(255,255,255,0.06);}
+.sb-logout{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:6px;color:rgba(255,255,255,0.35);font-size:0.78rem;cursor:pointer;border:none;background:none;width:100%;text-align:left;}
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.tb-bc{font-size:0.8rem;color:var(--muted);}
+.tb-bc span{color:var(--dark);font-weight:500;}
+.tb-right{display:flex;align-items:center;gap:10px;}
+.pc{flex:1;padding:20px 24px;overflow-y:auto;background:var(--off);}
+.ph{font-family:var(--fd);font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:3px;}
+.ps{color:var(--slate);font-size:0.82rem;margin-bottom:20px;}
+.btn-p{background:var(--blue);color:#fff;padding:8px 16px;border-radius:var(--rb);font-size:0.8rem;font-weight:600;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+.btn-o{background:transparent;color:var(--slate);padding:8px 14px;border-radius:var(--rb);font-size:0.8rem;border:1px solid var(--border);cursor:pointer;}
+.btn-danger{background:var(--error);color:#fff;padding:6px 12px;border-radius:6px;font-size:0.76rem;font-weight:600;border:none;cursor:pointer;}
+.btn-edit{background:var(--blue-pale);color:var(--blue);padding:6px 12px;border-radius:6px;font-size:0.76rem;font-weight:600;border:none;cursor:pointer;}
+.btn-sm{padding:6px 12px;border-radius:6px;font-size:0.76rem;font-weight:600;border:none;cursor:pointer;}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.stat-c{background:var(--white);border:1px solid var(--border);border-radius:var(--rc);padding:16px 18px;}
+.stat-v{font-family:var(--fd);font-size:1.8rem;font-weight:800;color:var(--navy);letter-spacing:-0.5px;}
+.stat-l{color:var(--slate);font-size:0.73rem;margin-top:2px;}
+.stat-d{font-size:0.7rem;margin-top:4px;}
+.stat-d.up{color:var(--success);}
+.stat-d.neu{color:var(--muted);}
+.tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--rc);overflow:hidden;}
+.tbl-header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.tbl-title{font-family:var(--fd);font-size:0.88rem;font-weight:700;color:var(--navy);}
+.tbl-actions{display:flex;gap:8px;align-items:center;}
+.search-input{padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;font-family:var(--fb);background:var(--off);color:var(--dark);outline:none;width:160px;}
+table{width:100%;border-collapse:collapse;}
+th{padding:10px 16px;text-align:left;font-size:0.72rem;font-weight:700;color:var(--slate);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);background:var(--off);}
+td{padding:11px 16px;font-size:0.8rem;color:var(--dark);border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--off);}
+.td-muted{color:var(--muted);}
+.td-actions{display:flex;gap:6px;}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:var(--rp);font-size:0.7rem;font-weight:600;}
+.badge-green{background:var(--success-bg);color:var(--success);}
+.badge-gray{background:var(--off);color:var(--slate);border:1px solid var(--border);}
+.badge-amber{background:var(--amber-pale);color:#92400E;}
+.toggle{width:36px;height:20px;border-radius:10px;border:none;cursor:pointer;position:relative;transition:background 0.2s;flex-shrink:0;}
+.toggle.on{background:var(--success);}
+.toggle.off{background:var(--muted);}
+.toggle::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;transition:left 0.2s;}
+.toggle.on::after{left:19px;}
+.toggle.off::after{left:3px;}
+.form-section{background:var(--white);border:1px solid var(--border);border-radius:var(--rc);padding:20px;margin-bottom:14px;}
+.form-section-title{font-family:var(--fd);font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.fg{margin-bottom:14px;}
+.fg:last-child{margin-bottom:0;}
+.fl{display:block;font-size:0.76rem;font-weight:600;color:var(--dark);margin-bottom:5px;}
+.fi{width:100%;padding:9px 11px;border:1px solid var(--border);border-radius:var(--ri);font-size:0.84rem;font-family:var(--fb);color:var(--dark);background:var(--off);outline:none;}
+.fi:focus{border-color:var(--blue);background:#fff;}
+.fi-hint{font-size:0.7rem;color:var(--muted);margin-top:4px;}
+select.fi{cursor:pointer;}
+textarea.fi{resize:vertical;min-height:80px;line-height:1.6;}
+.form-actions{display:flex;gap:10px;padding-top:6px;}
+.dash-bottom{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.dash-card{background:var(--white);border:1px solid var(--border);border-radius:var(--rc);padding:18px;overflow:hidden;}
+.dash-card-title{font-family:var(--fd);font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.recent-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);}
+.recent-item:last-child{border-bottom:none;}
+.recent-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:var(--blue);flex-shrink:0;}
+.recent-name{font-size:0.8rem;font-weight:500;color:var(--dark);}
+.recent-time{font-size:0.72rem;color:var(--muted);}
+.top-q-item{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);}
+.top-q-item:last-child{border-bottom:none;}
+.top-q-rank{width:22px;height:22px;border-radius:6px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;color:var(--slate);flex-shrink:0;}
+.top-q-text{font-size:0.78rem;color:var(--dark);flex:1;}
+.top-q-meta{font-size:0.7rem;color:var(--muted);}
+.top-q-score{font-size:0.76rem;font-weight:600;}
+.top-q-score.high{color:var(--success);}
+.top-q-score.mid{color:var(--amber);}
+.top-q-score.low{color:var(--error);}
+.mod-tabs{display:flex;gap:4px;margin-bottom:14px;background:var(--white);padding:4px;border-radius:8px;border:1px solid var(--border);width:fit-content;}
+.mod-tab{padding:6px 14px;border-radius:6px;font-size:0.78rem;font-weight:500;cursor:pointer;border:none;background:none;color:var(--slate);}
+.mod-tab.active{background:var(--blue);color:#fff;font-weight:600;}
+.status-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:var(--rp);font-size:0.7rem;font-weight:600;}
+.status-pill.active{background:var(--success-bg);color:var(--success);}
+.status-pill.inactive{background:var(--off);color:var(--muted);border:1px solid var(--border);}
+.modal-overlay{background:rgba(15,27,76,0.45);padding:20px;display:flex;align-items:center;justify-content:center;flex:1;}
+.modal{background:var(--white);border-radius:14px;padding:24px;width:380px;box-shadow:0 20px 48px rgba(0,0,0,0.2);}
+.modal-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.modal-sub{font-size:0.78rem;color:var(--slate);margin-bottom:18px;}
+.modal-actions{display:flex;gap:8px;margin-top:18px;}
+.template-rules{display:flex;flex-direction:column;gap:6px;}
+.rule-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--off);border-radius:6px;}
+.rule-module{font-size:0.75rem;font-weight:600;color:var(--navy);width:80px;}
+.rule-type{font-size:0.75rem;color:var(--dark);flex:1;}
+.rule-count{width:60px;}
+.rule-count input{width:100%;padding:4px 8px;border:1px solid var(--border);border-radius:4px;font-size:0.75rem;text-align:center;font-family:var(--fb);}
+.blank-editor{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.blank-editor-header{background:var(--off);padding:8px 12px;font-size:0.72rem;color:var(--slate);border-bottom:1px solid var(--border);}
+.blank-editor-body{padding:12px;font-size:0.84rem;line-height:2;color:var(--dark);}
+.inline-blank{display:inline-block;border:1px solid var(--blue);border-radius:4px;padding:1px 8px;background:var(--blue-pale);color:var(--blue);font-size:0.78rem;font-weight:600;margin:0 3px;}
+.blank-answers{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.blank-ans-row{display:flex;align-items:center;gap:8px;}
+.blank-ans-label{font-size:0.72rem;color:var(--slate);width:60px;}
+.blank-ans-input{flex:1;padding:6px 10px;border:1px solid var(--border);border-radius:6px;font-size:0.78rem;font-family:var(--fb);}
+.upload-preview{border:1px solid var(--border);border-radius:8px;padding:10px 14px;background:var(--white);display:flex;align-items:center;gap:10px;}
+.upload-preview-icon{width:32px;height:32px;border-radius:6px;background:var(--blue-pale);display:flex;align-items:center;justify-content:center;font-size:0.9rem;}
+.upload-preview-name{font-size:0.78rem;font-weight:500;color:var(--dark);}
+.upload-preview-size{font-size:0.7rem;color:var(--muted);}
+.upload-remove{margin-left:auto;color:var(--error);font-size:0.75rem;cursor:pointer;font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- REF 1 — ADMIN DASHBOARD -->
+<div class="pg-label">Reference 1 of 7 — Admin Portal</div>
+<div class="pg-title">Admin Dashboard</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Admin sidebar (reused on ALL admin pages), 4 stat cards, recent student logins, lowest scoring questions panel.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/dashboard</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div>
+        <button class="sb-it active"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div>
+        <button class="sb-it"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div>
+        <button class="sb-it"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div>
+        <button class="sb-it"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar"><span class="tb-bc"><span>Dashboard</span></span><div class="tb-right"><span style="font-size:0.8rem;color:var(--slate);">Admin</span></div></div>
+      <div class="pc">
+        <div class="ph">Admin Dashboard</div>
+        <div class="ps">Platform overview and recent activity.</div>
+        <div class="stats-row">
+          <div class="stat-c"><div class="stat-v">24</div><div class="stat-l">Total Students</div><div class="stat-d up">↑ 3 this week</div></div>
+          <div class="stat-c"><div class="stat-v">148</div><div class="stat-l">Total Questions</div><div class="stat-d neu">Across all modules</div></div>
+          <div class="stat-c"><div class="stat-v">312</div><div class="stat-l">Attempts Today</div><div class="stat-d up">↑ 18% vs yesterday</div></div>
+          <div class="stat-c"><div class="stat-v">47</div><div class="stat-l">Mock Tests Attempted</div><div class="stat-d neu">All time</div></div>
+        </div>
+        <div class="dash-bottom">
+          <div class="dash-card">
+            <div class="dash-card-title">Recent Student Logins</div>
+            <div class="recent-item"><div class="recent-avatar">RS</div><div><div class="recent-name">Rahul Shah</div><div class="recent-time">2 min ago</div></div><span class="badge badge-green" style="margin-left:auto;">Active</span></div>
+            <div class="recent-item"><div class="recent-avatar">PM</div><div><div class="recent-name">Priya Mehta</div><div class="recent-time">18 min ago</div></div><span class="badge badge-green" style="margin-left:auto;">Active</span></div>
+            <div class="recent-item"><div class="recent-avatar">AK</div><div><div class="recent-name">Arjun Kumar</div><div class="recent-time">1 hr ago</div></div><span class="badge badge-gray" style="margin-left:auto;">Away</span></div>
+            <div class="recent-item"><div class="recent-avatar">NP</div><div><div class="recent-name">Nisha Patel</div><div class="recent-time">3 hrs ago</div></div><span class="badge badge-gray" style="margin-left:auto;">Away</span></div>
+          </div>
+          <div class="dash-card">
+            <div class="dash-card-title">Lowest Scoring Questions</div>
+            <div class="top-q-item"><div class="top-q-rank">1</div><div><div class="top-q-text">Describe Image — Bar Chart</div><div class="top-q-meta">Speaking · 34 attempts</div></div><span class="top-q-score low">38%</span></div>
+            <div class="top-q-item"><div class="top-q-rank">2</div><div><div class="top-q-text">Re-order Paragraphs — Science</div><div class="top-q-meta">Reading · 28 attempts</div></div><span class="top-q-score low">41%</span></div>
+            <div class="top-q-item"><div class="top-q-rank">3</div><div><div class="top-q-text">Summarise Spoken Text #4</div><div class="top-q-meta">Listening · 22 attempts</div></div><span class="top-q-score mid">52%</span></div>
+            <div class="top-q-item"><div class="top-q-rank">4</div><div><div class="top-q-text">Write Essay — Technology</div><div class="top-q-meta">Writing · 41 attempts</div></div><span class="top-q-score mid">58%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REF 2 — STUDENTS LIST + RESET MODAL -->
+<div class="pg-label">Reference 2 of 7 — Admin Portal</div>
+<div class="pg-title">Students — List + Reset Password Modal</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Student table with status, toggle, actions. Reset Password modal overlay. Add/Edit form shown below.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/students</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div><button class="sb-it"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div><button class="sb-it active"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div><button class="sb-it"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div><button class="sb-it"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar"><span class="tb-bc">Admin → <span>Students</span></span><div class="tb-right"><button class="btn-p">+ Add Student</button></div></div>
+      <div class="modal-overlay">
+        <div class="modal">
+          <div class="modal-title">Reset Student Password</div>
+          <div class="modal-sub">Set a new temporary password for <strong>Rahul Shah</strong>. They will be required to change it on next login.</div>
+          <div class="fg"><label class="fl">New Temporary Password</label><input class="fi" type="text" value="TempPass@2025"><div class="fi-hint">Student will be forced to change this on first login.</div></div>
+          <div class="modal-actions"><button class="btn-p" style="flex:1;">Reset Password</button><button class="btn-o">Cancel</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1100px;margin:16px auto 0;">
+  <div class="ref-note" style="margin-bottom:12px;"><span>📋</span><span><strong>Add / Edit Student Form</strong> — shown as a page when Add Student is clicked. Edit uses the same form pre-filled.</span></div>
+  <div style="background:var(--off);border:1px solid var(--border);border-radius:var(--rc);padding:20px;">
+    <div style="font-family:var(--fd);font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:14px;">Add New Student</div>
+    <div class="form-section">
+      <div class="form-section-title">Student Details</div>
+      <div class="form-grid">
+        <div class="fg"><label class="fl">Full Name</label><input class="fi" type="text" placeholder="e.g. Rahul Shah"></div>
+        <div class="fg"><label class="fl">Email Address</label><input class="fi" type="email" placeholder="student@example.com"><div class="fi-hint">Used to log in. Must be unique.</div></div>
+        <div class="fg"><label class="fl">Temporary Password</label><input class="fi" type="text" placeholder="Set a temporary password"><div class="fi-hint">Student must change this on first login.</div></div>
+      </div>
+    </div>
+    <div class="form-actions"><button class="btn-p">Create Student Account</button><button class="btn-o">Cancel</button></div>
+  </div>
+  <div class="tbl-wrap" style="margin-top:14px;">
+    <div class="tbl-header"><span class="tbl-title">All Students (24)</span><div class="tbl-actions"><input class="search-input" placeholder="Search…"><button class="btn-p">+ Add Student</button></div></div>
+    <table>
+      <thead><tr><th>Student</th><th>Email</th><th>Attempts</th><th>Last Active</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Rahul Shah</strong></td><td class="td-muted">rahul.shah@example.com</td><td>84</td><td>2 min ago</td><td><span class="status-pill active">● Active</span></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-sm" style="background:var(--amber-pale);color:#92400E;">Reset Pwd</button><button class="btn-danger">Disable</button></div></td></tr>
+        <tr><td><strong>Priya Mehta</strong></td><td class="td-muted">priya.mehta@example.com</td><td>61</td><td>18 min ago</td><td><span class="status-pill active">● Active</span></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-sm" style="background:var(--amber-pale);color:#92400E;">Reset Pwd</button><button class="btn-danger">Disable</button></div></td></tr>
+        <tr><td><strong>Arjun Kumar</strong></td><td class="td-muted">arjun.k@example.com</td><td>32</td><td>1 hr ago</td><td><span class="status-pill inactive">○ Inactive</span></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-sm" style="background:var(--amber-pale);color:#92400E;">Reset Pwd</button><button class="btn-sm" style="background:var(--success-bg);color:var(--success);">Enable</button></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REF 3 — QUESTIONS LIST -->
+<div class="pg-label">Reference 3 of 7 — Admin Portal</div>
+<div class="pg-title">Questions — List Page (Speaking shown — identical layout for Writing, Reading, Listening)</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Question type tab switcher, question table with attempt count, avg score, active toggle, edit and delete actions.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/speaking</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div><button class="sb-it"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div><button class="sb-it"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it active"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div><button class="sb-it"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div><button class="sb-it"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar"><span class="tb-bc">Admin → <span>Speaking Questions</span></span><div class="tb-right"><button class="btn-p">+ Add Question</button></div></div>
+      <div class="pc">
+        <div class="ph">Speaking Questions</div>
+        <div class="ps">Manage all speaking question types.</div>
+        <div class="mod-tabs">
+          <button class="mod-tab active">Read Aloud</button>
+          <button class="mod-tab">Repeat Sentence</button>
+          <button class="mod-tab">Describe Image</button>
+          <button class="mod-tab">Respond to Situation</button>
+          <button class="mod-tab">Answer Short Q.</button>
+        </div>
+        <div class="tbl-wrap">
+          <div class="tbl-header"><span class="tbl-title">Read Aloud — 12 Questions</span><div class="tbl-actions"><input class="search-input" placeholder="Search questions…"><button class="btn-p">+ Add Question</button></div></div>
+          <table>
+            <thead><tr><th>#</th><th>Question Preview</th><th>Attempts</th><th>Avg Score</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td class="td-muted">1</td><td>Climate change and its global impact on ecosystems…</td><td>34</td><td><span class="top-q-score high">74%</span></td><td><button class="toggle on"></button></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-danger">Delete</button></div></td></tr>
+              <tr><td class="td-muted">2</td><td>The role of technology in modern education systems…</td><td>28</td><td><span class="top-q-score mid">61%</span></td><td><button class="toggle on"></button></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-danger">Delete</button></div></td></tr>
+              <tr><td class="td-muted">3</td><td>Urbanisation trends and sustainable city planning…</td><td>18</td><td><span class="top-q-score mid">58%</span></td><td><button class="toggle off"></button></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-danger">Delete</button></div></td></tr>
+              <tr><td class="td-muted">4</td><td>Economic growth and poverty reduction strategies…</td><td>41</td><td><span class="top-q-score high">82%</span></td><td><button class="toggle on"></button></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-danger">Delete</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REF 4 — ADD QUESTION FORM VARIANTS -->
+<div class="pg-label">Reference 4 of 7 — Admin Portal</div>
+<div class="pg-title">Add / Edit Question — Form Variants (3 key variants shown covering all question types)</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Variant A = Text passage (Read Aloud, Writing, Respond to Situation). Variant B = Blank editor (Fill in the Blanks). Variant C = Audio upload + MCQ options (all Listening types). Image upload for Describe Image uses same zone as audio upload.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/speaking/add</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div><button class="sb-it"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div><button class="sb-it"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it active"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div><button class="sb-it"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div><button class="sb-it"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar"><span class="tb-bc">Speaking → <span>Add Question</span></span><div class="tb-right"><button class="btn-o">Cancel</button></div></div>
+      <div class="pc">
+        <div class="ph">Add Speaking Question</div>
+        <div class="ps">Fill in the required fields for the selected question type.</div>
+
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Variant A — Text Passage (Read Aloud, Writing, Respond to Situation)</div>
+        <div class="form-section" style="margin-bottom:10px;">
+          <div class="form-section-title">Question Type: Read Aloud</div>
+          <div class="fg"><label class="fl">Passage Text</label><textarea class="fi" rows="3">Climate change represents one of the most significant challenges facing humanity in the twenty-first century. Rising global temperatures have led to widespread changes in weather patterns and sea levels.</textarea><div class="fi-hint">Shown to student. They must read it aloud.</div></div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Speaking Time (seconds)</label><input class="fi" type="number" value="40"></div>
+            <div class="fg"><label class="fl">Preparation Time (seconds)</label><input class="fi" type="number" value="30"></div>
+          </div>
+        </div>
+
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:0.5px;">Variant B — Blank Editor (Reading/Listening Fill in the Blanks)</div>
+        <div class="form-section" style="margin-bottom:10px;">
+          <div class="form-section-title">Question Type: Reading Fill in the Blanks</div>
+          <div class="fg"><label class="fl">Passage with Blanks</label>
+            <div class="blank-editor">
+              <div class="blank-editor-header">Type [BLANK] where a missing word should appear.</div>
+              <div class="blank-editor-body">The economy has shown <span class="inline-blank">BLANK 1</span> growth in the past quarter despite global <span class="inline-blank">BLANK 2</span> that affected trade.</div>
+            </div>
+            <div class="fi-hint" style="margin-top:6px;">2 blanks detected. Fill correct answer + wrong options for each blank below.</div>
+          </div>
+          <div class="fg"><label class="fl">Answers Per Blank</label>
+            <div class="blank-answers">
+              <div class="blank-ans-row"><span class="blank-ans-label">Blank 1</span><input class="blank-ans-input" value="remarkable" placeholder="Correct answer"><input class="blank-ans-input" placeholder="Wrong option 2"><input class="blank-ans-input" placeholder="Wrong option 3"></div>
+              <div class="blank-ans-row"><span class="blank-ans-label">Blank 2</span><input class="blank-ans-input" value="tensions" placeholder="Correct answer"><input class="blank-ans-input" placeholder="Wrong option 2"><input class="blank-ans-input" placeholder="Wrong option 3"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size:0.72rem;font-weight:700;color:var(--navy);margin-bottom:8px;margin-top:16px;text-transform:uppercase;letter-spacing:0.5px;">Variant C — Audio Upload + Options (Listening MCQ, Write from Dictation)</div>
+        <div class="form-section">
+          <div class="form-section-title">Question Type: Listening — MCQ Multiple Answers</div>
+          <div class="fg"><label class="fl">Audio File</label>
+            <div class="upload-preview">
+              <div class="upload-preview-icon">🎵</div>
+              <div><div class="upload-preview-name">listening_q4.mp3</div><div class="upload-preview-size">1.4 MB · 0:38 sec</div></div>
+              <span class="upload-remove">✕ Remove</span>
+            </div>
+            <div class="fi-hint" style="margin-top:6px;">MP3, WAV, M4A · Max 5MB.</div>
+          </div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Question Text</label><input class="fi" placeholder="What does the speaker mention about…"></div>
+            <div class="fg"><label class="fl">Play Limit</label><select class="fi"><option>Play once (recommended)</option><option>Unlimited replays</option></select></div>
+          </div>
+          <div class="fg"><label class="fl">Answer Options (check all correct)</label>
+            <div style="display:flex;flex-direction:column;gap:7px;">
+              <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox" checked><input class="fi" style="flex:1;" value="Steam power replaced human labour"><span style="font-size:0.7rem;color:var(--success);font-weight:600;">✓ Correct</span></div>
+              <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox"><input class="fi" style="flex:1;" value="Trade with Asia increased significantly"></div>
+              <div style="display:flex;align-items:center;gap:8px;"><input type="checkbox" checked><input class="fi" style="flex:1;" value="Railways connected cities"><span style="font-size:0.7rem;color:var(--success);font-weight:600;">✓ Correct</span></div>
+              <button style="background:none;border:1px dashed var(--border);border-radius:6px;padding:6px;font-size:0.74rem;color:var(--slate);cursor:pointer;text-align:left;">+ Add option</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions"><button class="btn-p">Save Question</button><button class="btn-o">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REF 5 — MOCK TESTS -->
+<div class="pg-label">Reference 5 of 7 — Admin Portal</div>
+<div class="pg-title">Mock Tests — List + Create Template Form</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Templates table with attempt count and avg score, Create Template form with question-count rules per type and active toggle per row.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/mock-tests</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div><button class="sb-it"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div><button class="sb-it"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div>
+        <button class="sb-it active"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div><button class="sb-it"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar"><span class="tb-bc">Admin → <span>Mock Tests</span></span><div class="tb-right"><button class="btn-p">+ Create Template</button></div></div>
+      <div class="pc">
+        <div class="ph">Mock Test Templates</div>
+        <div class="ps">Templates auto-generate random question sets for students when they start a test.</div>
+        <div class="tbl-wrap" style="margin-bottom:18px;">
+          <div class="tbl-header"><span class="tbl-title">Templates (2)</span><button class="btn-p">+ Create Template</button></div>
+          <table>
+            <thead><tr><th>Template Name</th><th>Questions</th><th>Time Limit</th><th>Attempts</th><th>Avg Score</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Standard Mock Test</strong></td><td>18</td><td>90 min</td><td>47</td><td><span class="top-q-score mid">68%</span></td><td><button class="toggle on"></button></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-danger">Delete</button></div></td></tr>
+              <tr><td><strong>Quick Practice Test</strong></td><td>10</td><td>45 min</td><td>12</td><td><span class="top-q-score high">74%</span></td><td><button class="toggle off"></button></td><td><div class="td-actions"><button class="btn-edit">Edit</button><button class="btn-danger">Delete</button></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="font-family:var(--fd);font-size:1rem;font-weight:800;color:var(--navy);margin-bottom:12px;">Create New Template</div>
+        <div class="form-section">
+          <div class="form-section-title">Template Settings</div>
+          <div class="form-grid">
+            <div class="fg"><label class="fl">Template Name</label><input class="fi" placeholder="e.g. Standard Mock Test"></div>
+            <div class="fg"><label class="fl">Total Time (minutes)</label><input class="fi" type="number" value="90"></div>
+          </div>
+          <div class="fg"><label class="fl">Description (shown to student)</label><input class="fi" placeholder="e.g. Full practice test covering all modules"></div>
+        </div>
+        <div class="form-section">
+          <div class="form-section-title">Questions Per Type</div>
+          <div class="template-rules">
+            <div class="rule-row"><span class="rule-module" style="color:var(--blue);">🎤 Speaking</span><span class="rule-type">Read Aloud</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--blue);">🎤 Speaking</span><span class="rule-type">Repeat Sentence</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--blue);">🎤 Speaking</span><span class="rule-type">Describe Image</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--purple);">✍️ Writing</span><span class="rule-type">Summarise Written Text</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--purple);">✍️ Writing</span><span class="rule-type">Write Essay</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--green);">📖 Reading</span><span class="rule-type">MCQ Multiple Answers</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--green);">📖 Reading</span><span class="rule-type">Re-order Paragraphs</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--red);">🎧 Listening</span><span class="rule-type">Write from Dictation</span><div class="rule-count"><input value="1"></div></div>
+            <div class="rule-row"><span class="rule-module" style="color:var(--red);">🎧 Listening</span><span class="rule-type">MCQ Single Answer</span><div class="rule-count"><input value="1"></div></div>
+          </div>
+        </div>
+        <div class="form-actions"><button class="btn-p">Save Template</button><button class="btn-o">Cancel</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REF 6 — ADMIN SETTINGS -->
+<div class="pg-label">Reference 6 of 7 — Admin Portal</div>
+<div class="pg-title">Admin Settings — Change Password</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Admin account info card with Admin badge, change password form. Same structure as student settings.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/settings</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div><button class="sb-it"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div><button class="sb-it"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div><button class="sb-it"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div>
+        <button class="sb-it active"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="topbar"><span class="tb-bc"><span>Settings</span></span></div>
+      <div class="pc">
+        <div class="ph">Settings</div><div class="ps">Manage your admin account.</div>
+        <div class="form-section" style="max-width:480px;">
+          <div class="form-section-title">Account Information</div>
+          <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--off);border-radius:8px;border:1px solid var(--border);margin-bottom:18px;">
+            <div style="width:44px;height:44px;border-radius:50%;background:rgba(245,158,11,0.15);border:2px solid rgba(245,158,11,0.3);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-size:0.9rem;font-weight:800;color:var(--amber);">AD</div>
+            <div><div style="font-size:0.88rem;font-weight:600;color:var(--dark);">Admin</div><div style="font-size:0.76rem;color:var(--muted);">admin@ptepath.com</div></div>
+            <span class="badge badge-amber" style="margin-left:auto;">Admin</span>
+          </div>
+          <div class="form-section-title">Change Password</div>
+          <div class="fg"><label class="fl">Current Password</label><input class="fi" type="password" value="••••••••"></div>
+          <div class="fg"><label class="fl">New Password</label><input class="fi" type="password" placeholder="Enter new password"><div class="fi-hint">Minimum 8 characters with at least one number.</div></div>
+          <div class="fg"><label class="fl">Confirm New Password</label><input class="fi" type="password" placeholder="Repeat new password"></div>
+          <button class="btn-p" style="margin-top:6px;">Save New Password</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REF 7 — CONFIRM DELETE MODAL -->
+<div class="pg-label">Reference 7 of 7 — Admin Portal</div>
+<div class="pg-title">Confirm Delete Modal (reused for questions, students, mock test templates)</div>
+<div class="ref-note"><span>📋</span><span><strong>Covers:</strong> Destructive action confirmation overlay with warning note. Same modal component used everywhere a delete action exists.</span></div>
+<div class="browser">
+  <div class="bbar"><div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div><div class="ubar">ptepath.com/admin/speaking</div></div>
+  <div class="app">
+    <div class="sb">
+      <div class="sb-logo"><div class="sb-logo-ic">PP</div><span class="sb-logo-tx">PTE<span>Path</span></span></div>
+      <div class="sb-badge">⚙ Admin Panel</div>
+      <nav class="sb-nav">
+        <div class="sb-lbl">Overview</div><button class="sb-it"><span class="sb-ic">🏠</span> Dashboard</button>
+        <div class="sb-lbl">Students</div><button class="sb-it"><span class="sb-ic">👥</span> Students</button>
+        <div class="sb-lbl">Questions</div>
+        <button class="sb-it active"><span class="sb-ic">🎤</span> Speaking</button>
+        <button class="sb-it"><span class="sb-ic">✍️</span> Writing</button>
+        <button class="sb-it"><span class="sb-ic">📖</span> Reading</button>
+        <button class="sb-it"><span class="sb-ic">🎧</span> Listening</button>
+        <div class="sb-lbl">Tests</div><button class="sb-it"><span class="sb-ic">🎯</span> Mock Tests</button>
+        <div class="sb-lbl">Account</div><button class="sb-it"><span class="sb-ic">⚙️</span> Settings</button>
+      </nav>
+      <div class="sb-bot"><button class="sb-logout"><span>↩</span> Logout</button></div>
+    </div>
+    <div class="content">
+      <div class="modal-overlay">
+        <div class="modal">
+          <div style="width:48px;height:48px;border-radius:50%;background:var(--error-bg);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:1.2rem;">🗑️</div>
+          <div class="modal-title">Delete this question?</div>
+          <div class="modal-sub">"Climate change and its global impact on ecosystems…" will be permanently deleted. This cannot be undone.</div>
+          <div style="background:var(--error-bg);border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:10px 12px;font-size:0.75rem;color:#991B1B;margin-bottom:16px;">⚠ This question will be removed from any mock test templates that include it.</div>
+          <div class="modal-actions"><button class="btn-o" style="flex:1;">Cancel</button><button class="btn-danger" style="flex:1;padding:9px 16px;font-size:0.84rem;">Yes, Delete</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="height:40px;"></div>
+</body>
+</html>

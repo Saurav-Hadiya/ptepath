@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PTEPath — PTE Exam Practice Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0F1B4C;--navy2:#152260;--navy3:#1a2e6b;
+  --blue:#2563EB;--blue2:#3B82F6;--blue3:#60A5FA;
+  --amber:#F59E0B;--amber2:#FCD34D;
+  --white:#FFFFFF;--off:#F8FAFF;--off2:#F1F5FF;
+  --border:#E2E8F0;--border2:#CBD5E1;
+  --slate:#64748B;--dark:#1E293B;--muted:#94A3B8;
+  --success:#10B981;--error:#EF4444;
+  --speaking:#2563EB;--writing:#7C3AED;--reading:#059669;--listening:#DC2626;
+  --fd:'Outfit',sans-serif;--fb:'Inter',sans-serif;
+  --rc:12px;--rb:8px;--ri:8px;--rp:100px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:var(--fb);background:var(--white);color:var(--dark);line-height:1.6;overflow-x:hidden;}
+
+/* ── NAV ──────────────────────────────────────────────── */
+header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(15,27,76,0.97);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+nav{
+  max-width:1200px;margin:0 auto;padding:0 32px;
+  height:68px;display:flex;align-items:center;justify-content:space-between;
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-icon{
+  width:36px;height:36px;background:var(--blue);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.logo-icon::before{
+  content:'';position:absolute;
+  width:20px;height:20px;border:2.5px solid rgba(255,255,255,0.9);
+  border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.logo-icon::after{
+  content:'';position:absolute;
+  width:8px;height:8px;background:var(--amber);
+  border-radius:50%;top:10px;left:20px;
+}
+.logo-text{font-family:var(--fd);font-weight:800;font-size:1.3rem;color:var(--white);letter-spacing:-0.5px;}
+.logo-text span{color:var(--amber);}
+.nav-links{display:flex;align-items:center;gap:32px;list-style:none;}
+.nav-links a{color:rgba(255,255,255,0.65);font-size:0.88rem;font-weight:500;text-decoration:none;transition:color 0.2s;}
+.nav-links a:hover{color:var(--white);}
+.nav-cta{
+  background:var(--blue);color:var(--white) !important;
+  padding:9px 20px;border-radius:var(--rb);font-weight:600 !important;
+  transition:background 0.2s !important;
+}
+.nav-cta:hover{background:var(--blue2) !important;}
+
+/* ── HERO ──────────────────────────────────────────────── */
+.hero{
+  background:var(--navy);
+  padding:96px 32px 0;
+  position:relative;overflow:hidden;
+  min-height:92vh;display:flex;flex-direction:column;
+}
+.hero-bg-circles{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+}
+.hero-circle{
+  position:absolute;border-radius:50%;
+  background:rgba(37,99,235,0.07);
+}
+.hero-circle.c1{width:600px;height:600px;top:-200px;right:-150px;}
+.hero-circle.c2{width:400px;height:400px;bottom:100px;left:-100px;background:rgba(37,99,235,0.05);}
+.hero-circle.c3{width:200px;height:200px;top:200px;right:200px;background:rgba(245,158,11,0.06);}
+.hero-grid{
+  max-width:1200px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;
+  flex:1;padding-bottom:80px;
+  position:relative;z-index:1;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);
+  color:var(--amber);padding:6px 14px;border-radius:var(--rp);
+  font-size:0.75rem;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;
+  margin-bottom:24px;
+}
+.badge-dot{width:6px;height:6px;background:var(--amber);border-radius:50%;animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero h1{
+  font-family:var(--fd);font-size:3.6rem;font-weight:900;
+  color:var(--white);line-height:1.05;letter-spacing:-2px;margin-bottom:20px;
+}
+.hero h1 .blue-text{
+  color:var(--blue3);display:block;
+}
+.hero-desc{
+  color:rgba(255,255,255,0.6);font-size:1.05rem;line-height:1.8;
+  margin-bottom:36px;max-width:480px;
+}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
+.btn-hero-primary{
+  background:var(--blue);color:var(--white);
+  padding:14px 28px;border-radius:var(--rb);
+  font-family:var(--fb);font-weight:600;font-size:0.95rem;
+  border:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  text-decoration:none;
+  box-shadow:0 4px 20px rgba(37,99,235,0.45);
+  transition:all 0.2s;
+}
+.btn-hero-primary:hover{background:var(--blue2);transform:translateY(-2px);}
+.btn-hero-outline{
+  background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.8);
+  padding:14px 28px;border-radius:var(--rb);
+  font-family:var(--fb);font-weight:500;font-size:0.95rem;
+  border:1px solid rgba(255,255,255,0.15);cursor:pointer;
+  display:inline-flex;align-items:center;gap:10px;text-decoration:none;
+  transition:all 0.2s;
+}
+.btn-hero-outline:hover{border-color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.09);}
+.hero-trust{display:flex;align-items:center;gap:16px;}
+.trust-dots{display:flex;gap:-4px;}
+.trust-dot{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--navy3);border:2px solid var(--navy);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.65rem;font-weight:700;color:var(--blue3);
+  margin-right:-8px;
+}
+.trust-text{color:rgba(255,255,255,0.4);font-size:0.8rem;padding-left:16px;}
+.trust-text strong{color:rgba(255,255,255,0.7);}
+
+/* ── HERO VISUAL ─────────────────────────────────────── */
+.hero-visual{position:relative;display:flex;flex-direction:column;gap:0;}
+.hero-visual-main{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:20px;padding:28px;
+  position:relative;overflow:hidden;
+}
+.hero-visual-main::before{
+  content:'';position:absolute;
+  top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--blue),var(--blue3),var(--amber));
+}
+.hv-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+.hv-title{color:rgba(255,255,255,0.5);font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;}
+.hv-live{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);
+  color:#34D399;padding:3px 10px;border-radius:var(--rp);font-size:0.7rem;font-weight:600;
+}
+.hv-live-dot{width:5px;height:5px;background:#34D399;border-radius:50%;animation:blink 1.5s infinite;}
+.score-big{
+  display:flex;align-items:flex-end;gap:12px;margin-bottom:24px;
+}
+.score-number{
+  font-family:var(--fd);font-size:5rem;font-weight:900;
+  color:var(--white);letter-spacing:-4px;line-height:1;
+}
+.score-meta{padding-bottom:8px;}
+.score-out{color:rgba(255,255,255,0.35);font-size:0.85rem;}
+.score-label{color:var(--success);font-size:0.78rem;font-weight:600;margin-top:2px;}
+.module-bars{display:flex;flex-direction:column;gap:10px;}
+.mbar{display:flex;align-items:center;gap:12px;}
+.mbar-name{color:rgba(255,255,255,0.5);font-size:0.75rem;width:72px;flex-shrink:0;}
+.mbar-track{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;}
+.mbar-fill{height:100%;border-radius:3px;transition:width 1s ease;}
+.mbar-fill.speaking{background:var(--blue);}
+.mbar-fill.writing{background:#7C3AED;}
+.mbar-fill.reading{background:var(--success);}
+.mbar-fill.listening{background:#F97316;}
+.mbar-score{color:rgba(255,255,255,0.6);font-size:0.78rem;font-weight:600;width:28px;text-align:right;}
+
+.hero-cards-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.mini-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;padding:16px 18px;
+}
+.mini-card-label{color:rgba(255,255,255,0.4);font-size:0.68rem;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;}
+.mini-card-val{font-family:var(--fd);font-size:1.5rem;font-weight:800;color:var(--white);}
+.mini-card-val span{font-size:0.8rem;color:rgba(255,255,255,0.35);font-weight:400;font-family:var(--fb);}
+.mini-card-sub{font-size:0.72rem;margin-top:2px;}
+.mini-card-sub.up{color:#34D399;}
+.mini-card-sub.neutral{color:rgba(255,255,255,0.3);}
+
+/* ── HERO WAVE ───────────────────────────────────────── */
+.hero-wave{
+  width:100%;overflow:hidden;line-height:0;
+  margin-top:auto;
+}
+.hero-wave svg{display:block;width:100%;height:72px;}
+
+/* ── FEATURES STRIP ──────────────────────────────────── */
+.features-strip{
+  background:var(--off2);
+  padding:20px 32px;
+  border-bottom:1px solid var(--border);
+}
+.features-strip-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.strip-item{display:flex;align-items:center;gap:10px;color:var(--slate);font-size:0.85rem;}
+.strip-icon{
+  width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;
+}
+.strip-icon.si1{background:#EFF6FF;}
+.strip-icon.si2{background:#F5F3FF;}
+.strip-icon.si3{background:#ECFDF5;}
+.strip-icon.si4{background:#FEF3C7;}
+.strip-icon.si5{background:#FEF2F2;}
+.strip-divider{width:1px;height:28px;background:var(--border);flex-shrink:0;}
+
+/* ── SECTION COMMON ──────────────────────────────────── */
+.section{padding:88px 32px;}
+.section-alt{background:var(--off);}
+.inner{max-width:1200px;margin:0 auto;}
+.eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.75rem;font-weight:700;text-transform:uppercase;
+  letter-spacing:1px;color:var(--blue);margin-bottom:12px;
+}
+.eyebrow::before{content:'';width:16px;height:2px;background:var(--blue);border-radius:1px;}
+.sec-title{
+  font-family:var(--fd);font-size:2.6rem;font-weight:800;
+  color:var(--navy);letter-spacing:-1.2px;line-height:1.1;margin-bottom:14px;
+}
+.sec-sub{color:var(--slate);font-size:1rem;max-width:520px;line-height:1.75;}
+.sec-header{margin-bottom:52px;}
+
+/* ── MODULES ─────────────────────────────────────────── */
+.modules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;}
+.mod-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:16px;padding:32px;
+  position:relative;overflow:hidden;
+  transition:all 0.3s;cursor:default;
+}
+.mod-card::after{
+  content:'';position:absolute;
+  top:0;left:0;width:4px;height:100%;
+  background:var(--mc,var(--blue));
+  border-radius:0;
+}
+.mod-card.speaking{--mc:var(--speaking);}
+.mod-card.writing{--mc:var(--writing);}
+.mod-card.reading{--mc:var(--reading);}
+.mod-card.listening{--mc:var(--listening);}
+.mod-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(15,27,76,0.1);border-color:rgba(37,99,235,0.2);}
+.mod-icon-wrap{
+  display:flex;align-items:center;gap:14px;margin-bottom:16px;
+}
+.mod-icon{
+  width:48px;height:48px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;
+}
+.speaking .mod-icon{background:#EFF6FF;}
+.writing .mod-icon{background:#F5F3FF;}
+.reading .mod-icon{background:#ECFDF5;}
+.listening .mod-icon{background:#FEF2F2;}
+.mod-name{font-family:var(--fd);font-size:1.15rem;font-weight:700;color:var(--navy);}
+.mod-count{font-size:0.78rem;color:var(--muted);}
+.mod-desc{color:var(--slate);font-size:0.88rem;line-height:1.65;margin-bottom:16px;}
+.mod-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{
+  background:var(--off);border:1px solid var(--border);
+  color:var(--slate);padding:3px 10px;border-radius:var(--rp);
+  font-size:0.72rem;font-weight:500;
+}
+
+/* ── HOW IT WORKS ────────────────────────────────────── */
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;position:relative;}
+.how-connector{
+  position:absolute;top:32px;left:calc(12.5% + 24px);right:calc(12.5% + 24px);
+  height:1px;background:var(--border);z-index:0;
+}
+.how-step{text-align:center;position:relative;z-index:1;}
+.how-num{
+  width:64px;height:64px;border-radius:50%;
+  background:var(--navy);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fd);font-size:1.3rem;font-weight:800;
+  margin:0 auto 20px;
+  border:3px solid var(--white);
+  box-shadow:0 0 0 2px var(--border);
+  transition:all 0.3s;
+}
+.how-step:hover .how-num{
+  background:var(--blue);
+  box-shadow:0 0 0 2px rgba(37,99,235,0.3),0 8px 20px rgba(37,99,235,0.3);
+}
+.how-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.how-desc{color:var(--slate);font-size:0.84rem;line-height:1.65;}
+
+/* ── MOCK TEST HIGHLIGHT ─────────────────────────────── */
+.mock-section{
+  background:var(--navy);padding:80px 32px;position:relative;overflow:hidden;
+}
+.mock-orb{
+  position:absolute;border-radius:50%;pointer-events:none;
+}
+.mock-orb.o1{width:500px;height:500px;background:rgba(37,99,235,0.1);top:-200px;right:-100px;}
+.mock-orb.o2{width:300px;height:300px;background:rgba(245,158,11,0.06);bottom:-100px;left:100px;}
+.mock-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;
+  position:relative;z-index:1;
+}
+.mock-eyebrow{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--blue3);margin-bottom:14px;
+}
+.mock-eyebrow::before{content:'';width:16px;height:2px;background:var(--blue3);border-radius:1px;}
+.mock-title{
+  font-family:var(--fd);font-size:2.4rem;font-weight:800;
+  color:var(--white);letter-spacing:-1px;line-height:1.1;margin-bottom:16px;
+}
+.mock-desc{color:rgba(255,255,255,0.55);font-size:0.95rem;line-height:1.75;margin-bottom:28px;max-width:520px;}
+.mock-feats{display:flex;flex-direction:column;gap:10px;}
+.mock-feat{display:flex;align-items:center;gap:10px;color:rgba(255,255,255,0.65);font-size:0.86rem;}
+.mock-feat-check{
+  width:20px;height:20px;border-radius:50%;
+  background:rgba(37,99,235,0.25);border:1px solid rgba(37,99,235,0.4);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;color:var(--blue3);font-size:0.7rem;
+}
+.mock-cta-wrap{flex-shrink:0;}
+.btn-mock{
+  background:var(--blue);color:var(--white);
+  padding:16px 32px;border-radius:var(--rb);
+  font-family:var(--fb);font-weight:600;font-size:0.95rem;
+  border:none;cursor:pointer;display:block;white-space:nowrap;
+  box-shadow:0 4px 20px rgba(37,99,235,0.4);
+  text-decoration:none;text-align:center;
+  transition:all 0.2s;
+}
+.btn-mock:hover{background:var(--blue2);transform:translateY(-2px);}
+.mock-stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px;}
+.mock-stat{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;padding:14px 16px;
+}
+.mock-stat-val{font-family:var(--fd);font-size:1.5rem;font-weight:800;color:var(--white);}
+.mock-stat-val span{color:var(--amber);font-size:1rem;}
+.mock-stat-label{color:rgba(255,255,255,0.35);font-size:0.72rem;margin-top:2px;}
+
+/* ── WHY ─────────────────────────────────────────────── */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.why-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--rc);padding:28px;
+  transition:all 0.3s;
+}
+.why-card:hover{box-shadow:0 8px 24px rgba(15,27,76,0.08);transform:translateY(-3px);border-color:rgba(37,99,235,0.2);}
+.why-icon-box{
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;margin-bottom:14px;background:var(--off2);
+}
+.why-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.why-desc{color:var(--slate);font-size:0.85rem;line-height:1.65;}
+
+/* ── CTA ─────────────────────────────────────────────── */
+.cta-wrap{
+  background:var(--off);padding:88px 32px;text-align:center;
+}
+.cta-inner{max-width:580px;margin:0 auto;}
+.cta-title{
+  font-family:var(--fd);font-size:2.4rem;font-weight:800;
+  color:var(--navy);letter-spacing:-1px;line-height:1.1;margin-bottom:14px;
+}
+.cta-sub{color:var(--slate);font-size:1rem;line-height:1.75;margin-bottom:32px;}
+.btn-cta{
+  background:var(--navy);color:var(--white);
+  padding:16px 36px;border-radius:var(--rb);
+  font-family:var(--fb);font-weight:600;font-size:1rem;
+  border:none;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  text-decoration:none;transition:all 0.2s;
+}
+.btn-cta:hover{background:var(--navy3);transform:translateY(-2px);}
+.cta-note{color:var(--muted);font-size:0.82rem;margin-top:14px;}
+
+/* ── FOOTER ──────────────────────────────────────────── */
+footer{background:var(--navy);padding:48px 32px 32px;}
+.footer-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;
+  padding-bottom:40px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.footer-logo-icon{
+  width:32px;height:32px;background:var(--blue);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.footer-logo-icon::before{
+  content:'';position:absolute;
+  width:16px;height:16px;border:2px solid rgba(255,255,255,0.9);
+  border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+}
+.footer-logo-icon::after{
+  content:'';position:absolute;
+  width:6px;height:6px;background:var(--amber);
+  border-radius:50%;top:8px;left:18px;
+}
+.footer-logo-text{font-family:var(--fd);font-weight:800;font-size:1.15rem;color:var(--white);}
+.footer-logo-text span{color:var(--amber);}
+.footer-tagline{color:rgba(255,255,255,0.35);font-size:0.82rem;line-height:1.65;max-width:220px;}
+.footer-col-title{
+  font-family:var(--fd);font-size:0.78rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;
+  color:rgba(255,255,255,0.4);margin-bottom:16px;
+}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links a{color:rgba(255,255,255,0.5);font-size:0.85rem;text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:rgba(255,255,255,0.85);}
+.footer-bottom{
+  max-width:1200px;margin:0 auto;padding-top:24px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.footer-copy{color:rgba(255,255,255,0.2);font-size:0.78rem;}
+.footer-legal{display:flex;gap:20px;}
+.footer-legal a{color:rgba(255,255,255,0.2);font-size:0.78rem;text-decoration:none;}
+
+/* ── RESPONSIVE ──────────────────────────────────────── */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:40px;}
+  .modules-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr 1fr;gap:28px;}
+  .how-connector{display:none;}
+  .why-grid{grid-template-columns:1fr 1fr;}
+  .mock-inner{grid-template-columns:1fr;}
+  .footer-inner{grid-template-columns:1fr 1fr;gap:28px;}
+  .features-strip-inner{gap:12px;}
+  .strip-divider{display:none;}
+  .hero h1{font-size:2.6rem;}
+}
+@media(max-width:600px){
+  nav{padding:0 20px;}
+  .nav-links{gap:16px;}
+  .hero{padding:80px 20px 0;}
+  .hero h1{font-size:2rem;}
+  .section{padding:56px 20px;}
+  .why-grid{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .footer-inner{grid-template-columns:1fr;}
+  .modules-grid{grid-template-columns:1fr;}
+  .hero-cards-row{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;gap:12px;text-align:center;}
+  .mock-stat-grid{grid-template-columns:1fr 1fr;}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER / NAV -->
+<header>
+  <nav>
+    <a href="#" class="logo">
+      <div class="logo-icon" aria-hidden="true"></div>
+      <span class="logo-text">PTE<span>Path</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#how-it-works">How It Works</a></li>
+      <li><a href="#mock-test">Mock Tests</a></li>
+      <li><a href="/login" class="nav-cta">Student Login</a></li>
+    </ul>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero" aria-label="Hero section">
+  <div class="hero-bg-circles" aria-hidden="true">
+    <div class="hero-circle c1"></div>
+    <div class="hero-circle c2"></div>
+    <div class="hero-circle c3"></div>
+  </div>
+
+  <div class="hero-grid">
+    <!-- LEFT: Copy -->
+    <div>
+      <div class="hero-badge">
+        <div class="badge-dot" aria-hidden="true"></div>
+        PTE Exam Practice Platform
+      </div>
+      <h1>
+        Practice with purpose.
+        <span class="blue-text">Score with confidence.</span>
+      </h1>
+      <p class="hero-desc">
+        PTEPath gives you structured, exam-matched practice across all four PTE modules — Speaking, Writing, Reading, and Listening — with instant automated scoring every time you submit.
+      </p>
+      <div class="hero-actions">
+        <a href="/login" class="btn-hero-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+          Login to Practice
+        </a>
+        <a href="#modules" class="btn-hero-outline">
+          Explore Modules
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </a>
+      </div>
+      <div class="hero-trust" aria-label="Platform highlights">
+        <div class="trust-dots" aria-hidden="true">
+          <div class="trust-dot">SP</div>
+          <div class="trust-dot">WR</div>
+          <div class="trust-dot">RD</div>
+          <div class="trust-dot">LI</div>
+        </div>
+        <span class="trust-text"><strong>4 modules</strong> · 18+ question types · instant scoring</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Score Visual -->
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-visual-main">
+        <div class="hv-header">
+          <span class="hv-title">Mock Test Result</span>
+          <span class="hv-live"><span class="hv-live-dot"></span> Latest attempt</span>
+        </div>
+        <div class="score-big">
+          <div class="score-number" id="heroScore">0</div>
+          <div class="score-meta">
+            <div class="score-out">out of 90</div>
+            <div class="score-label">↑ Improved by 8 pts</div>
+          </div>
+        </div>
+        <div class="module-bars">
+          <div class="mbar">
+            <span class="mbar-name">Speaking</span>
+            <div class="mbar-track"><div class="mbar-fill speaking" id="b1" style="width:0%"></div></div>
+            <span class="mbar-score">79</span>
+          </div>
+          <div class="mbar">
+            <span class="mbar-name">Writing</span>
+            <div class="mbar-track"><div class="mbar-fill writing" id="b2" style="width:0%"></div></div>
+            <span class="mbar-score">88</span>
+          </div>
+          <div class="mbar">
+            <span class="mbar-name">Reading</span>
+            <div class="mbar-track"><div class="mbar-fill reading" id="b3" style="width:0%"></div></div>
+            <span class="mbar-score">74</span>
+          </div>
+          <div class="mbar">
+            <span class="mbar-name">Listening</span>
+            <div class="mbar-track"><div class="mbar-fill listening" id="b4" style="width:0%"></div></div>
+            <span class="mbar-score">81</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-cards-row">
+        <div class="mini-card">
+          <div class="mini-card-label">Practice Questions</div>
+          <div class="mini-card-val">18<span>+ types</span></div>
+          <div class="mini-card-sub neutral">Across all modules</div>
+        </div>
+        <div class="mini-card">
+          <div class="mini-card-label">Score in</div>
+          <div class="mini-card-val">2<span>–5 sec</span></div>
+          <div class="mini-card-sub up">⚡ Instant feedback</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-wave" aria-hidden="true">
+    <svg viewBox="0 0 1440 72" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C240,72 480,0 720,36 C960,72 1200,20 1440,40 L1440,72 L0,72 Z" fill="#F8FAFF"/>
+    </svg>
+  </div>
+</section>
+
+<!-- FEATURES STRIP -->
+<div class="features-strip" role="complementary" aria-label="Platform features">
+  <div class="features-strip-inner">
+    <div class="strip-item">
+      <div class="strip-icon si1" aria-hidden="true">🎤</div>
+      <span>Speaking — 5 question types</span>
+    </div>
+    <div class="strip-divider" aria-hidden="true"></div>
+    <div class="strip-item">
+      <div class="strip-icon si2" aria-hidden="true">✍️</div>
+      <span>Writing — 2 question types</span>
+    </div>
+    <div class="strip-divider" aria-hidden="true"></div>
+    <div class="strip-item">
+      <div class="strip-icon si3" aria-hidden="true">📖</div>
+      <span>Reading — 5 question types</span>
+    </div>
+    <div class="strip-divider" aria-hidden="true"></div>
+    <div class="strip-item">
+      <div class="strip-icon si4" aria-hidden="true">🎧</div>
+      <span>Listening — 8 question types</span>
+    </div>
+    <div class="strip-divider" aria-hidden="true"></div>
+    <div class="strip-item">
+      <div class="strip-icon si5" aria-hidden="true">🎯</div>
+      <span>Full Mock Tests available</span>
+    </div>
+  </div>
+</div>
+
+<!-- MODULES SECTION -->
+<section class="section" id="modules" aria-label="Practice modules">
+  <div class="inner">
+    <div class="sec-header">
+      <div class="eyebrow" aria-hidden="true">Practice Modules</div>
+      <h2 class="sec-title">Everything the PTE exam tests.<br>Practised in one place.</h2>
+      <p class="sec-sub">Each module mirrors the real PTE exam format with automatic scoring, so you always know where you stand and what to improve.</p>
+    </div>
+    <div class="modules-grid">
+      <div class="mod-card speaking">
+        <div class="mod-icon-wrap">
+          <div class="mod-icon" aria-hidden="true">🎤</div>
+          <div>
+            <div class="mod-name">Speaking</div>
+            <div class="mod-count">5 question types</div>
+          </div>
+        </div>
+        <p class="mod-desc">Record your spoken responses and receive instant feedback on fluency, pronunciation, and content accuracy. Scored automatically every time.</p>
+        <div class="mod-tags">
+          <span class="tag">Read Aloud</span>
+          <span class="tag">Repeat Sentence</span>
+          <span class="tag">Describe Image</span>
+          <span class="tag">Respond to Situation</span>
+          <span class="tag">Answer Short Question</span>
+        </div>
+      </div>
+
+      <div class="mod-card writing">
+        <div class="mod-icon-wrap">
+          <div class="mod-icon" aria-hidden="true">✍️</div>
+          <div>
+            <div class="mod-name">Writing</div>
+            <div class="mod-count">2 question types</div>
+          </div>
+        </div>
+        <p class="mod-desc">Practise concise summaries and full essays under timed conditions. Live word counter prevents over-limit submissions. Automatic spelling check on every attempt.</p>
+        <div class="mod-tags">
+          <span class="tag">Summarise Written Text</span>
+          <span class="tag">Write Essay</span>
+          <span class="tag">Live Word Counter</span>
+          <span class="tag">Spell Check</span>
+        </div>
+      </div>
+
+      <div class="mod-card reading">
+        <div class="mod-icon-wrap">
+          <div class="mod-icon" aria-hidden="true">📖</div>
+          <div>
+            <div class="mod-name">Reading</div>
+            <div class="mod-count">5 question types</div>
+          </div>
+        </div>
+        <p class="mod-desc">Drag-and-drop blanks, paragraph reordering, and multiple-choice questions that sharpen your reading comprehension and vocabulary under real exam conditions.</p>
+        <div class="mod-tags">
+          <span class="tag">R&W Fill in the Blanks</span>
+          <span class="tag">MCQ Multiple</span>
+          <span class="tag">Reorder Paragraphs</span>
+          <span class="tag">MCQ Single</span>
+        </div>
+      </div>
+
+      <div class="mod-card listening">
+        <div class="mod-icon-wrap">
+          <div class="mod-icon" aria-hidden="true">🎧</div>
+          <div>
+            <div class="mod-name">Listening</div>
+            <div class="mod-count">8 question types</div>
+          </div>
+        </div>
+        <p class="mod-desc">Real audio clips with transcription tasks, dictation exercises, highlight-incorrect-words, and summary writing — the most comprehensive listening practice available.</p>
+        <div class="mod-tags">
+          <span class="tag">Write from Dictation</span>
+          <span class="tag">Fill in the Blanks</span>
+          <span class="tag">Highlight Errors</span>
+          <span class="tag">Summarise Spoken Text</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section section-alt" id="how-it-works" aria-label="How the platform works">
+  <div class="inner">
+    <div class="sec-header" style="max-width:500px;">
+      <div class="eyebrow" aria-hidden="true">How It Works</div>
+      <h2 class="sec-title">Simple from day one.</h2>
+      <p class="sec-sub">Your account is set up by your instructor. No registration form, no waiting — just log in and start practising.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-connector" aria-hidden="true"></div>
+      <div class="how-step">
+        <div class="how-num" aria-label="Step 1">1</div>
+        <div class="how-title">Receive Your Login</div>
+        <p class="how-desc">Your instructor creates your account and shares your credentials — email and a temporary password.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num" aria-label="Step 2">2</div>
+        <div class="how-title">Set Your Password</div>
+        <p class="how-desc">On your very first login, you are prompted to set a private password that only you will ever know.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num" aria-label="Step 3">3</div>
+        <div class="how-title">Start Practising</div>
+        <p class="how-desc">Choose any module, pick a question type, select a question, and attempt it. Score appears in seconds.</p>
+      </div>
+      <div class="how-step">
+        <div class="how-num" aria-label="Step 4">4</div>
+        <div class="how-title">Take Mock Tests</div>
+        <p class="how-desc">Attempt full mock tests covering all four modules under realistic time pressure. Retake as many times as you like.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOCK TEST HIGHLIGHT -->
+<div class="mock-section" id="mock-test" role="region" aria-label="Mock test feature">
+  <div class="mock-orb o1" aria-hidden="true"></div>
+  <div class="mock-orb o2" aria-hidden="true"></div>
+  <div class="mock-inner">
+    <div>
+      <div class="mock-eyebrow" aria-hidden="true">Full Mock Tests</div>
+      <h2 class="mock-title">Exam day starts<br>in practice.</h2>
+      <p class="mock-desc">Full-length mock tests covering all four modules in the correct PTE sequence — timed exactly like the real exam so exam day feels completely familiar.</p>
+      <div class="mock-feats" aria-label="Mock test features">
+        <div class="mock-feat"><div class="mock-feat-check" aria-hidden="true">✓</div> All 4 modules in one session, in order</div>
+        <div class="mock-feat"><div class="mock-feat-check" aria-hidden="true">✓</div> Real exam time pressure throughout</div>
+        <div class="mock-feat"><div class="mock-feat-check" aria-hidden="true">✓</div> Complete score breakdown after each test</div>
+        <div class="mock-feat"><div class="mock-feat-check" aria-hidden="true">✓</div> Correct answers revealed at the end</div>
+        <div class="mock-feat"><div class="mock-feat-check" aria-hidden="true">✓</div> Unlimited retakes — different questions each time</div>
+      </div>
+    </div>
+    <div class="mock-cta-wrap">
+      <a href="/login" class="btn-mock">Start Mock Test →</a>
+      <div class="mock-stat-grid" aria-label="Mock test stats">
+        <div class="mock-stat">
+          <div class="mock-stat-val">18<span>+</span></div>
+          <div class="mock-stat-label">Questions per test</div>
+        </div>
+        <div class="mock-stat">
+          <div class="mock-stat-val">90<span>min</span></div>
+          <div class="mock-stat-label">Total test time</div>
+        </div>
+        <div class="mock-stat">
+          <div class="mock-stat-val">4<span></span></div>
+          <div class="mock-stat-label">Modules covered</div>
+        </div>
+        <div class="mock-stat">
+          <div class="mock-stat-val">∞<span></span></div>
+          <div class="mock-stat-label">Retakes allowed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY PTEPATH -->
+<section class="section" aria-label="Why choose PTEPath">
+  <div class="inner">
+    <div class="sec-header">
+      <div class="eyebrow" aria-hidden="true">Why PTEPath</div>
+      <h2 class="sec-title">Built for focused practice.<br>Not distraction.</h2>
+      <p class="sec-sub">Every feature is designed around one goal — helping you improve your PTE score as efficiently as possible.</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="why-icon-box" aria-hidden="true">⚡</div>
+        <div class="why-title">Instant Automated Scoring</div>
+        <p class="why-desc">Every answer scored the moment you submit. No waiting, no guessing — you see your result and the correct answer right away.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon-box" aria-hidden="true">🎯</div>
+        <div class="why-title">Correct Answers Always Shown</div>
+        <p class="why-desc">After every attempt, the correct answer is revealed alongside your response. Real learning happens when you understand your mistakes.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon-box" aria-hidden="true">🔒</div>
+        <div class="why-title">Private & Controlled Access</div>
+        <p class="why-desc">No open registration. Your account is created by your instructor. Your practice data is yours alone — no one else can see it.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon-box" aria-hidden="true">📱</div>
+        <div class="why-title">Works on Any Device</div>
+        <p class="why-desc">Fully responsive on desktop, tablet, and mobile — including Speaking module recording on mobile browsers. Practice wherever you are.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon-box" aria-hidden="true">🔄</div>
+        <div class="why-title">Unlimited Practice</div>
+        <p class="why-desc">No question caps, no daily limits. Attempt the same question as many times as you want. Every retake is free and unrestricted.</p>
+      </div>
+      <div class="why-card">
+        <div class="why-icon-box" aria-hidden="true">🏆</div>
+        <div class="why-title">Real Exam Format</div>
+        <p class="why-desc">Question formats, time limits, and scoring scaled to 90 — matching the actual PTE exam so practice genuinely prepares you for the real thing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-wrap" role="region" aria-label="Call to action">
+  <div class="cta-inner">
+    <h2 class="cta-title">Ready to improve your PTE score?</h2>
+    <p class="cta-sub">Log in with the credentials provided by your instructor and start your first practice session right now. It takes less than a minute to get started.</p>
+    <a href="/login" class="btn-cta">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+      Login to Your Account
+    </a>
+    <p class="cta-note">Don't have an account yet? Contact your instructor to get access.</p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <div class="footer-logo-icon" aria-hidden="true"></div>
+        <span class="footer-logo-text">PTE<span>Path</span></span>
+      </div>
+      <p class="footer-tagline">A focused, exam-matched PTE practice platform. Practice smart, score higher.</p>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <ul class="footer-links">
+        <li><a href="#modules">Practice Modules</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#mock-test">Mock Tests</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Modules</div>
+      <ul class="footer-links">
+        <li><a href="#modules">Speaking</a></li>
+        <li><a href="#modules">Writing</a></li>
+        <li><a href="#modules">Reading</a></li>
+        <li><a href="#modules">Listening</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Account</div>
+      <ul class="footer-links">
+        <li><a href="/login">Student Login</a></li>
+        <li><a href="/forgot-password">Forgot Password</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2025 PTEPath. All rights reserved.</span>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+const scoreEl = document.getElementById('heroScore');
+let started = false;
+
+function animCount(el, target, dur) {
+  let s = null;
+  function step(ts) {
+    if (!s) s = ts;
+    const p = Math.min((ts - s) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(e * target);
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function animBars() {
+  const bars = [
+    {id:'b1', w:88},
+    {id:'b2', w:98},
+    {id:'b3', w:82},
+    {id:'b4', w:90}
+  ];
+  bars.forEach((b, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(b.id);
+      if (el) el.style.width = b.w + '%';
+    }, 300 + i * 150);
+  });
+}
+
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !started) {
+      started = true;
+      setTimeout(() => animCount(scoreEl, 74, 1800), 400);
+      animBars();
+      obs.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+
+if (scoreEl) obs.observe(scoreEl);
+
+const revObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+      revObs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.mod-card, .why-card, .how-step').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  revObs.observe(el);
+});
+</script>
+</body>
+</html>
