@@ -1,4 +1,4 @@
-# 25 — Integration Testing
+# 26 — Integration Testing
 
 ## What This Is
 Manual testing guide + Claude Code fixes.

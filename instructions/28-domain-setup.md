@@ -1,4 +1,4 @@
-# 27 — Domain Purchase & Setup
+# 28 — Domain Purchase & Setup
 
 ## What This Is
 Manual setup step. Follow it yourself.

@@ -1,4 +1,4 @@
-# 23 — Mock Test Frontend
+# 24 — Mock Test Frontend
 
 ## What This Is
 Claude Code instruction file.

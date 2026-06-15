@@ -1,4 +1,4 @@
-# 22 — Listening Frontend
+# 23 — Listening Frontend
 
 ## What This Is
 Claude Code instruction file.

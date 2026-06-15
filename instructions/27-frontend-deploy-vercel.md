@@ -1,5 +1,4 @@
-````markdown
-# 26 — Frontend Deploy to Vercel
+# 27 — Frontend Deploy to Vercel
 
 ## What This Is
 Manual setup step. Follow it yourself.
