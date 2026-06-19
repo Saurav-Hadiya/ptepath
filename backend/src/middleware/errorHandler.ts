@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
+import { env } from '../config/env';
 
 export function errorHandler(
   err: Error,
   req: Request,
   res: Response,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   next: NextFunction
 ): void {
-  const isDev = process.env.NODE_ENV === 'development';
+  const isDev = env.isDevelopment;
   res.status(500).json({
     success: false,
     message: err.message || 'Internal server error',
