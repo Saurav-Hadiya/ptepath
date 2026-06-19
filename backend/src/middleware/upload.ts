@@ -1,3 +1,4 @@
+import path from 'path';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import cloudinary from '../config/cloudinary';
@@ -28,4 +29,20 @@ export const uploadAudio = multer({
 export const uploadImage = multer({
   storage: imageStorage,
   limits: { fileSize: 5 * 1024 * 1024 },
+});
+
+// Disk storage for speaking evaluate routes. The audio file is temporary —
+// it is sent to Groq for transcription and then deleted. Never permanently stored.
+const tempStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, path.join(process.cwd(), 'tmp'));
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+export const uploadAudioTemp = multer({
+  storage: tempStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
 });

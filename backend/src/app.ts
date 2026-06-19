@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -9,11 +9,31 @@ import routes from './routes';
 
 const app = express();
 
-app.use(cors({ origin: env.frontendUrl, credentials: true }));
-app.use(express.json());
+// CORS — origins must be an array; credentials enabled for httpOnly refresh cookie.
+app.use(
+  cors({
+    origin: [env.frontendUrl],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
+// Health check — no auth required.
+app.get('/api/health', (req: Request, res: Response) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 app.use('/api', routes);
+
+// 404 handler for unknown routes — before the error handler.
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
+});
 
 app.use(errorHandler);
 
@@ -63,3 +83,5 @@ start().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
+
+export default app;

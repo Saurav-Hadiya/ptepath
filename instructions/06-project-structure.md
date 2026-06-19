@@ -1,4 +1,4 @@
-# 06 — Project Structure
+# 06 — Project Structure - DONE
 
 ## What This Is
 Claude Code instruction file.
