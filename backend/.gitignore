@@ -2,3 +2,10 @@ node_modules/
 dist/
 .env
 *.env
+tmp/*.webm
+tmp/*.mp4
+tmp/*.mp3
+tmp/*.wav
+tmp/*.m4a
+!tmp/.gitkeep
+*.tsbuildinfo
