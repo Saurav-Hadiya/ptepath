@@ -7,6 +7,46 @@ Reading, Listening modules and take mock tests.
 No public registration. Rule-based scoring only.
 STT for Speaking via Groq Whisper API.
 
+## Documentation First Rule (Always Follow)
+
+IMPORTANT:
+
+Before performing any task, generating code, modifying code, creating APIs,
+designing database schemas, implementing business logic, building UI,
+refactoring existing code, fixing bugs, or answering project-related questions,
+ALWAYS consult and reference the project documentation first.
+
+The documentation in this repository is the authoritative knowledge base and
+source of truth for this project.
+
+Always keep the following directories in mind throughout the entire session:
+
+* docs/md/
+* instructions/
+* design_reference/
+
+Do not rely on assumptions, previous project patterns, generic framework
+conventions, or AI-generated guesses when project documentation already exists.
+
+For every task:
+
+1. First identify the relevant instruction file(s) in `instructions/`
+2. Then review the relevant blueprint document(s) in `docs/md/`
+3. Then review the relevant design reference file(s) in `design_reference/`
+4. Only after reviewing the documentation should implementation begin
+
+If documentation exists, follow it exactly.
+
+If documentation and existing code conflict, treat the documentation as the
+source of truth unless explicitly instructed otherwise.
+
+If documentation is unclear, incomplete, or conflicting, ask for clarification
+instead of making assumptions.
+
+Always maintain awareness of the project documentation during the entire
+conversation and use it as reference while making decisions.
+
+
 ## Repository Structure
 PTEPLATFORM/
 
