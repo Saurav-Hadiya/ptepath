@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { useAuthStore } from '@/store/auth.store';
+import { env } from '@/lib/env';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: env.apiUrl,
   withCredentials: true,
 });
 
@@ -25,7 +26,7 @@ api.interceptors.response.use(
       isRefreshing = true;
       try {
         const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
+          `${env.apiUrl}/auth/refresh`,
           {},
           { withCredentials: true }
         );
