@@ -2,7 +2,7 @@
 
 ## What This Is
 Claude Code instruction file.
-Tell Claude Code: "Read instructions/17-public-pages.md and implement exactly what is described."
+Tell Claude Code: "Read instructions/18-public-pages.md and implement exactly what is described."
 
 ---
 

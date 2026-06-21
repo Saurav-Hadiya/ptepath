@@ -85,3 +85,13 @@ Error:
 - Forgot password always returns same message regardless of email existence
 - Reset token: hashed in DB, raw in email, expires 10 min
 - bcryptjs salt round: 12
+
+## Swagger Docs Rule
+Swagger spec lives in src/config/swagger.ts.
+Only add a module to the spec AFTER its controller is fully implemented (not stubs).
+When completing an instruction file, update swagger.ts:
+- Add the module's tag to the `tags` array
+- Add all its schemas to `components.schemas`
+- Add all its paths to `paths`
+Follow the same pattern as the existing Auth section.
+Docs are served at GET /api/docs (Swagger UI) and GET /api/docs.json (raw spec).

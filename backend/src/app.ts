@@ -1,11 +1,13 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import swaggerUi from 'swagger-ui-express';
 
 import { env } from './config/env';
 import { connectDB, disconnectDB } from './config/db';
 import { errorHandler } from './middleware/errorHandler';
 import routes from './routes';
+import { swaggerSpec } from './config/swagger';
 
 const app = express();
 
@@ -22,6 +24,27 @@ app.use(
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+
+// Swagger UI — API documentation.
+app.use(
+  '/api/docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: 'PTEPath API Docs',
+    swaggerOptions: {
+      persistAuthorization: true,
+      defaultModelsExpandDepth: 1,
+      defaultModelExpandDepth: 2,
+      docExpansion: 'list',
+    },
+  })
+);
+
+// Raw OpenAPI spec (JSON) — useful for code generation tools.
+app.get('/api/docs.json', (_req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
 
 // Health check — no auth required.
 app.get('/api/health', (req: Request, res: Response) => {

@@ -2,7 +2,7 @@
 
 ## What This Is
 Claude Code instruction file.
-Tell Claude Code: "Read instructions/18-student-dashboard.md and implement exactly what is described."
+Tell Claude Code: "Read instructions/19-student-dashboard.md and implement exactly what is described."
 
 ---
 

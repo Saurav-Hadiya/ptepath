@@ -1,8 +1,8 @@
-# 08 — Authentication Backend
+# 08 — Authentication Backend - DONE
 
 ## What This Is
 Claude Code instruction file.
-Tell Claude Code: "Read instructions/07-authentication-backend.md and implement exactly what is described."
+Tell Claude Code: "Read instructions/08-authentication-backend.md and implement exactly what is described."
 
 ---
 

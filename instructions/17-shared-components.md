@@ -3,7 +3,7 @@
 ## What This Is
 
 Claude Code instruction file.
-Tell Claude Code: "Read instructions/16-shared-components.md and implement exactly what is described."
+Tell Claude Code: "Read instructions/17-shared-components.md and implement exactly what is described."
 
 ---
 

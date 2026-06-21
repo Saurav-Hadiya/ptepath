@@ -2,7 +2,7 @@
 
 ## What This Is
 Claude Code instruction file.
-Tell Claude Code: "Read instructions/23-mocktest-frontend.md and implement exactly what is described."
+Tell Claude Code: "Read instructions/24-mocktest-frontend.md and implement exactly what is described."
 
 ---
 
