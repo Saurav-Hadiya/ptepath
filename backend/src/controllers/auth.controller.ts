@@ -35,12 +35,7 @@ function clearRefreshCookie(res: Response): void {
 export async function login(req: Request, res: Response): Promise<void> {
   const { email, password } = req.body;
 
-  if (!email || !password) {
-    res.status(400).json({ success: false, message: 'Email and password are required' });
-    return;
-  }
-
-  const user = await User.findOne({ email: email.toLowerCase().trim() });
+  const user = await User.findOne({ email });
 
   if (!user) {
     res.status(401).json({ success: false, message: 'Invalid email or password' });
@@ -133,24 +128,7 @@ export async function getMe(req: AuthRequest, res: Response): Promise<void> {
 }
 
 export async function changePasswordFirstLogin(req: AuthRequest, res: Response): Promise<void> {
-  const { newPassword, confirmPassword } = req.body;
-
-  if (!newPassword || !confirmPassword) {
-    res.status(400).json({ success: false, message: 'New password and confirm password are required' });
-    return;
-  }
-  if (newPassword.length < 8) {
-    res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
-    return;
-  }
-  if (!/\d/.test(newPassword)) {
-    res.status(400).json({ success: false, message: 'Password must contain at least one number' });
-    return;
-  }
-  if (newPassword !== confirmPassword) {
-    res.status(400).json({ success: false, message: 'Passwords do not match' });
-    return;
-  }
+  const { newPassword } = req.body;
 
   const user = await User.findById(req.user!.userId);
   if (!user) {
@@ -206,12 +184,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
 }
 
 export async function resetPassword(req: Request, res: Response): Promise<void> {
-  const { userId, token, newPassword, confirmPassword } = req.body;
-
-  if (!userId || !token || !newPassword || !confirmPassword) {
-    res.status(400).json({ success: false, message: 'All fields are required' });
-    return;
-  }
+  const { userId, token, newPassword } = req.body;
 
   const user = await User.findById(userId);
   if (!user) {
@@ -235,19 +208,6 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
     return;
   }
 
-  if (newPassword.length < 8) {
-    res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
-    return;
-  }
-  if (!/\d/.test(newPassword)) {
-    res.status(400).json({ success: false, message: 'Password must contain at least one number' });
-    return;
-  }
-  if (newPassword !== confirmPassword) {
-    res.status(400).json({ success: false, message: 'Passwords do not match' });
-    return;
-  }
-
   user.passwordHash = await hashPassword(newPassword);
   user.resetTokenHash = null;
   user.resetTokenExpiry = null;
@@ -258,12 +218,7 @@ export async function resetPassword(req: Request, res: Response): Promise<void> 
 }
 
 export async function updatePassword(req: AuthRequest, res: Response): Promise<void> {
-  const { currentPassword, newPassword, confirmPassword } = req.body;
-
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    res.status(400).json({ success: false, message: 'All fields are required' });
-    return;
-  }
+  const { currentPassword, newPassword } = req.body;
 
   const user = await User.findById(req.user!.userId);
   if (!user) {
@@ -274,19 +229,6 @@ export async function updatePassword(req: AuthRequest, res: Response): Promise<v
   const valid = await comparePassword(currentPassword, user.passwordHash);
   if (!valid) {
     res.status(400).json({ success: false, message: 'Current password is incorrect' });
-    return;
-  }
-
-  if (newPassword.length < 8) {
-    res.status(400).json({ success: false, message: 'Password must be at least 8 characters' });
-    return;
-  }
-  if (!/\d/.test(newPassword)) {
-    res.status(400).json({ success: false, message: 'Password must contain at least one number' });
-    return;
-  }
-  if (newPassword !== confirmPassword) {
-    res.status(400).json({ success: false, message: 'Passwords do not match' });
     return;
   }
 
