@@ -2,7 +2,7 @@
 
 ## What This Is
 Claude Code instruction file.
-Tell Claude Code: "Read instructions/20-writing-frontend.md and implement exactly what is described."
+Tell Claude Code: "Read instructions/21-writing-frontend.md and implement exactly what is described."
 
 ---
 

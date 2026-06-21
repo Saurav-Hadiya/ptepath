@@ -1,17 +1,20 @@
 // One-time admin seed script — run with: npm run seed
 // Delete this file after running in production
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
-import { env } from '../src/config/env';
+import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import { env } from "../src/config/env";
+import dns from "dns";
 
 async function seed(): Promise<void> {
+  dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
   await mongoose.connect(env.mongoUri);
 
-  const { User } = await import('../src/models/user.model');
+  const { User } = await import("../src/models/user.model");
 
   const existing = await User.findOne({ email: env.admin.email });
   if (existing) {
-    console.log('Admin already exists');
+    console.log("Admin already exists. Skipping.");
     process.exit(0);
   }
 
@@ -20,12 +23,14 @@ async function seed(): Promise<void> {
     name: env.admin.name,
     email: env.admin.email,
     passwordHash,
-    role: 'admin',
+    role: "admin",
     isActive: true,
+    isFirstLogin: false,
+    tokenVersion: 0,
     createdAt: new Date(),
   });
 
-  console.log('Admin created successfully');
+  console.log("Admin account created successfully.");
   process.exit(0);
 }
 
