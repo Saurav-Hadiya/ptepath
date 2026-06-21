@@ -93,5 +93,4 @@ When completing an instruction file, update swagger.ts:
 - Add the module's tag to the `tags` array
 - Add all its schemas to `components.schemas`
 - Add all its paths to `paths`
-Follow the same pattern as the existing Auth section.
 Docs are served at GET /api/docs (Swagger UI) and GET /api/docs.json (raw spec).
