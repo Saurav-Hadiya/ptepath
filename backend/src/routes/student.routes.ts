@@ -2,7 +2,8 @@ import { Router } from 'express';
 import * as studentController from '../controllers/student.controller';
 import { authenticate } from '../middleware/authenticate';
 import { authorize } from '../middleware/authorize';
-import { validateBody } from '../middleware/validate';
+import { validateBody, validateObjectId } from '../middleware/validate';
+import { asyncHandler } from '../utils/asyncHandler';
 import {
   createStudentSchema,
   updateStudentSchema,
@@ -14,12 +15,22 @@ const router = Router();
 
 router.use(authenticate, authorize('admin'));
 
-router.post('/', validateBody(createStudentSchema), studentController.createStudent);
-router.get('/', studentController.listStudents);
-router.get('/:id', studentController.getStudent);
-router.put('/:id', validateBody(updateStudentSchema), studentController.updateStudent);
-router.patch('/:id/reset-password', validateBody(resetStudentPasswordSchema), studentController.resetStudentPassword);
-router.patch('/:id/status', validateBody(toggleStudentStatusSchema), studentController.updateStudentStatus);
-router.delete('/:id', studentController.deleteStudent);
+router.post('/', validateBody(createStudentSchema), asyncHandler(studentController.createStudent));
+router.get('/', asyncHandler(studentController.listStudents));
+router.get('/:id', validateObjectId(), asyncHandler(studentController.getStudent));
+router.put('/:id', validateObjectId(), validateBody(updateStudentSchema), asyncHandler(studentController.updateStudent));
+router.patch(
+  '/:id/reset-password',
+  validateObjectId(),
+  validateBody(resetStudentPasswordSchema),
+  asyncHandler(studentController.resetStudentPassword)
+);
+router.patch(
+  '/:id/status',
+  validateObjectId(),
+  validateBody(toggleStudentStatusSchema),
+  asyncHandler(studentController.updateStudentStatus)
+);
+router.delete('/:id', validateObjectId(), asyncHandler(studentController.deleteStudent));
 
 export default router;
