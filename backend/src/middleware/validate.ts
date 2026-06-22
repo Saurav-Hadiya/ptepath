@@ -24,3 +24,21 @@ export function validateBody(schema: ZodType) {
 function firstErrorMessage(error: ZodError): string {
   return error.issues[0]?.message ?? 'Invalid request body.';
 }
+
+const OBJECT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
+
+/**
+ * Ensures a route param is a well-formed MongoDB ObjectId before it reaches
+ * the controller — prevents Mongoose CastErrors on malformed ids and returns
+ * a clean 400 instead.
+ */
+export function validateObjectId(param = 'id') {
+  return (req: AuthRequest, res: Response, next: NextFunction): void => {
+    const value = req.params[param];
+    if (typeof value !== 'string' || !OBJECT_ID_REGEX.test(value)) {
+      res.status(400).json({ success: false, message: 'Invalid ID format.' });
+      return;
+    }
+    next();
+  };
+}

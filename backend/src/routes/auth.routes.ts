@@ -2,6 +2,7 @@ import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { authenticate, authenticateFirstLogin } from '../middleware/authenticate';
 import { validateBody } from '../middleware/validate';
+import { asyncHandler } from '../utils/asyncHandler';
 import {
   loginSchema,
   changePasswordSchema,
@@ -20,13 +21,18 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-router.post('/login', loginLimiter, validateBody(loginSchema), authController.login);
-router.post('/refresh', authController.refresh);
-router.post('/logout', authController.logout);
-router.get('/me', authenticate, authController.getMe);
-router.post('/change-password', authenticateFirstLogin, validateBody(changePasswordSchema), authController.changePasswordFirstLogin);
-router.post('/forgot-password', authController.forgotPassword);
-router.post('/reset-password', validateBody(resetPasswordSchema), authController.resetPassword);
-router.post('/update-password', authenticate, validateBody(updatePasswordSchema), authController.updatePassword);
+router.post('/login', loginLimiter, validateBody(loginSchema), asyncHandler(authController.login));
+router.post('/refresh', asyncHandler(authController.refresh));
+router.post('/logout', asyncHandler(authController.logout));
+router.get('/me', authenticate, asyncHandler(authController.getMe));
+router.post(
+  '/change-password',
+  authenticateFirstLogin,
+  validateBody(changePasswordSchema),
+  asyncHandler(authController.changePasswordFirstLogin)
+);
+router.post('/forgot-password', asyncHandler(authController.forgotPassword));
+router.post('/reset-password', validateBody(resetPasswordSchema), asyncHandler(authController.resetPassword));
+router.post('/update-password', authenticate, validateBody(updatePasswordSchema), asyncHandler(authController.updatePassword));
 
 export default router;

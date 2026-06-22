@@ -58,7 +58,12 @@ export async function login(req: Request, res: Response): Promise<void> {
 
   if (user.isFirstLogin) {
     const firstLoginToken = generateFirstLoginToken(String(user._id));
-    res.status(200).json({ success: true, requiresPasswordChange: true, firstLoginToken });
+    res.status(200).json({
+      success: true,
+      message: 'Password change required before continuing.',
+      requiresPasswordChange: true,
+      firstLoginToken,
+    });
     return;
   }
 
@@ -69,6 +74,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
   res.status(200).json({
     success: true,
+    message: 'Login successful.',
     accessToken,
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
@@ -107,7 +113,7 @@ export async function refresh(req: Request, res: Response): Promise<void> {
   }
 
   const accessToken = generateAccessToken(String(user._id), user.role, user.tokenVersion);
-  res.status(200).json({ success: true, accessToken });
+  res.status(200).json({ success: true, message: 'Token refreshed.', accessToken });
 }
 
 export async function logout(_req: AuthRequest, res: Response): Promise<void> {
@@ -123,6 +129,7 @@ export async function getMe(req: AuthRequest, res: Response): Promise<void> {
   }
   res.status(200).json({
     success: true,
+    message: 'User retrieved successfully.',
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
 }
@@ -148,6 +155,7 @@ export async function changePasswordFirstLogin(req: AuthRequest, res: Response):
 
   res.status(200).json({
     success: true,
+    message: 'Password changed successfully.',
     accessToken,
     user: { id: user._id, name: user.name, email: user.email, role: user.role },
   });
@@ -162,7 +170,7 @@ export async function forgotPassword(req: Request, res: Response): Promise<void>
   const { email } = req.body;
   res.status(200).json(SAME_RESPONSE);
 
-  if (!email) return;
+  if (typeof email !== 'string' || !email.trim()) return;
 
   const user = await User.findOne({ email: email.toLowerCase().trim() });
   if (!user) return;

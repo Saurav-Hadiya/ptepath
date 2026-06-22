@@ -30,7 +30,11 @@ export const changePasswordSchema = z
 
 export const resetPasswordSchema = z
   .object({
-    userId: z.string({ error: 'All fields are required' }).trim().min(1, 'All fields are required'),
+    userId: z
+      .string({ error: 'All fields are required' })
+      .trim()
+      .min(1, 'All fields are required')
+      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid reset link'),
     token: z.string({ error: 'All fields are required' }).trim().min(1, 'All fields are required'),
     newPassword: strongPassword('New password'),
     confirmPassword,
