@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
+import multer from 'multer';
 import { env } from '../config/env';
 
 interface AppError extends Error {
   statusCode?: number;
-  code?: number;
+  code?: number | string;
 }
 
 /**
@@ -45,6 +46,12 @@ export function errorHandler(
   else if (err.code === 11000) {
     statusCode = 409;
     message = 'A record with these details already exists.';
+  }
+  // Multer upload errors (file too large, unexpected field, etc.).
+  else if (err instanceof multer.MulterError) {
+    statusCode = 400;
+    message =
+      err.code === 'LIMIT_FILE_SIZE' ? 'File is too large.' : 'File upload error.';
   }
 
   // Never expose internal details for unexpected 500s in production.

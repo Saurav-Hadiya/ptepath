@@ -22,7 +22,7 @@ Complete speaking module backend including:
 ---
 
 ## Prerequisites
-- `07-authentication-backend.md` complete
+- `08-authentication-backend.md` complete
 - authenticate and authorize middleware working
 - Cloudinary configured in `src/config/cloudinary.ts`
 - Multer upload middleware working in `src/middleware/upload.ts`
