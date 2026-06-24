@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import authRoutes from './auth.routes';
 import studentRoutes from './student.routes';
-import speakingRoutes from './speaking.routes';
+import speakingRoutes, { adminSpeakingRouter } from './speaking.routes';
 import writingRoutes from './writing.routes';
 import readingRoutes from './reading.routes';
 import listeningRoutes from './listening.routes';
@@ -12,6 +12,7 @@ const router = Router();
 
 router.use('/auth', authRoutes);
 router.use('/admin/students', studentRoutes);
+router.use('/admin/speaking', adminSpeakingRouter);
 router.use('/speaking', speakingRoutes);
 router.use('/writing', writingRoutes);
 router.use('/reading', readingRoutes);
