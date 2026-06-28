@@ -148,6 +148,7 @@ export async function getAllQuestions(req: AuthRequest, res: Response): Promise<
 
   res.status(200).json({
     success: true,
+    message: 'Questions retrieved successfully.',
     data: { questions: questions.map(adminView), total: questions.length },
   });
 }
@@ -159,7 +160,11 @@ export async function getOneQuestion(req: AuthRequest, res: Response): Promise<v
     return;
   }
 
-  res.status(200).json({ success: true, data: { question: adminView(question) } });
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: adminView(question) },
+  });
 }
 
 export async function updateQuestion(req: AuthRequest, res: Response): Promise<void> {
@@ -229,6 +234,7 @@ export async function listQuestionsByType(req: AuthRequest, res: Response): Prom
 
   res.status(200).json({
     success: true,
+    message: 'Questions retrieved successfully.',
     data: { questions: questions.map(listView), total: questions.length },
   });
 }
@@ -253,7 +259,11 @@ export async function getRandomQuestion(req: AuthRequest, res: Response): Promis
     return;
   }
 
-  res.status(200).json({ success: true, data: { question: studentView(question) } });
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: studentView(question) },
+  });
 }
 
 export async function getQuestion(req: AuthRequest, res: Response): Promise<void> {
@@ -274,7 +284,11 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
     return;
   }
 
-  res.status(200).json({ success: true, data: { question: studentView(question) } });
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: studentView(question) },
+  });
 }
 
 /** Shared evaluate flow for both writing question types. */
@@ -302,7 +316,11 @@ async function evaluate(
   await applyAttempt(question, result.finalScore);
   await updateStudentStats(req.user!.userId);
 
-  res.status(200).json({ success: true, data: scoreResponse(result, question) });
+  res.status(200).json({
+    success: true,
+    message: 'Response evaluated successfully.',
+    data: scoreResponse(result, question),
+  });
 }
 
 export async function evaluateSummarise(req: AuthRequest, res: Response): Promise<void> {

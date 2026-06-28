@@ -1697,7 +1697,7 @@ On success:
           responses: {
             200: {
               description: 'List of questions.',
-              content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/WritingQuestionAdmin' } }, total: { type: 'integer', example: 1 } } } } } } },
+              content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Questions retrieved successfully.' }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/WritingQuestionAdmin' } }, total: { type: 'integer', example: 1 } } } } } } },
             },
             401: { $ref: '#/components/responses/Unauthorized' },
             403: { $ref: '#/components/responses/Forbidden' },
@@ -1714,7 +1714,7 @@ On success:
           operationId: 'getWritingQuestion',
           security: [{ bearerAuth: [] }],
           responses: {
-            200: { description: 'Question found.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/WritingQuestionAdmin' } } } } } } } },
+            200: { description: 'Question found.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Question retrieved successfully.' }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/WritingQuestionAdmin' } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             403: { $ref: '#/components/responses/Forbidden' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
@@ -1786,7 +1786,7 @@ On success:
             { name: 'type', in: 'path', required: true, schema: { type: 'string', enum: ['summarise', 'essay'] }, description: 'Short question type (summarise | essay).' },
           ],
           responses: {
-            200: { description: 'List of active questions.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/WritingQuestionListItem' } }, total: { type: 'integer', example: 3 } } } } } } } },
+            200: { description: 'List of active questions.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Questions retrieved successfully.' }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/WritingQuestionListItem' } }, total: { type: 'integer', example: 3 } } } } } } } },
             400: { description: 'Invalid type.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Invalid question type.' } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
           },
@@ -1803,7 +1803,7 @@ On success:
             { name: 'type', in: 'path', required: true, schema: { type: 'string', enum: ['summarise', 'essay'] }, description: 'Short question type (summarise | essay).' },
           ],
           responses: {
-            200: { description: 'A random active question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/WritingQuestionStudent' } } } } } } } },
+            200: { description: 'A random active question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Question retrieved successfully.' }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/WritingQuestionStudent' } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'No active questions available.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'No active questions available.' } } } },
           },
@@ -1821,7 +1821,7 @@ On success:
             { name: 'id', in: 'path', required: true, schema: { type: 'string' }, description: 'Writing question ID.' },
           ],
           responses: {
-            200: { description: 'The question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/WritingQuestionStudent' } } } } } } } },
+            200: { description: 'The question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Question retrieved successfully.' }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/WritingQuestionStudent' } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
           },
@@ -1839,7 +1839,7 @@ On success:
             content: { 'application/json': { schema: { type: 'object', required: ['questionId', 'responseText'], properties: { questionId: { type: 'string', example: '64f1a2b3c4d5e6f7a8b9c0d1' }, responseText: { type: 'string', example: 'The passage explains how the Industrial Revolution reshaped manufacturing and society.' } } } } },
           },
           responses: {
-            200: { description: 'Score result.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { $ref: '#/components/schemas/WritingScore' } } } } } },
+            200: { description: 'Score result.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Response evaluated successfully.' }, data: { $ref: '#/components/schemas/WritingScore' } } } } } },
             400: { description: 'Validation error.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'responseText cannot be empty.' } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
@@ -1858,7 +1858,7 @@ On success:
             content: { 'application/json': { schema: { type: 'object', required: ['questionId', 'responseText'], properties: { questionId: { type: 'string', example: '64f1a2b3c4d5e6f7a8b9c0d1' }, responseText: { type: 'string', example: 'Technology has undeniably increased the complexity of modern life...' } } } } },
           },
           responses: {
-            200: { description: 'Score result.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { $ref: '#/components/schemas/WritingScore' } } } } } },
+            200: { description: 'Score result.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Response evaluated successfully.' }, data: { $ref: '#/components/schemas/WritingScore' } } } } } },
             400: { description: 'Validation error.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'responseText cannot be empty.' } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
@@ -1916,7 +1916,7 @@ On success:
             { name: 'type', in: 'query', required: false, schema: { type: 'string', enum: ['rw_fill_blanks', 'mcq_multiple', 'reorder_paragraphs', 'reading_fill_blanks', 'mcq_single'] }, description: 'Filter by question type.' },
           ],
           responses: {
-            200: { description: 'List of questions.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/ReadingQuestionAdmin' } }, total: { type: 'integer', example: 1 } } } } } } } },
+            200: { description: 'List of questions.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Questions retrieved successfully.' }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/ReadingQuestionAdmin' } }, total: { type: 'integer', example: 1 } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             403: { $ref: '#/components/responses/Forbidden' },
           },
@@ -1932,7 +1932,7 @@ On success:
           operationId: 'getReadingQuestion',
           security: [{ bearerAuth: [] }],
           responses: {
-            200: { description: 'Question found.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/ReadingQuestionAdmin' } } } } } } } },
+            200: { description: 'Question found.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Question retrieved successfully.' }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/ReadingQuestionAdmin' } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             403: { $ref: '#/components/responses/Forbidden' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
@@ -2018,7 +2018,7 @@ On success:
             { name: 'type', in: 'path', required: true, schema: { type: 'string', enum: ['rw_fill_blanks', 'mcq_multiple', 'reorder_paragraphs', 'reading_fill_blanks', 'mcq_single'] }, description: 'Question type.' },
           ],
           responses: {
-            200: { description: 'List of active questions.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/ReadingQuestionListItem' } }, total: { type: 'integer', example: 3 } } } } } } } },
+            200: { description: 'List of active questions.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Questions retrieved successfully.' }, data: { type: 'object', properties: { questions: { type: 'array', items: { $ref: '#/components/schemas/ReadingQuestionListItem' } }, total: { type: 'integer', example: 3 } } } } } } } },
             400: { description: 'Invalid type.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Invalid question type.' } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
           },
@@ -2035,7 +2035,7 @@ On success:
             { name: 'type', in: 'path', required: true, schema: { type: 'string', enum: ['rw_fill_blanks', 'mcq_multiple', 'reorder_paragraphs', 'reading_fill_blanks', 'mcq_single'] }, description: 'Question type.' },
           ],
           responses: {
-            200: { description: 'A random active question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/ReadingQuestionStudent' } } } } } } } },
+            200: { description: 'A random active question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Question retrieved successfully.' }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/ReadingQuestionStudent' } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'No active questions available.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'No active questions available.' } } } },
           },
@@ -2053,7 +2053,7 @@ On success:
             { name: 'id', in: 'path', required: true, schema: { type: 'string' }, description: 'Reading question ID.' },
           ],
           responses: {
-            200: { description: 'The question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/ReadingQuestionStudent' } } } } } } } },
+            200: { description: 'The question.', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Question retrieved successfully.' }, data: { type: 'object', properties: { question: { $ref: '#/components/schemas/ReadingQuestionStudent' } } } } } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
           },
@@ -2091,7 +2091,7 @@ On success:
             },
           },
           responses: {
-            200: { description: 'Score result (correct answers revealed).', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, data: { $ref: '#/components/schemas/ReadingScore' } } } } } },
+            200: { description: 'Score result (correct answers revealed).', content: { 'application/json': { schema: { type: 'object', properties: { success: { type: 'boolean', example: true }, message: { type: 'string', example: 'Answer evaluated successfully.' }, data: { $ref: '#/components/schemas/ReadingScore' } } } } } },
             400: { description: 'Validation error.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'answers is required.' } } } },
             401: { $ref: '#/components/responses/Unauthorized' },
             404: { description: 'Question not found.', content: { 'application/json': { schema: { $ref: '#/components/schemas/ErrorResponse' }, example: { success: false, message: 'Question not found.' } } } },
