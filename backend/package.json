@@ -12,14 +12,14 @@
   "dependencies": {
     "@types/swagger-jsdoc": "^6.0.4",
     "@types/swagger-ui-express": "^4.1.8",
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^3.0.3",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dictionary-en": "^4.0.0",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
     "fastest-levenshtein": "^1.0.16",
     "groq-sdk": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
@@ -27,13 +27,13 @@
     "multer": "^2.2.0",
     "multer-storage-cloudinary": "^4.0.0",
     "nspell": "^2.1.4",
-    "resend": "^4.1.2",
+    "resend": "^6.14.0",
     "swagger-jsdoc": "^6.3.0",
     "swagger-ui-express": "^5.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
+    "@types/bcryptjs": "^3.0.0",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
@@ -42,6 +42,6 @@
     "@types/node": "^22.10.7",
     "nodemon": "^3.1.9",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.3"
+    "typescript": "^6.0.3"
   }
 }
