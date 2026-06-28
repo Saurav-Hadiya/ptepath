@@ -22,7 +22,7 @@ Complete writing module backend including:
 ---
 
 ## Prerequisites
-- `07-authentication-backend.md` complete
+- `08-authentication-backend.md` complete
 - authenticate and authorize middleware working
 - nspell and dictionary-en packages installed
 
@@ -245,6 +245,9 @@ Main scoring function. Called by both evaluate controllers.
 3. If not found → 404
 4. Return question: { id, type, content, timeLimit, wordMin, wordMax }
 ````
+
+`Also to getAllQuestions of the specific type`
+
 
 `getRandomQuestion` — GET /api/writing/:type/random
 ````
