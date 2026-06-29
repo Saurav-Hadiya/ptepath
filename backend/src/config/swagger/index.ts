@@ -20,6 +20,7 @@ import {
 import { writingTags, writingSchemas, writingPaths } from './modules/writing';
 import { readingTags, readingSchemas, readingPaths } from './modules/reading';
 import { listeningTags, listeningSchemas, listeningPaths } from './modules/listening';
+import { mocktestTags, mocktestSchemas, mocktestPaths } from './modules/mocktest';
 
 /**
  * Swagger / OpenAPI 3.0 spec for the PTEPath API.
@@ -47,6 +48,7 @@ const options: swaggerJsdoc.Options = {
         ...writingSchemas,
         ...readingSchemas,
         ...listeningSchemas,
+        ...mocktestSchemas,
       },
       responses: commonResponses,
       requestBodies: {
@@ -61,6 +63,7 @@ const options: swaggerJsdoc.Options = {
       ...writingTags,
       ...readingTags,
       ...listeningTags,
+      ...mocktestTags,
     ],
     paths: {
       ...healthPaths,
@@ -70,6 +73,7 @@ const options: swaggerJsdoc.Options = {
       ...writingPaths,
       ...readingPaths,
       ...listeningPaths,
+      ...mocktestPaths,
     },
   },
   apis: [],
