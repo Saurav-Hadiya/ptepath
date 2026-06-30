@@ -7,6 +7,7 @@ import writingRoutes, { adminWritingRouter } from './writing.routes';
 import readingRoutes, { adminReadingRouter } from './reading.routes';
 import listeningRoutes, { adminListeningRouter } from './listening.routes';
 import mocktestRoutes, { adminMocktestRouter } from './mocktest.routes';
+import resourceRoutes, { adminResourceRouter } from './resource.routes';
 
 const router = Router();
 
@@ -22,5 +23,7 @@ router.use('/admin/listening', adminListeningRouter);
 router.use('/listening', listeningRoutes);
 router.use('/admin/mock-tests', adminMocktestRouter);
 router.use('/mock-tests', mocktestRoutes);
+router.use('/admin/resources', adminResourceRouter);
+router.use('/resources', resourceRoutes);
 
 export default router;
