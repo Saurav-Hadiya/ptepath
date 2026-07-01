@@ -1,4 +1,4 @@
-# 12 — Reading Backend
+# 12 — Reading Backend - DONE
 
 ## What This Is
 Claude Code instruction file.
@@ -21,7 +21,7 @@ Complete reading module backend including:
 ---
 
 ## Prerequisites
-- `07-authentication-backend.md` complete
+- `08-authentication-backend.md` complete
 - authenticate and authorize middleware working
 
 ---
@@ -317,6 +317,7 @@ score < 40  → 'Needs improvement. Take time to read the full passage.'
      (do not send in correct order)
    - correctAnswer only revealed after submission
 ````
+`getAllQuestions`
 
 `getRandomQuestion` — GET /api/reading/:type/random
 ````

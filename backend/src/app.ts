@@ -12,9 +12,10 @@ import { swaggerSpec } from './config/swagger';
 const app = express();
 
 // CORS — origins must be an array; credentials enabled for httpOnly refresh cookie.
+const allowedOrigins = Array.from(new Set([env.frontendUrl, 'http://localhost:3000']));
 app.use(
   cors({
-    origin: [env.frontendUrl],
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
@@ -92,13 +93,15 @@ async function start(): Promise<void> {
   process.on('SIGINT', () => void shutdown('SIGINT'));
   process.on('SIGTERM', () => void shutdown('SIGTERM'));
 
+  // Stray async errors should be logged loudly but must NOT take the server
+  // down — almost all request errors are already caught by asyncHandler and the
+  // Express error handler. Keeping the process alive avoids dropping every other
+  // in-flight request because of one unhandled rejection.
   process.on('unhandledRejection', (reason) => {
-    console.error('Unhandled promise rejection:', reason);
-    void shutdown('unhandledRejection');
+    console.error('Unhandled promise rejection (server kept alive):', reason);
   });
   process.on('uncaughtException', (error) => {
-    console.error('Uncaught exception:', error);
-    void shutdown('uncaughtException');
+    console.error('Uncaught exception (server kept alive):', error);
   });
 }
 
