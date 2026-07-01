@@ -229,7 +229,8 @@ export function calculateReadingScore(
       breakdown = scoreMCQMultiple(asArray, question.options);
       break;
     case 'reorder_paragraphs':
-      breakdown = scoreReorderParagraphs(asArray, question.paragraphs.map((p) => p.label));
+      // Student submits paragraph texts in their arranged order (labels are never sent to students).
+      breakdown = scoreReorderParagraphs(asArray, question.paragraphs.map((p) => p.text));
       break;
     case 'mcq_single':
       breakdown = scoreMCQSingle(asString, question.options);
