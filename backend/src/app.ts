@@ -49,7 +49,7 @@ app.get('/api/docs.json', (_req: Request, res: Response) => {
 
 // Health check — no auth required.
 app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ status: 'Success', timestamp: new Date().toISOString() });
 });
 
 app.use('/api', routes);
