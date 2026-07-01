@@ -59,7 +59,7 @@ function studentView(question: IReadingQuestion): Record<string, unknown> {
       base.blanks = question.blanks.map((b) => ({ position: b.position, options: b.options }));
       break;
     case 'reorder_paragraphs':
-      base.paragraphs = shuffle(question.paragraphs.map((p) => ({ label: p.label, text: p.text })));
+      base.paragraphs = shuffle(question.paragraphs.map((p) => ({ text: p.text })));
       break;
   }
 
