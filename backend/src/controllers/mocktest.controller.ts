@@ -312,15 +312,20 @@ type AnyQuestion = ISpeakingQuestion | IWritingQuestion | IReadingQuestion | ILi
 
 /** Fetch all active questions of a type from the module's bank. */
 async function fetchPool(module: MockTestModule, type: string): Promise<AnyQuestion[]> {
+  // The type value is already validated against the module's allowed types by
+  // the Zod validator (VALID_TYPES_BY_MODULE) before it reaches here, so the
+  // cast is safe. We cast to `any` to avoid Mongoose's per-model enum overload
+  // resolution which rejects a plain `string`.
+  const filter: any = { type, isActive: true };
   switch (module) {
     case 'speaking':
-      return SpeakingQuestion.find({ type, isActive: true });
+      return SpeakingQuestion.find(filter);
     case 'writing':
-      return WritingQuestion.find({ type, isActive: true });
+      return WritingQuestion.find(filter);
     case 'reading':
-      return ReadingQuestion.find({ type, isActive: true });
+      return ReadingQuestion.find(filter);
     case 'listening':
-      return ListeningQuestion.find({ type, isActive: true });
+      return ListeningQuestion.find(filter);
   }
 }
 
