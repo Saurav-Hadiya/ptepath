@@ -1,4 +1,4 @@
-# 13 — Listening Backend
+# 13 — Listening Backend - DONE
 
 ## What This Is
 Claude Code instruction file.
@@ -24,9 +24,9 @@ Complete listening module backend including:
 ---
 
 ## Prerequisites
-- `07-authentication-backend.md` complete
-- `10-writing-backend.md` complete (checkSpelling utility needed)
-- `11-reading-backend.md` complete (MCQ scoring functions needed)
+- `08-authentication-backend.md` complete
+- `11-writing-backend.md` complete (checkSpelling utility needed)
+- `12-reading-backend.md` complete (MCQ scoring functions needed)
 - authenticate and authorize middleware working
 - Cloudinary configured
 - uploadAudio multer middleware working
@@ -370,6 +370,7 @@ score < 40  → 'Needs improvement. Try to listen for the main ideas first.'
    - correctSentence: DO NOT send
 5. Return safe question data including audioUrl and playLimit
 ````
+`getAllQuestions`
 
 `getRandomQuestion` — GET /api/listening/:type/random
 ````
