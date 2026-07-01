@@ -17,12 +17,12 @@ Claude Code helps with any config file changes needed.
 
 ## Reference Docs
 - `instructions/06-project-structure.md` — project structure
-- `instructions/07-authentication-backend.md` — environment variables list
+- `instructions/08-authentication-backend.md` — environment variables list
 
 ---
 
 ## Prerequisites
-- All backend files complete (07 through 13)
+- All backend files complete (07 through 14)
 - All backend routes tested locally and working
 - GitHub repository up to date with latest commits
 - Render account created at render.com
@@ -32,7 +32,7 @@ Claude Code helps with any config file changes needed.
 ## Step 1 — Prepare Backend for Production
 
 ### Tell Claude Code to do this:
-"Read instructions/14-backend-deploy-render.md Step 1 and make the required production changes to the backend."
+"Read instructions/15-backend-deploy-render.md Step 1 and make the required production changes to the backend."
 
 ### What Claude Code must do:
 
@@ -113,7 +113,7 @@ node_modules/
 
 **Create `backend/tmp/.gitkeep`:**
 Empty file to ensure tmp folder exists in repo.
-Audio files uploaded here temporarily during Speaking evaluate.
+Audio files uploaded here temporarily during Speaking evaluate. - (*But now in this modified they audio will never store it will directly passed on so performance increased.)
 
 ---
 
