@@ -67,3 +67,33 @@ export const uploadAudioMemory = multer({
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: audioFilter,
 });
+
+// Resources module: PDF, DOCX, and images. Uses memory storage so the
+// controller can decide which Cloudinary resource_type to use per mimetype.
+const RESOURCE_MIMETYPES = new Set([
+  'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]);
+
+const resourceFilter: multer.Options['fileFilter'] = (_req, file, cb) => {
+  if (RESOURCE_MIMETYPES.has(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(rejectFile('Only PDF, DOCX, JPG, PNG, and WEBP files are allowed.'));
+  }
+};
+
+/**
+ * In-memory upload for the Resources module. Size limit is set to the
+ * highest per-type limit (15 MB for PDF). Per-type enforcement happens
+ * in the controller after the file is received.
+ */
+export const uploadResource = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 15 * 1024 * 1024 },
+  fileFilter: resourceFilter,
+});
