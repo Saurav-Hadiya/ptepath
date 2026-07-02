@@ -17,6 +17,7 @@ export interface AuthRequest extends Request {
     role: UserRole;
     tokenVersion?: number;
   };
+  file?: Express.Multer.File;
 }
 
 export interface ScoreResult {
