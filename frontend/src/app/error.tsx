@@ -8,12 +8,10 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen gap-4">
-      <h1 className="text-4xl font-bold" style={{ fontFamily: 'var(--font-display)', color: 'var(--brand-primary)' }}>
-        Something went wrong
-      </h1>
-      <p style={{ color: 'var(--text-secondary)' }}>{error.message}</p>
-      <button onClick={reset} style={{ color: 'var(--action-default)' }}>
+    <main className="flex min-h-screen flex-col items-center justify-center gap-4">
+      <h1 className="font-display text-display-lg text-brand-primary">Something went wrong</h1>
+      <p className="text-body-md text-text-secondary">{error.message}</p>
+      <button onClick={reset} className="text-body-md text-action-default hover:underline">
         Try again
       </button>
     </main>

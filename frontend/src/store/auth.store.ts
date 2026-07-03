@@ -1,20 +1,14 @@
 import { create } from 'zustand';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'student' | 'admin';
-  isFirstLogin: boolean;
-}
+import type { User } from '@/types';
 
 interface AuthState {
   user: User | null;
   accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  setAuth: (payload: { user: User; accessToken: string }) => void;
+  setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
+  setAccessToken: (token: string) => void;
   setLoading: (loading: boolean) => void;
 }
 
@@ -23,9 +17,12 @@ export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   isAuthenticated: false,
   isLoading: true,
-  setAuth: ({ user, accessToken }) =>
+  setAuth: (user, accessToken) =>
     set({ user, accessToken, isAuthenticated: true, isLoading: false }),
   clearAuth: () =>
     set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false }),
-  setLoading: (loading) => set({ isLoading: loading }),
+  setAccessToken: (token) =>
+    set({ accessToken: token }),
+  setLoading: (loading) =>
+    set({ isLoading: loading }),
 }));

@@ -2,22 +2,26 @@ import type { Metadata } from 'next';
 import { Outfit, Inter } from 'next/font/google';
 import './globals.css';
 import QueryProvider from '@/lib/query-client';
+import { Toaster } from '@/components/ui/sonner';
+import AuthInitializer from '@/components/shared/AuthInitializer';
 
 const outfit = Outfit({
-  variable: '--font-outfit',
   subsets: ['latin'],
   weight: ['700', '800', '900'],
+  variable: '--font-outfit',
+  display: 'swap',
 });
 
 const inter = Inter({
-  variable: '--font-inter',
   subsets: ['latin'],
   weight: ['400', '500', '600'],
+  variable: '--font-inter',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'PTEPath — PTE Exam Practice',
-  description: 'Closed PTE exam practice platform',
+  title: 'PTEPath',
+  description: 'PTE Exam Practice Platform',
 };
 
 export default function RootLayout({
@@ -28,7 +32,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable} h-full`}>
       <body className="min-h-full">
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <AuthInitializer />
+          {children}
+          <Toaster position="top-right" richColors closeButton />
+        </QueryProvider>
       </body>
     </html>
   );

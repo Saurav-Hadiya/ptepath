@@ -615,7 +615,7 @@ This ensures students stay logged in after page refresh.
 NEXT_PUBLIC_API_URL=https://your-render-backend-url.onrender.com/api
 ```
 
-Replace with your actual Render backend URL from step 14.
+Replace with your actual Render backend URL from step 15.
 
 ---
 
