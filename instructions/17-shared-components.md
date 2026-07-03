@@ -53,7 +53,7 @@ Build these before any page — pages import from here.
 
 ## Prerequisites
 
-- `15-frontend-foundation.md` complete
+- `16-frontend-foundation.md` complete
 - shadcn/ui installed and initialized
 - All CSS variables in globals.css
 
@@ -678,8 +678,7 @@ Renders:
 
 ## Notes
 
-- All components default to Server Components unless they use
-  hooks, state, or browser APIs — then add 'use client'
+- All components default to Server Components unless when client side needed.
 - Use CSS variables throughout — never hardcode hex values
 - shadcn components used as building blocks inside custom components
 - Components in src/components/shared/ used by both student and admin

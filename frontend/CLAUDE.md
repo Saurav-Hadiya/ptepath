@@ -25,6 +25,8 @@ src/hooks/queries/ — TanStack Query hooks wrapping services
 src/hooks/useAuth.ts — Auth operations hook (login, logout, initAuth)
 src/types/index.ts — Shared TypeScript types
 src/app/globals.css — CSS variables + Tailwind theme tokens
+src/components/shared/LoadingSpinner.tsx — Reusable loader (spinner + friendly message)
+src/components/ui/skeleton.tsx — Reusable skeleton placeholder block
 
 ## Architecture Rules — API Calling Pattern
 
@@ -224,3 +226,12 @@ design_reference/Section3_Admin_Portal.html
 - Always use next/image for images — never <img> tags.
 - For data validation use zod package.
 - shadcn/ui components as base — customize with Tailwind theme classes.
+- Never use emoji or unicode glyph characters as icons (✓, ✗, →, 🎤 etc.). Always use `lucide-react` icon components.
+- Prefer shadcn/ui components over raw HTML elements wherever one exists for the job
+  (Button instead of `<button>`, Input/Label instead of `<input>`/`<label>`, Badge instead of a manual pill `<span>`,
+  Table instead of a raw `<table>`, Switch instead of a manual toggle, AlertDialog instead of a manual modal, etc.).
+  Customize via `className` (tailwind-merge resolves conflicts) — never fork the primitive.
+- For loading states use `src/components/shared/LoadingSpinner.tsx` (spinner + optional friendly message,
+  built with `lucide-react`'s `Loader2` and Tailwind `animate-spin`, responsive sizing) and
+  `src/components/ui/skeleton.tsx` (`Skeleton` — Tailwind `animate-pulse` placeholder block) for content
+  placeholders. Never build one-off spinners or pulse divs inline.

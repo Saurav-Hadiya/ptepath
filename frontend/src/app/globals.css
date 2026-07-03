@@ -52,6 +52,9 @@
   --color-feedback-error-bg: var(--feedback-error-bg);
   --color-feedback-warning: var(--feedback-warning);
   --color-feedback-warning-bg: var(--feedback-warning-bg);
+  --color-feedback-success-text: var(--feedback-success-text);
+  --color-feedback-error-text: var(--feedback-error-text);
+  --color-feedback-warning-text: var(--feedback-warning-text);
 
   /* ── Module colors → Tailwind utilities ── */
   --color-module-speaking: var(--module-speaking);
@@ -90,6 +93,13 @@
   --shadow-hover: 0 8px 24px rgba(15, 27, 76, 0.12);
   --shadow-modal: 0 20px 60px rgba(15, 27, 76, 0.18);
   --shadow-button: 0 4px 12px rgba(37, 99, 235, 0.35);
+
+  /* ── Shape radius tokens → Tailwind utilities (rounded-card etc) */
+  --radius-card: var(--radius-card);
+  --radius-button: var(--radius-button);
+  --radius-input: var(--radius-input);
+  --radius-pill: var(--radius-pill);
+  --radius-modal: var(--radius-modal);
 
   /* ── Typography Tokens ─────────────────── */
   --font-size-display-xl: 3.5rem;
@@ -185,6 +195,9 @@
   --feedback-error-bg:    #FEF2F2;
   --feedback-warning:     #F59E0B;
   --feedback-warning-bg:  #FFFBEB;
+  --feedback-success-text: #065F46;
+  --feedback-error-text:   #991B1B;
+  --feedback-warning-text: #92400E;
 
   /* ── Module Identity ─────────────────────── */
   --module-speaking:      #2563EB;
