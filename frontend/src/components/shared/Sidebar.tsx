@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
-import { useAuth } from '@/hooks/useAuth';
+import { useLogout } from '@/hooks/useAuth';
 import { ROUTES } from '@/config/routes';
 import {
   LayoutDashboard,
@@ -62,7 +62,7 @@ const navSections: NavSection[] = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuthStore();
-  const { logout } = useAuth();
+  const { mutate: logout } = useLogout();
 
   const initials = user?.name
     ? user.name
@@ -145,7 +145,7 @@ export default function Sidebar() {
       {/* Logout */}
       <div className="border-t border-sidebar-divider p-3">
         <button
-          onClick={logout}
+          onClick={() => logout()}
           className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-body-sm text-sidebar-logout transition-colors hover:bg-sidebar-hover hover:text-sidebar-logout-hover"
         >
           <LogOut className="h-[18px] w-[18px]" />

@@ -235,3 +235,4 @@ design_reference/Section3_Admin_Portal.html
   built with `lucide-react`'s `Loader2` and Tailwind `animate-spin`, responsive sizing) and
   `src/components/ui/skeleton.tsx` (`Skeleton` — Tailwind `animate-pulse` placeholder block) for content
   placeholders. Never build one-off spinners or pulse divs inline.
+- make the everything in the frontend completely smooth responsive for all the screen sizes. from small to small and big to big responsive.

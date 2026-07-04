@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuth } from '@/hooks/useAuth';
+import { useLogout } from '@/hooks/useAuth';
 import { ROUTES } from '@/config/routes';
 import {
   LayoutDashboard,
@@ -54,7 +54,7 @@ const navSections = [
 
 export default function AdminSidebar() {
   const pathname = usePathname();
-  const { logout } = useAuth();
+  const { mutate: logout } = useLogout();
 
   return (
     <aside className="flex w-[260px] shrink-0 flex-col bg-brand-primary">
@@ -114,7 +114,7 @@ export default function AdminSidebar() {
       {/* Logout */}
       <div className="border-t border-sidebar-divider p-2.5">
         <button
-          onClick={logout}
+          onClick={() => logout()}
           className="flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-body-sm text-sidebar-logout transition-colors hover:bg-sidebar-hover hover:text-sidebar-logout-hover"
         >
           <LogOut className="h-4 w-4" />

@@ -44,8 +44,8 @@ Key variables for public pages:
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
 - Logo, LoadingSpinner components available
 - Axios instance and Zustand auth store working
 - PublicRoute and ProtectedRoute guards working

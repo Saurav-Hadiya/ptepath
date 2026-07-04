@@ -1,10 +1,13 @@
 import axios from 'axios';
 import api from '@/lib/api';
 import { env } from '@/lib/env';
+import { normalizeError } from '@/lib/api-error';
 import { API_ENDPOINTS } from '@/config/api-endpoints';
 import type { User } from '@/types';
 
-interface LoginResponse {
+// ── Response types ────────────────────────────────────────────
+
+export interface LoginResponse {
   success: boolean;
   message?: string;
   requiresPasswordChange?: boolean;
@@ -13,63 +16,149 @@ interface LoginResponse {
   user?: User;
 }
 
-interface RefreshResponse {
+export interface AuthSuccessResponse {
   success: boolean;
+  message: string;
+  accessToken: string;
+  user: User;
+}
+
+export interface MessageResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface RefreshResponse {
+  success: boolean;
+  message: string;
   accessToken: string;
 }
 
-interface MeResponse {
+export interface MeResponse {
   success: boolean;
   user: User;
 }
 
+// ── Service 
+
 export const authService = {
-  login(email: string, password: string) {
-    return api
-      .post<LoginResponse>(API_ENDPOINTS.auth.login, { email, password })
-      .then((r) => r.data);
+  async login(email: string, password: string): Promise<LoginResponse> {
+    try {
+      const { data } = await api.post<LoginResponse>(API_ENDPOINTS.auth.login, { email, password });
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  logout() {
-    return api.post(API_ENDPOINTS.auth.logout).then((r) => r.data);
+  async logout(): Promise<MessageResponse> {
+    try {
+      const { data } = await api.post<MessageResponse>(API_ENDPOINTS.auth.logout);
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  refresh() {
-    return axios
-      .post<RefreshResponse>(`${env.apiUrl}${API_ENDPOINTS.auth.refresh}`, {}, { withCredentials: true })
-      .then((r) => r.data);
+  async refresh(): Promise<RefreshResponse> {
+    try {
+      const { data } = await axios.post<RefreshResponse>(
+        `${env.apiUrl}${API_ENDPOINTS.auth.refresh}`,
+        {},
+        { withCredentials: true }
+      );
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  getMe(accessToken: string) {
-    return axios
-      .get<MeResponse>(`${env.apiUrl}${API_ENDPOINTS.auth.me}`, {
-        withCredentials: true,
-        headers: { Authorization: `Bearer ${accessToken}` },
-      })
-      .then((r) => r.data);
+  async getMe(accessToken: string): Promise<MeResponse> {
+    try {
+      const { data } = await axios.get<MeResponse>(
+        `${env.apiUrl}${API_ENDPOINTS.auth.me}`,
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  changePassword(newPassword: string) {
-    return api
-      .post(API_ENDPOINTS.auth.changePassword, { newPassword })
-      .then((r) => r.data);
+  /**
+   * First-login password change.
+   * Must use raw axios — NOT the `api` instance — because the api instance's
+   * request interceptor injects the regular accessToken, but this endpoint
+   * requires the firstLoginToken (a short-lived JWT with isFirstLogin: true).
+   */
+  async changePassword(
+    newPassword: string,
+    confirmPassword: string,
+    firstLoginToken: string
+  ): Promise<AuthSuccessResponse> {
+    try {
+      const { data } = await axios.post<AuthSuccessResponse>(
+        `${env.apiUrl}${API_ENDPOINTS.auth.changePassword}`,
+        { newPassword, confirmPassword },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${firstLoginToken}`,
+          },
+        }
+      );
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  forgotPassword(email: string) {
-    return api
-      .post(API_ENDPOINTS.auth.forgotPassword, { email })
-      .then((r) => r.data);
+  async forgotPassword(email: string): Promise<MessageResponse> {
+    try {
+      const { data } = await api.post<MessageResponse>(
+        API_ENDPOINTS.auth.forgotPassword,
+        { email }
+      );
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  resetPassword(userId: string, token: string, newPassword: string) {
-    return api
-      .post(API_ENDPOINTS.auth.resetPassword, { userId, token, newPassword })
-      .then((r) => r.data);
+  async resetPassword(
+    userId: string,
+    token: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Promise<MessageResponse> {
+    try {
+      const { data } = await api.post<MessageResponse>(
+        API_ENDPOINTS.auth.resetPassword,
+        { userId, token, newPassword, confirmPassword }
+      );
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 
-  updatePassword(currentPassword: string, newPassword: string) {
-    return api
-      .post(API_ENDPOINTS.auth.updatePassword, { currentPassword, newPassword })
-      .then((r) => r.data);
+  async updatePassword(
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ): Promise<MessageResponse> {
+    try {
+      const { data } = await api.post<MessageResponse>(
+        API_ENDPOINTS.auth.updatePassword,
+        { currentPassword, newPassword, confirmPassword }
+      );
+      return data;
+    } catch (error) {
+      throw normalizeError(error);
+    }
   },
 };
