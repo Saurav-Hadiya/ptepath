@@ -101,62 +101,62 @@
   --radius-pill: var(--radius-pill);
   --radius-modal: var(--radius-modal);
 
-  /* ── Typography Tokens ─────────────────── */
-  --font-size-display-xl: 3.5rem;
+  /* ── Typography Tokens (fluid — auto-responsive via clamp) ── */
+  --font-size-display-xl: clamp(2rem, 1.25rem + 3.5vw, 3.5rem);
   --font-size-display-xl--line-height: 1.05;
   --font-size-display-xl--font-weight: 800;
   --font-size-display-xl--letter-spacing: -1.5px;
 
-  --font-size-display-lg: 2.5rem;
+  --font-size-display-lg: clamp(1.6rem, 1rem + 2.5vw, 2.5rem);
   --font-size-display-lg--line-height: 1.1;
   --font-size-display-lg--font-weight: 800;
   --font-size-display-lg--letter-spacing: -1px;
 
-  --font-size-display-md: 1.75rem;
+  --font-size-display-md: clamp(1.3rem, 0.9rem + 1.8vw, 1.75rem);
   --font-size-display-md--line-height: 1.15;
   --font-size-display-md--font-weight: 700;
   --font-size-display-md--letter-spacing: -0.8px;
 
-  --font-size-display-sm: 1.25rem;
+  --font-size-display-sm: clamp(1.05rem, 0.85rem + 0.85vw, 1.25rem);
   --font-size-display-sm--line-height: 1.2;
   --font-size-display-sm--font-weight: 700;
 
-  --font-size-body-lg: 1rem;
+  --font-size-body-lg: clamp(0.9rem, 0.82rem + 0.4vw, 1rem);
   --font-size-body-lg--line-height: 1.75;
   --font-size-body-lg--font-weight: 400;
 
-  --font-size-body-md: 0.9rem;
+  --font-size-body-md: clamp(0.82rem, 0.78rem + 0.25vw, 0.9rem);
   --font-size-body-md--line-height: 1.7;
   --font-size-body-md--font-weight: 400;
 
-  --font-size-body-sm: 0.82rem;
+  --font-size-body-sm: clamp(0.76rem, 0.72rem + 0.2vw, 0.82rem);
   --font-size-body-sm--line-height: 1.65;
   --font-size-body-sm--font-weight: 400;
 
-  --font-size-label-lg: 0.85rem;
+  --font-size-label-lg: clamp(0.78rem, 0.75rem + 0.15vw, 0.85rem);
   --font-size-label-lg--line-height: 1.5;
   --font-size-label-lg--font-weight: 600;
 
-  --font-size-label-md: 0.78rem;
+  --font-size-label-md: clamp(0.72rem, 0.7rem + 0.12vw, 0.78rem);
   --font-size-label-md--line-height: 1.5;
   --font-size-label-md--font-weight: 600;
 
-  --font-size-label-sm: 0.72rem;
+  --font-size-label-sm: clamp(0.66rem, 0.64rem + 0.1vw, 0.72rem);
   --font-size-label-sm--line-height: 1.4;
   --font-size-label-sm--font-weight: 600;
   --font-size-label-sm--letter-spacing: 0.5px;
 
-  --font-size-score-xl: 4rem;
+  --font-size-score-xl: clamp(2.5rem, 1.5rem + 3vw, 4rem);
   --font-size-score-xl--line-height: 1;
   --font-size-score-xl--font-weight: 900;
   --font-size-score-xl--letter-spacing: -3px;
 
-  --font-size-score-lg: 2.4rem;
+  --font-size-score-lg: clamp(1.75rem, 1rem + 2vw, 2.4rem);
   --font-size-score-lg--line-height: 1;
   --font-size-score-lg--font-weight: 800;
   --font-size-score-lg--letter-spacing: -1px;
 
-  --font-size-score-md: 1.5rem;
+  --font-size-score-md: clamp(1.2rem, 0.9rem + 0.8vw, 1.5rem);
   --font-size-score-md--line-height: 1;
   --font-size-score-md--font-weight: 800;
 }

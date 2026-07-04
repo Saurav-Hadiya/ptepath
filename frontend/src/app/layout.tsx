@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable} h-full`}>
+    <html lang="en" className={`${outfit.variable} ${inter.variable} h-full scroll-smooth`}>
       <body className="min-h-full">
         <Providers>{children}</Providers>
       </body>
