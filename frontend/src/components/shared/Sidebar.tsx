@@ -14,7 +14,6 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
@@ -35,7 +34,6 @@ interface NavItem {
   label: string;
   href: string;
   icon: LucideIcon;
-  badge?: string;
 }
 
 interface NavSection {
@@ -53,10 +51,10 @@ const navSections: NavSection[] = [
   {
     label: 'Modules',
     items: [
-      { label: 'Speaking', href: ROUTES.student.speaking.home, icon: Mic, badge: '5' },
-      { label: 'Writing', href: ROUTES.student.writing.home, icon: PenLine, badge: '2' },
-      { label: 'Reading', href: ROUTES.student.reading.home, icon: BookOpen, badge: '5' },
-      { label: 'Listening', href: ROUTES.student.listening.home, icon: Headphones, badge: '8' },
+      { label: 'Speaking', href: ROUTES.student.speaking.home, icon: Mic },
+      { label: 'Writing', href: ROUTES.student.writing.home, icon: PenLine },
+      { label: 'Reading', href: ROUTES.student.reading.home, icon: BookOpen },
+      { label: 'Listening', href: ROUTES.student.listening.home, icon: Headphones },
     ],
   },
   {
@@ -138,17 +136,6 @@ export default function Sidebar() {
                       >
                         <Icon className="h-[18px] w-[18px] shrink-0" />
                         <span>{item.label}</span>
-                        {item.badge && (
-                          <SidebarMenuBadge
-                            className={
-                              isActive
-                                ? 'bg-sidebar-badge-active text-action-hover'
-                                : 'bg-sidebar-badge text-sidebar-badge-text'
-                            }
-                          >
-                            {item.badge}
-                          </SidebarMenuBadge>
-                        )}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );

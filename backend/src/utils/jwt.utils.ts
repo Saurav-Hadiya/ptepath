@@ -3,7 +3,7 @@ import { env } from '../config/env';
 import { JwtPayload } from '../types';
 
 export function generateAccessToken(userId: string, role: string, tokenVersion: number): string {
-  return jwt.sign({ userId, role, tokenVersion }, env.jwt.accessSecret, { expiresIn: '1m' });
+  return jwt.sign({ userId, role, tokenVersion }, env.jwt.accessSecret, { expiresIn: '15m' });
 }
 
 export function generateRefreshToken(userId: string, role: string, tokenVersion: number): string {

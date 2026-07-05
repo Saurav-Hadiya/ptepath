@@ -31,7 +31,11 @@ export default function ModuleCard({ module, questionCount, onClick, href }: Mod
       <Icon className="mb-2.5 size-6 text-text-primary sm:size-7" strokeWidth={1.75} />
       <div className="font-display text-label-lg text-brand-primary">{config.label}</div>
       {questionCount !== undefined && (
-        <div className="mt-0.5 text-label-sm text-text-secondary">{questionCount} questions</div>
+        <div
+          className={`mt-0.5 text-label-sm ${questionCount > 0 ? 'text-text-secondary' : 'text-text-muted'}`}
+        >
+          {questionCount > 0 ? `${questionCount} questions available` : 'No questions yet'}
+        </div>
       )}
       <ChevronRight className="absolute bottom-4 right-4 size-4 text-text-muted" />
     </div>
@@ -41,6 +45,7 @@ export default function ModuleCard({ module, questionCount, onClick, href }: Mod
     return (
       <Button
         variant="ghost"
+        nativeButton={false}
         render={<Link href={href} />}
         className="h-auto w-full cursor-pointer rounded-card p-0 hover:bg-transparent"
       >

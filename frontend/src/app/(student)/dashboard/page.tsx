@@ -1,3 +1,5 @@
+import DashboardContent from './DashboardContent';
+
 export default function DashboardPage() {
-  return <main>Student Dashboard</main>;
+  return <DashboardContent />;
 }

@@ -10,6 +10,10 @@ export const API_ENDPOINTS = {
     updatePassword: '/auth/update-password',
   },
 
+  student: {
+    dashboardStats: '/student/dashboard-stats',
+  },
+
   admin: {
     students: {
       list: '/admin/students',

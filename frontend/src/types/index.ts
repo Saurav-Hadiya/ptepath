@@ -64,6 +64,19 @@ export interface BaseQuestion {
   createdAt: string;
 }
 
+export interface DashboardStats {
+  studentName: string;
+  totalAttempts: number;
+  totalMockTests: number;
+  questionCounts: {
+    speaking: number;
+    writing: number;
+    reading: number;
+    listening: number;
+  };
+  activeMockTests: number;
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;
