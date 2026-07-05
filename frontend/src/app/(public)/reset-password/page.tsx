@@ -3,9 +3,10 @@
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Lock, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Lock, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
 import PublicRoute from '@/components/shared/PublicRoute';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useResetPassword } from '@/hooks/useAuth';
 import { resetPasswordSchema } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
@@ -65,7 +66,7 @@ function ResetPasswordForm() {
         </div>
         <Link
           href={ROUTES.public.forgotPassword}
-          className="inline-flex items-center rounded-lg bg-action-default px-5 py-2.5 text-label-md text-white transition-colors hover:bg-action-hover"
+          className="inline-flex items-center rounded-lg bg-action-default px-5 py-2.5 text-label-md text-primary-foreground transition-colors hover:bg-action-hover"
         >
           Request New Link
         </Link>
@@ -86,7 +87,7 @@ function ResetPasswordForm() {
         </p>
         <Link
           href={ROUTES.public.login}
-          className="inline-flex items-center rounded-lg bg-action-default px-6 py-2.5 text-label-md text-white shadow-button transition-colors hover:bg-action-hover"
+          className="inline-flex items-center rounded-lg bg-action-default px-6 py-2.5 text-label-md text-primary-foreground shadow-button transition-colors hover:bg-action-hover"
         >
           Go to Sign In
         </Link>
@@ -111,7 +112,7 @@ function ResetPasswordForm() {
         </div>
         <Link
           href={ROUTES.public.forgotPassword}
-          className="inline-flex items-center rounded-lg bg-action-default px-5 py-2.5 text-label-md text-white transition-colors hover:bg-action-hover"
+          className="inline-flex items-center rounded-lg bg-action-default px-5 py-2.5 text-label-md text-primary-foreground transition-colors hover:bg-action-hover"
         >
           Request New Link
         </Link>
@@ -255,8 +256,9 @@ function ResetPasswordForm() {
         <Button
           type="submit"
           disabled={isPending}
-          className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
+          className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-primary-foreground shadow-button hover:bg-action-hover"
         >
+          {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           {isPending ? 'Resetting...' : 'Reset Password'}
         </Button>
       </form>
@@ -281,7 +283,7 @@ export default function ResetPasswordPage() {
         <Suspense
           fallback={
             <div className="flex items-center justify-center py-16">
-              <div className="h-7 w-7 animate-spin rounded-full border-[3px] border-action-default border-t-transparent" />
+              <LoadingSpinner size="md" label="Verifying your reset link..." />
             </div>
           }
         >

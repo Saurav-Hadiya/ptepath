@@ -28,7 +28,7 @@ export default function LoadingSpinner({ size = 'md', fullPage = false, label }:
 
   if (fullPage) {
     return (
-      <div className="flex min-h-screen w-full items-center justify-center bg-bg-card px-4">{spinner}</div>
+      <div className="flex min-h-screen w-full items-center justify-center bg-bg-page px-4">{spinner}</div>
     );
   }
 

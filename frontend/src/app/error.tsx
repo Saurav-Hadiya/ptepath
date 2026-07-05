@@ -19,7 +19,7 @@ export default function ErrorPage({
         <Logo size="md" variant="dark" />
         <Link
           href={ROUTES.public.login}
-          className="inline-flex h-8 items-center rounded-lg bg-action-default px-4 text-label-md text-white transition-colors hover:bg-action-hover"
+          className="inline-flex h-8 items-center rounded-lg bg-action-default px-4 text-label-md text-primary-foreground transition-colors hover:bg-action-hover"
         >
           Sign In
         </Link>
@@ -51,7 +51,7 @@ export default function ErrorPage({
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <Button
               onClick={reset}
-              className="w-full bg-feedback-error text-label-md text-white hover:bg-feedback-error/90 sm:w-auto"
+              className="w-full bg-feedback-error text-label-md text-primary-foreground hover:bg-feedback-error/90 sm:w-auto"
             >
               <RotateCcw className="mr-2 h-4 w-4" />
               Try Again

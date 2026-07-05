@@ -24,9 +24,9 @@ const RESULT_CONTAINER_STYLES: Record<MCQResultState, string> = {
 };
 
 const RESULT_MARKER_STYLES: Record<MCQResultState, string> = {
-  correct: 'border-feedback-success bg-feedback-success text-white',
-  wrong: 'border-feedback-error bg-feedback-error text-white',
-  missed: 'border-feedback-warning bg-feedback-warning text-white',
+  correct: 'border-feedback-success bg-feedback-success text-primary-foreground',
+  wrong: 'border-feedback-error bg-feedback-error text-primary-foreground',
+  missed: 'border-feedback-warning bg-feedback-warning text-primary-foreground',
   neutral: 'border-border-default bg-bg-card text-text-secondary',
 };
 
@@ -66,7 +66,7 @@ export default function MCQOption({
   const markerClass = resultState
     ? RESULT_MARKER_STYLES[resultState]
     : selected
-      ? 'border-action-default bg-action-default text-white'
+      ? 'border-action-default bg-action-default text-primary-foreground'
       : 'border-border-default bg-bg-card text-text-secondary';
 
   const resultInfo = resultState ? RESULT_LABEL[resultState] : undefined;

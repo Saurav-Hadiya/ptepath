@@ -45,14 +45,14 @@ export default function LandingNavbar() {
             <a
               key={link.href}
               href={link.href}
-              className="text-body-sm font-medium text-white/70 transition-colors hover:text-white"
+              className="text-body-sm font-medium text-primary-foreground/70 transition-colors hover:text-primary-foreground"
             >
               {link.label}
             </a>
           ))}
           <Link
             href={ROUTES.public.login}
-            className="inline-flex h-7 items-center rounded-[min(var(--radius-md),12px)] bg-action-default px-5 text-label-lg text-white shadow-button transition-colors hover:bg-action-hover"
+            className="inline-flex h-7 items-center rounded-[min(var(--radius-md),12px)] bg-action-default px-5 text-label-lg text-primary-foreground shadow-button transition-colors hover:bg-action-hover"
           >
             Login
           </Link>
@@ -65,7 +65,7 @@ export default function LandingNavbar() {
           size="icon"
           onClick={() => setMobileOpen(true)}
           aria-label="Open navigation"
-          className="text-white/80 hover:bg-white/10 hover:text-white md:hidden"
+          className="text-primary-foreground/80 hover:bg-primary-foreground/10 hover:text-primary-foreground md:hidden"
         >
           <Menu className="h-5 w-5" />
         </Button>
@@ -75,9 +75,9 @@ export default function LandingNavbar() {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent
           side="right"
-          className="w-3/4 border-white/10 bg-brand-primary sm:max-w-xs [&>button]:text-white/80 [&>button:hover]:bg-white/10 [&>button:hover]:text-white"
+          className="w-3/4 border-primary-foreground/10 bg-brand-primary sm:max-w-xs [&>button]:text-primary-foreground/80 [&>button:hover]:bg-primary-foreground/10 [&>button:hover]:text-primary-foreground"
         >
-          <SheetHeader className="border-b border-white/10">
+          <SheetHeader className="border-b border-primary-foreground/10">
             <SheetTitle>
               <Logo variant="light" size="sm" />
             </SheetTitle>
@@ -90,16 +90,16 @@ export default function LandingNavbar() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-2.5 text-body-sm font-medium text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+                className="rounded-lg px-3 py-2.5 text-body-sm font-medium text-primary-foreground/75 transition-colors hover:bg-primary-foreground/10 hover:text-primary-foreground"
               >
                 {link.label}
               </a>
             ))}
-            <div className="mt-3 border-t border-white/10 pt-3">
+            <div className="mt-3 border-t border-primary-foreground/10 pt-3">
               <Link
                 href={ROUTES.public.login}
                 onClick={() => setMobileOpen(false)}
-                className="inline-flex w-full items-center justify-center rounded-lg bg-action-default py-2.5 text-label-lg text-white transition-colors hover:bg-action-hover"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-action-default py-2.5 text-label-lg text-primary-foreground transition-colors hover:bg-action-hover"
               >
                 Login to Practice
               </Link>

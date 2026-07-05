@@ -51,7 +51,7 @@ export default function HowItWorksSection() {
               <div key={step} className="flex flex-col items-center text-center">
                 <div className="relative mb-6 flex h-[5.5rem] w-[5.5rem] items-center justify-center rounded-full border-2 border-border-default bg-bg-card shadow-card">
                   <Icon className="h-6 w-6 text-action-default" />
-                  <span className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-brand-primary text-[0.6rem] font-bold tracking-tight text-white">
+                  <span className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-brand-primary text-[0.6rem] font-bold tracking-tight text-primary-foreground">
                     {step}
                   </span>
                 </div>

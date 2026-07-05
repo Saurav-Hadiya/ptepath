@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, KeyRound, AlertCircle, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { Mail, KeyRound, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
 import PublicRoute from '@/components/shared/PublicRoute';
 import { useForgotPassword } from '@/hooks/useAuth';
@@ -109,8 +109,9 @@ export default function ForgotPasswordPage() {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
+                className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-primary-foreground shadow-button hover:bg-action-hover"
               >
+                {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                 {isPending ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>

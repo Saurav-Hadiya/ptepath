@@ -20,21 +20,21 @@ export default function HeroSection() {
         {/* Left: Text content */}
         <div className="flex-1 text-center md:text-left">
           {/* Eyebrow badge */}
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5">
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary-foreground/10 bg-primary-foreground/5 px-4 py-1.5">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-brand-accent" />
-            <span className="text-label-sm text-white/65">
+            <span className="text-label-sm text-primary-foreground/65">
               PTE Academic Practice Platform
             </span>
           </div>
 
-          <h1 className="mb-5 font-display text-display-xl font-extrabold leading-[1.06] tracking-tight text-white">
+          <h1 className="mb-5 font-display text-display-xl font-extrabold leading-[1.06] tracking-tight text-primary-foreground">
             The smarter way to <br className="hidden sm:block" />
             <span className="bg-gradient-to-r bg-clip-text text-transparent">
               prepare for PTE.
             </span>
           </h1>
 
-          <p className="mb-8 text-body-lg leading-relaxed text-white/60 md:max-w-lg">
+          <p className="mb-8 text-body-lg leading-relaxed text-primary-foreground/60 md:max-w-lg">
             A focused practice platform for PTE Academic test-takers. Sharpen
             every skill with real exam question formats and immediate feedback
             on every attempt.
@@ -45,7 +45,7 @@ export default function HeroSection() {
             {TRUST_POINTS.map((point) => (
               <li
                 key={point}
-                className="flex items-start justify-center gap-2.5 text-body-sm text-white/65 md:justify-start"
+                className="flex items-start justify-center gap-2.5 text-body-sm text-primary-foreground/65 md:justify-start"
               >
                 <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-feedback-success" />
                 {point}
@@ -57,14 +57,14 @@ export default function HeroSection() {
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center md:justify-start">
             <Link
               href={ROUTES.public.login}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-action-default px-8 py-3 text-label-lg text-white shadow-button transition-all hover:bg-action-hover sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-action-default px-8 py-3 text-label-lg text-primary-foreground shadow-button transition-all hover:bg-action-hover sm:w-auto"
             >
               Start Practising
               <ArrowRight className="h-4 w-4" />
             </Link>
             <a
               href="#modules"
-              className="inline-flex w-full items-center justify-center rounded-xl border border-white/20 px-8 py-3 text-label-lg text-white/80 transition-all hover:border-white/35 hover:bg-white/5 sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-xl border border-primary-foreground/20 px-8 py-3 text-label-lg text-primary-foreground/80 transition-all hover:border-primary-foreground/35 hover:bg-primary-foreground/5 sm:w-auto"
             >
               Explore Modules
             </a>
@@ -74,9 +74,9 @@ export default function HeroSection() {
         {/* Right: Student image */}
         <div className="relative w-full max-w-[320px] shrink-0 sm:max-w-[380px] md:w-[300px] md:max-w-none lg:w-[400px] xl:w-[460px]">
           {/* Decorative ring */}
-          <div className="absolute -inset-4 rounded-[28px] border border-white/5" />
+          <div className="absolute -inset-4 rounded-[28px] border border-primary-foreground/5" />
 
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 shadow-[0_32px_64px_rgba(0,0,0,0.4)]">
+          <div className="relative overflow-hidden rounded-2xl border border-primary-foreground/10 shadow-[0_32px_64px_rgba(0,0,0,0.4)]">
             <Image
               src="/images/hero-student-1.avif"
               alt="PTE student practising"

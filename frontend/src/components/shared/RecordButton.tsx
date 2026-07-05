@@ -41,7 +41,7 @@ export default function RecordButton({ state, onStart, onStop, countdown }: Reco
           type="button"
           onClick={handleClick}
           aria-label={state === 'recording' ? 'Stop recording' : 'Start recording'}
-          className={`flex size-17 items-center justify-center rounded-full p-0 text-white shadow-button transition-all ${
+          className={`flex size-17 items-center justify-center rounded-full p-0 text-primary-foreground shadow-button transition-all ${
             state === 'recording' ? 'animate-pulse bg-feedback-error hover:bg-feedback-error/90' : 'bg-action-default hover:bg-action-hover'
           }`}
         >
@@ -57,7 +57,7 @@ export default function RecordButton({ state, onStart, onStop, countdown }: Reco
         <Button
           type="button"
           disabled
-          className="flex size-17 items-center justify-center rounded-full bg-action-default p-0 text-white opacity-50 shadow-button"
+          className="flex size-17 items-center justify-center rounded-full bg-action-default p-0 text-primary-foreground opacity-50 shadow-button"
         >
           <Mic className="size-6" />
         </Button>

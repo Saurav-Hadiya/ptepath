@@ -89,22 +89,22 @@ export default function Sidebar() {
     : '';
 
   return (
-    <SidebarPrimitive className="top-[68px] h-[calc(100svh-68px)] border-white/10">
-      <SidebarHeader className="gap-0 border-b border-white/10 p-0">
+    <SidebarPrimitive className="border-primary-foreground/10">
+      <SidebarHeader className="gap-0 border-b border-primary-foreground/10 p-0">
         <div className="flex items-center gap-2.5 px-4 py-4">
-          <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-white">
+          <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-primary-foreground">
             PP
           </div>
-          <span className="font-display text-[1.05rem] font-extrabold text-white">
+          <span className="font-display text-[1.05rem] font-extrabold text-primary-foreground">
             PTE<span className="text-brand-accent">Path</span>
           </span>
         </div>
-        <div className="flex items-center gap-2.5 border-t border-white/10 px-4 py-3.5">
+        <div className="flex items-center gap-2.5 border-t border-primary-foreground/10 px-4 py-3.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-avatar text-label-sm font-bold text-action-hover">
             {initials}
           </div>
           <div className="min-w-0">
-            <div className="truncate text-body-sm font-semibold text-white">{user?.name}</div>
+            <div className="truncate text-body-sm font-semibold text-primary-foreground">{user?.name}</div>
             <div className="text-label-sm text-sidebar-text-muted">Student</div>
           </div>
         </div>
@@ -132,8 +132,8 @@ export default function Sidebar() {
                         render={<Link href={item.href} />}
                         className={`text-body-sm font-medium ${
                           isActive
-                            ? 'bg-sidebar-active text-white data-active:bg-sidebar-active data-active:text-white'
-                            : 'text-sidebar-text hover:bg-white/10 hover:text-white'
+                            ? 'bg-sidebar-active text-primary-foreground data-active:bg-sidebar-active data-active:text-primary-foreground'
+                            : 'text-sidebar-text hover:bg-primary-foreground/10 hover:text-primary-foreground'
                         }`}
                       >
                         <Icon className="h-[18px] w-[18px] shrink-0" />
@@ -159,12 +159,12 @@ export default function Sidebar() {
         ))}
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-white/10">
+      <SidebarFooter className="border-t border-primary-foreground/10">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => logout()}
-              className="text-body-sm text-sidebar-logout hover:bg-white/10 hover:text-sidebar-logout-hover"
+              className="text-body-sm text-sidebar-logout hover:bg-primary-foreground/10 hover:text-sidebar-logout-hover"
             >
               <LogOut className="h-[18px] w-[18px]" />
               <span>Logout</span>

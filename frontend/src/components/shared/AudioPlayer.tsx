@@ -89,7 +89,7 @@ export default function AudioPlayer({ audioUrl, playLimit, onPlayLimitReached }:
         onClick={handleTogglePlay}
         disabled={limitReached}
         aria-label={isPlaying ? 'Pause' : 'Play'}
-        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-action-default p-0 text-white hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
+        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-action-default p-0 text-primary-foreground hover:bg-action-hover disabled:cursor-not-allowed disabled:opacity-50"
       >
         {isPlaying ? <Pause className="size-4" fill="currentColor" /> : <Play className="size-4" fill="currentColor" />}
       </Button>

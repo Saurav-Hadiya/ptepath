@@ -26,7 +26,7 @@ export default function Logo({ size = 'md', variant = 'dark' }: LogoProps) {
     <Link href={ROUTES.public.landing} className="flex items-center gap-2.5">
       <span
         className={`inline-flex shrink-0 overflow-hidden rounded-lg ring-1 ${
-          variant === 'light' ? 'ring-white/15' : 'ring-border-default'
+          variant === 'light' ? 'ring-primary-foreground/15' : 'ring-border-default'
         }`}
         style={{ width: iconSize, height: iconSize }}
       >
@@ -41,7 +41,7 @@ export default function Logo({ size = 'md', variant = 'dark' }: LogoProps) {
       </span>
       <span
         className={`font-display font-extrabold tracking-tight ${TEXT_SIZE[size]} ${
-          variant === 'light' ? 'text-white' : 'text-brand-primary'
+          variant === 'light' ? 'text-primary-foreground' : 'text-brand-primary'
         }`}
       >
         PTE<span className="text-brand-accent">Path</span>

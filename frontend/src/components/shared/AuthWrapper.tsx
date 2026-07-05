@@ -17,7 +17,7 @@ export default function AuthWrapper({ children, navLabel = 'Secure Access' }: Au
       <header className="relative z-10 flex h-16 shrink-0 items-center justify-between px-6 sm:px-8">
         <Logo variant="light" size="sm" />
         {navLabel && (
-          <span className="text-label-sm uppercase tracking-widest text-white/35">{navLabel}</span>
+          <span className="text-label-sm uppercase tracking-widest text-primary-foreground/35">{navLabel}</span>
         )}
       </header>
 

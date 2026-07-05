@@ -70,8 +70,8 @@ export default function ConfirmModal({
             disabled={isLoading}
             className={`gap-1.5 ${
               isDanger
-                ? 'bg-feedback-error text-white hover:bg-feedback-error/90'
-                : 'bg-action-default text-white hover:bg-action-hover'
+                ? 'bg-feedback-error text-primary-foreground hover:bg-feedback-error/90'
+                : 'bg-action-default text-primary-foreground hover:bg-action-hover'
             }`}
           >
             {isLoading && <Loader2 className="size-3.5 animate-spin" />}

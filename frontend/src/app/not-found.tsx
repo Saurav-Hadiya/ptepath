@@ -10,7 +10,7 @@ export default function NotFound() {
         <Logo size="md" variant="dark" />
         <Link
           href={ROUTES.public.login}
-          className="inline-flex h-8 items-center rounded-lg bg-action-default px-4 text-label-md text-white transition-colors hover:bg-action-hover"
+          className="inline-flex h-8 items-center rounded-lg bg-action-default px-4 text-label-md text-primary-foreground transition-colors hover:bg-action-hover"
         >
           Sign In
         </Link>
@@ -34,7 +34,7 @@ export default function NotFound() {
           <div className="flex flex-col items-center gap-3 sm:flex-row">
             <Link
               href={ROUTES.public.landing}
-              className="inline-flex w-full items-center justify-center rounded-lg bg-brand-primary px-5 py-2.5 text-label-md text-white transition-colors hover:bg-brand-primary/90 sm:w-auto"
+              className="inline-flex w-full items-center justify-center rounded-lg bg-brand-primary px-5 py-2.5 text-label-md text-primary-foreground transition-colors hover:bg-brand-primary/90 sm:w-auto"
             >
               <ArrowLeft className="mr-2 h-4 w-4" />
               Go Home

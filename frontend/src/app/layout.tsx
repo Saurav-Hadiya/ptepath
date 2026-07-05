@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import Providers from "@/providers";
-import LandingNavbar from "@/components/shared/LandingNavbar";
-import LandingFooter from "@/components/shared/LandingFooter";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -36,9 +34,7 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
     >
       <body className="min-h-full overflow-x-hidden">
-        <LandingNavbar />
         <Providers>{children}</Providers>
-        <LandingFooter />
       </body>
     </html>
   );

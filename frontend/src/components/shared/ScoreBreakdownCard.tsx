@@ -77,7 +77,7 @@ export default function ScoreBreakdownCard({
         <Button
           type="button"
           onClick={onNext}
-          className="w-full gap-1.5 bg-brand-primary text-white hover:bg-brand-primary/90"
+          className="w-full gap-1.5 bg-brand-primary text-primary-foreground hover:bg-brand-primary/90"
         >
           {nextLabel}
           <ArrowRight className="size-4" />

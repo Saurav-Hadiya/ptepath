@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, LogIn } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, LogIn, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
 import PublicRoute from '@/components/shared/PublicRoute';
 import { useLogin } from '@/hooks/useAuth';
@@ -125,8 +125,9 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={isPending}
-            className="mt-1 h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
+            className="mt-1 h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-primary-foreground shadow-button hover:bg-action-hover"
           >
+            {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
             {isPending ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>

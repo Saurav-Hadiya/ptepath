@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, AlertTriangle, Info } from 'lucide-react';
+import { Lock, Eye, EyeOff, CheckCircle2, AlertCircle, AlertTriangle, Info, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useChangePassword } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/auth.store';
 import { changePasswordSchema } from '@/lib/validations/auth';
@@ -53,7 +54,7 @@ export default function ChangePasswordPage() {
   const meetsLength = newPassword.length >= 8;
   const meetsNumber = /\d/.test(newPassword);
 
-  if (!firstLoginToken) return null;
+  if (!firstLoginToken) return <LoadingSpinner fullPage size="lg" label="Redirecting to sign in..." />;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -208,8 +209,9 @@ export default function ChangePasswordPage() {
         <Button
           type="submit"
           disabled={isPending}
-          className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
+          className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-primary-foreground shadow-button hover:bg-action-hover"
         >
+          {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           {isPending ? 'Setting password...' : 'Set Password and Continue'}
         </Button>
       </form>

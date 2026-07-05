@@ -23,20 +23,20 @@ const FOOTER_LINKS = {
 
 export default function LandingFooter() {
   return (
-    <footer className="border-t border-white/8 bg-brand-primary">
+    <footer className="border-t border-primary-foreground/8 bg-brand-primary">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-4 lg:gap-12">
           {/* Brand */}
           <div className="col-span-1 sm:col-span-1">
             <Logo variant="light" size="sm" />
-            <p className="mt-4 max-w-[200px] text-body-sm leading-relaxed text-white/45">
+            <p className="mt-4 max-w-[200px] text-body-sm leading-relaxed text-primary-foreground/45">
               A focused PTE Academic practice platform for serious test-takers.
             </p>
           </div>
 
           {Object.entries(FOOTER_LINKS).map(([group, links]) => (
             <div key={group}>
-              <h3 className="mb-4 text-label-sm font-semibold uppercase tracking-widest text-white/35">
+              <h3 className="mb-4 text-label-sm font-semibold uppercase tracking-widest text-primary-foreground/35">
                 {group}
               </h3>
               <ul className="space-y-2.5">
@@ -44,7 +44,7 @@ export default function LandingFooter() {
                   <li key={link.label}>
                     <Link
                       href={link.href}
-                      className="text-body-sm text-white/50 transition-colors hover:text-white/80"
+                      className="text-body-sm text-primary-foreground/50 transition-colors hover:text-primary-foreground/80"
                     >
                       {link.label}
                     </Link>
@@ -55,8 +55,8 @@ export default function LandingFooter() {
           ))}
         </div>
 
-        <div className="mt-10 border-t border-white/8 pt-8 text-center">
-          <p className="text-label-sm text-white/30">
+        <div className="mt-10 border-t border-primary-foreground/8 pt-8 text-center">
+          <p className="text-label-sm text-primary-foreground/30">
             &copy; {new Date().getFullYear()} PTEPath. All rights reserved.
           </p>
         </div>

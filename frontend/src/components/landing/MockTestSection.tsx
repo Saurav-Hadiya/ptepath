@@ -27,16 +27,16 @@ export default function MockTestSection() {
             <span className="mb-4 inline-block rounded-full border border-brand-accent/30 bg-brand-accent/10 px-4 py-1.5 text-label-sm text-brand-accent">
               Mock Tests
             </span>
-            <h2 className="mb-5 font-display text-display-md font-bold text-white">
+            <h2 className="mb-5 font-display text-display-md font-bold text-primary-foreground">
               Experience the full exam before test day
             </h2>
-            <p className="mb-8 text-body-lg leading-relaxed text-white/60">
+            <p className="mb-8 text-body-lg leading-relaxed text-primary-foreground/60">
               Our mock tests mirror the actual PTE Academic exam format across all four modules
               with real timing and comprehensive scoring — so you build confidence before the real thing.
             </p>
             <ul className="space-y-3.5">
               {POINTS.map((point) => (
-                <li key={point} className="flex items-start gap-3 text-body-sm text-white/70">
+                <li key={point} className="flex items-start gap-3 text-body-sm text-primary-foreground/70">
                   <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-feedback-success" />
                   {point}
                 </li>
@@ -47,7 +47,7 @@ export default function MockTestSection() {
           {/* Right: Stats grid + image */}
           <div className="flex flex-col gap-6">
             {/* Student image */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/10">
+            <div className="relative overflow-hidden rounded-2xl border border-primary-foreground/10">
               <Image
                 src="/images/hero-student-2.avif"
                 alt="Student taking mock PTE exam"
@@ -63,13 +63,13 @@ export default function MockTestSection() {
               {STATS.map(({ value, label, Icon }) => (
                 <div
                   key={label}
-                  className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center"
+                  className="rounded-2xl border border-primary-foreground/10 bg-primary-foreground/5 p-5 text-center"
                 >
                   <Icon className="mx-auto mb-2.5 h-5 w-5 text-brand-accent" />
-                  <div className="font-display text-display-sm font-extrabold leading-none tracking-tight text-white">
+                  <div className="font-display text-display-sm font-extrabold leading-none tracking-tight text-primary-foreground">
                     {value}
                   </div>
-                  <div className="mt-1.5 text-label-sm text-white/50">{label}</div>
+                  <div className="mt-1.5 text-label-sm text-primary-foreground/50">{label}</div>
                 </div>
               ))}
             </div>

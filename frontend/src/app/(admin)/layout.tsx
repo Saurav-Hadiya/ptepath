@@ -7,9 +7,9 @@ import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <ProtectedRoute requireRole="admin">
-      <SidebarProvider className="min-h-0 pt-[68px]">
+      <SidebarProvider className="min-h-svh">
         <AdminSidebar />
-        <SidebarInset className="h-[calc(100dvh-68px)] overflow-hidden">
+        <SidebarInset className="h-svh overflow-hidden">
           <Topbar />
           <div className="min-w-0 flex-1 overflow-y-auto overflow-x-hidden bg-bg-page p-3 sm:p-4 md:p-6">
             {children}

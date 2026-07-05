@@ -24,7 +24,7 @@ export default function AuthLayout({ children, badge }: AuthLayoutProps) {
 
         {/* Centre content */}
         <div className="relative flex-1 py-2">
-          <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 shadow-[0_24px_48px_rgba(0,0,0,0.35)]">
+          <div className="mb-8 overflow-hidden rounded-2xl border border-primary-foreground/10 shadow-[0_24px_48px_rgba(0,0,0,0.35)]">
             <Image
               src="/images/hero-student-3.avif"
               alt="Student practising PTE"
@@ -35,10 +35,10 @@ export default function AuthLayout({ children, badge }: AuthLayoutProps) {
             />
           </div>
 
-          <h2 className="mb-3 font-display text-display-sm font-bold text-white">
+          <h2 className="mb-3 font-display text-display-sm font-bold text-primary-foreground">
             Your path to PTE success starts here.
           </h2>
-          <p className="mb-6 text-body-sm text-white/55">
+          <p className="mb-6 text-body-sm text-primary-foreground/55">
             Practise with real exam formats, get scored instantly, and walk into
             exam day with confidence.
           </p>
@@ -47,7 +47,7 @@ export default function AuthLayout({ children, badge }: AuthLayoutProps) {
             {TRUST_POINTS.map((point) => (
               <li
                 key={point}
-                className="flex items-center gap-2.5 text-body-sm text-white/65"
+                className="flex items-center gap-2.5 text-body-sm text-primary-foreground/65"
               >
                 <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-feedback-success" />
                 {point}
@@ -57,8 +57,8 @@ export default function AuthLayout({ children, badge }: AuthLayoutProps) {
         </div>
 
         {/* Bottom */}
-        <div className="relative border-t border-white/10 pt-6">
-          <p className="text-label-sm text-white/30">
+        <div className="relative border-t border-primary-foreground/10 pt-6">
+          <p className="text-label-sm text-primary-foreground/30">
             &copy; {new Date().getFullYear()} PTEPath. All rights reserved.
           </p>
         </div>

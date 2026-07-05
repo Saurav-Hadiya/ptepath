@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { ROUTES } from '@/config/routes';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -29,14 +30,7 @@ export default function ProtectedRoute({ children, requireRole }: ProtectedRoute
   }, [isAuthenticated, isLoading, user, requireRole, router]);
 
   if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-bg-page">
-        <div className="flex flex-col items-center gap-3">
-          <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-action-default border-t-transparent" />
-          <p className="text-body-sm text-text-muted">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner fullPage size="lg" label="Checking your session..." />;
   }
 
   if (!isAuthenticated) return null;
