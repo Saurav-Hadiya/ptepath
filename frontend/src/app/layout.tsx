@@ -1,23 +1,25 @@
-import type { Metadata } from 'next';
-import { Outfit, Inter } from 'next/font/google';
-import './globals.css';
-import QueryProvider from '@/lib/query-client';
+import type { Metadata } from "next";
+import { Outfit, Inter } from "next/font/google";
+import "./globals.css";
+import Providers from "@/providers";
 
 const outfit = Outfit({
-  variable: '--font-outfit',
-  subsets: ['latin'],
-  weight: ['700', '800', '900'],
+  subsets: ["latin"],
+  weight: ["700", "800", "900"],
+  variable: "--font-outfit",
+  display: "swap",
 });
 
 const inter = Inter({
-  variable: '--font-inter',
-  subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-inter",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: 'PTEPath — PTE Exam Practice',
-  description: 'Closed PTE exam practice platform',
+  title: "PTEPath",
+  description: "PTE Exam Practice Platform",
 };
 
 export default function RootLayout({
@@ -26,9 +28,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable} h-full`}>
-      <body className="min-h-full">
-        <QueryProvider>{children}</QueryProvider>
+    <html
+      lang="en"
+      className={`${outfit.variable} ${inter.variable} h-full scroll-smooth`}
+      data-scroll-behavior="smooth"
+    >
+      <body className="min-h-full overflow-x-hidden">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

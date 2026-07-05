@@ -27,6 +27,11 @@ export const env = {
 
   port: Number(optional('PORT', '5000')),
   frontendUrl: optional('FRONTEND_URL', 'http://localhost:3000'),
+  /** FRONTEND_URL may be a comma-separated list (e.g. multiple deployed frontend domains). */
+  frontendUrls: optional('FRONTEND_URL', 'http://localhost:3000')
+    .split(',')
+    .map((url) => url.trim())
+    .filter(Boolean),
 
   mongoUri: required('MONGO_URI'),
 

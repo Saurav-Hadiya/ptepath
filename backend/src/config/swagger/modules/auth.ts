@@ -47,6 +47,7 @@ export const authSchemas = {
     properties: {
       success: { type: 'boolean', example: true },
       accessToken: { type: 'string', description: 'New access token.' },
+      user: { $ref: '#/components/schemas/UserSummary' },
     },
   },
   ChangePasswordRequest: {

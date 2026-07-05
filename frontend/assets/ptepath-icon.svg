@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Rounded square base -->
+  <rect x="0" y="0" width="64" height="64" rx="14" fill="#0F1B4C"/>
+  <!-- P stem -->
+  <rect x="18" y="14" width="8" height="36" rx="2" fill="#FFFFFF"/>
+  <!-- P bowl top -->
+  <rect x="26" y="14" width="14" height="8" rx="2" fill="#FFFFFF"/>
+  <!-- P bowl bottom -->
+  <rect x="26" y="30" width="14" height="8" rx="2" fill="#FFFFFF"/>
+  <!-- P bowl right -->
+  <rect x="36" y="22" width="8" height="16" rx="4" fill="#FFFFFF"/>
+  <!-- Amber accent dot — the path node signature -->
+  <circle cx="53" cy="49" r="5" fill="#F59E0B"/>
+</svg>

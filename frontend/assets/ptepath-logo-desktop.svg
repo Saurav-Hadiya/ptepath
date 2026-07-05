@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="64" viewBox="0 0 220 64">
+  <!-- Icon mark -->
+  <rect x="0" y="0" width="64" height="64" rx="14" fill="#0F1B4C"/>
+  <!-- P stem -->
+  <rect x="18" y="14" width="8" height="36" rx="2" fill="#FFFFFF"/>
+  <!-- P bowl top -->
+  <rect x="26" y="14" width="14" height="8" rx="2" fill="#FFFFFF"/>
+  <!-- P bowl bottom -->
+  <rect x="26" y="30" width="14" height="8" rx="2" fill="#FFFFFF"/>
+  <!-- P bowl right -->
+  <rect x="36" y="22" width="8" height="16" rx="4" fill="#FFFFFF"/>
+  <!-- Amber accent dot -->
+  <circle cx="53" cy="49" r="5" fill="#F59E0B"/>
+
+  <!-- Wordmark: PTE bold -->
+  <text x="80" y="30"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="26"
+    font-weight="700"
+    letter-spacing="-0.5"
+    fill="#0F1B4C">PTE</text>
+
+  <!-- Wordmark: PATH light -->
+  <text x="80" y="56"
+    font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"
+    font-size="26"
+    font-weight="300"
+    letter-spacing="2"
+    fill="#0F1B4C">PATH</text>
+
+  <!-- Amber underline beneath PATH -->
+  <rect x="80" y="60" width="76" height="2.5" rx="1.25" fill="#F59E0B"/>
+</svg>

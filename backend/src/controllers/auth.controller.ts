@@ -14,11 +14,17 @@ import { env } from '../config/env';
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
+/**
+ * Frontend and backend are hosted on separate domains (e.g. Vercel + Render),
+ * so the refresh cookie must be sent cross-site. `SameSite=None` requires
+ * `Secure` on every browser — browsers also treat `localhost` as a secure
+ * context, so this works identically in local development and production.
+ */
 function setRefreshCookie(res: Response, token: string): void {
   res.cookie('refreshToken', token, {
     httpOnly: true,
-    secure: env.isProduction,
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'none',
     maxAge: SEVEN_DAYS_MS,
   });
 }
@@ -26,8 +32,8 @@ function setRefreshCookie(res: Response, token: string): void {
 function clearRefreshCookie(res: Response): void {
   res.cookie('refreshToken', '', {
     httpOnly: true,
-    secure: env.isProduction,
-    sameSite: 'strict',
+    secure: true,
+    sameSite: 'none',
     maxAge: 0,
   });
 }
@@ -68,7 +74,7 @@ export async function login(req: Request, res: Response): Promise<void> {
   }
 
   const accessToken = generateAccessToken(String(user._id), user.role, user.tokenVersion);
-  const refreshToken = generateRefreshToken(String(user._id), user.tokenVersion);
+  const refreshToken = generateRefreshToken(String(user._id), user.role, user.tokenVersion);
 
   setRefreshCookie(res, refreshToken);
 
@@ -113,7 +119,12 @@ export async function refresh(req: Request, res: Response): Promise<void> {
   }
 
   const accessToken = generateAccessToken(String(user._id), user.role, user.tokenVersion);
-  res.status(200).json({ success: true, message: 'Token refreshed.', accessToken });
+  res.status(200).json({
+    success: true,
+    message: 'Token refreshed.',
+    accessToken,
+    user: { id: user._id, name: user.name, email: user.email, role: user.role },
+  });
 }
 
 export async function logout(_req: AuthRequest, res: Response): Promise<void> {
@@ -149,7 +160,7 @@ export async function changePasswordFirstLogin(req: AuthRequest, res: Response):
   await user.save();
 
   const accessToken = generateAccessToken(String(user._id), user.role, user.tokenVersion);
-  const refreshToken = generateRefreshToken(String(user._id), user.tokenVersion);
+  const refreshToken = generateRefreshToken(String(user._id), user.role, user.tokenVersion);
 
   setRefreshCookie(res, refreshToken);
 

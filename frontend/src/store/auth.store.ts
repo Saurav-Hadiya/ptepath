@@ -1,31 +1,38 @@
 import { create } from 'zustand';
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: 'student' | 'admin';
-  isFirstLogin: boolean;
-}
+import type { User } from '@/types';
 
 interface AuthState {
   user: User | null;
   accessToken: string | null;
+  /** Held in memory only — never persisted. Used exclusively for the first-login change-password flow. */
+  firstLoginToken: string | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  setAuth: (payload: { user: User; accessToken: string }) => void;
+  setAuth: (user: User, accessToken: string) => void;
   clearAuth: () => void;
-  setLoading: (loading: boolean) => void;
+  setAccessToken: (token: string) => void;
+  setFirstLoginToken: (token: string) => void;
+  clearFirstLoginToken: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   accessToken: null,
+  firstLoginToken: null,
   isAuthenticated: false,
-  isLoading: true,
-  setAuth: ({ user, accessToken }) =>
-    set({ user, accessToken, isAuthenticated: true, isLoading: false }),
+
+  setAuth: (user, accessToken) => set({ user, accessToken, isAuthenticated: true }),
+
   clearAuth: () =>
-    set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false }),
-  setLoading: (loading) => set({ isLoading: loading }),
+    set({
+      user: null,
+      accessToken: null,
+      firstLoginToken: null,
+      isAuthenticated: false,
+    }),
+
+  setAccessToken: (token) => set({ accessToken: token }),
+
+  setFirstLoginToken: (token) => set({ firstLoginToken: token }),
+
+  clearFirstLoginToken: () => set({ firstLoginToken: null }),
 }));

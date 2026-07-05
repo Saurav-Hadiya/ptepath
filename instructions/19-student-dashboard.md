@@ -26,8 +26,8 @@ Reference: docs/md/theming.md for all variable names and token classes.
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
 - Student layout with sidebar and topbar working
 - Axios instance and TanStack Query configured
 - Auth store working (user name available)
@@ -37,8 +37,7 @@ Reference: docs/md/theming.md for all variable names and token classes.
 ## File to Implement
 
 **`src/app/(student)/dashboard/page.tsx`**
-**Type:** Mix — outer shell Server Component, data sections Client Components
-
+**Type:** —  Server component is the first priority.
 ---
 
 ## API Calls Needed
@@ -361,8 +360,8 @@ On desktop (> 1024px):
 
 ## Notes
 - Page outer shell can be Server Component
-- Data fetching section needs 'use client' (uses useQuery)
-- Split into DashboardContent client component if needed
+- Data fetching section also can be done in server side as tanstack provides it
+- so always first proprity must be server component
 - User name comes from Zustand store — no extra API call needed
 - totalAttempts and totalMockTests come from dashboard-stats API
 - No detailed attempt history shown — per platform decision
