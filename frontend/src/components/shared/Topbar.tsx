@@ -1,8 +1,7 @@
 'use client';
 
-import { Menu } from 'lucide-react';
 import { useAuthStore } from '@/store/auth.store';
-import { useNavDrawer } from '@/components/shared/AppShell';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 interface TopbarProps {
   breadcrumb?: string[];
@@ -10,19 +9,11 @@ interface TopbarProps {
 
 export default function Topbar({ breadcrumb }: TopbarProps) {
   const { user } = useAuthStore();
-  const { toggle } = useNavDrawer();
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-border-default bg-bg-card px-3 sm:px-5 lg:px-7">
       <div className="flex min-w-0 items-center gap-2">
-        <button
-          type="button"
-          onClick={toggle}
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md text-text-secondary transition-colors hover:bg-bg-page hover:text-text-primary lg:hidden"
-          aria-label="Open navigation"
-        >
-          <Menu className="h-5 w-5" />
-        </button>
+        <SidebarTrigger className="text-text-secondary hover:bg-bg-page hover:text-text-primary md:hidden" />
         <div className="flex min-w-0 items-center gap-2 truncate text-body-sm text-text-muted">
           {breadcrumb && breadcrumb.length > 0 ? (
             breadcrumb.map((crumb, i) => (

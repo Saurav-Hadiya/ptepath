@@ -5,7 +5,20 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
 import { useLogout } from '@/hooks/useAuth';
 import { ROUTES } from '@/config/routes';
-import { useNavDrawer } from '@/components/shared/AppShell';
+import {
+  Sidebar as SidebarPrimitive,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuBadge,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  useSidebar,
+} from '@/components/ui/sidebar';
 import {
   LayoutDashboard,
   Mic,
@@ -64,8 +77,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { user } = useAuthStore();
   const { mutate: logout } = useLogout();
-  const { setOpen } = useNavDrawer();
-  const closeDrawer = () => setOpen(false);
+  const { setOpenMobile } = useSidebar();
 
   const initials = user?.name
     ? user.name
@@ -77,85 +89,89 @@ export default function Sidebar() {
     : '';
 
   return (
-    <aside className="flex h-full w-[260px] max-w-[85vw] shrink-0 flex-col overflow-y-auto bg-brand-primary">
-      {/* Logo */}
-      <div className="flex items-center gap-2.5 border-b border-sidebar-divider px-5 pb-4 pt-5">
-        <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-white">
-          PP
-        </div>
-        <span className="font-display text-[1.05rem] font-extrabold text-white">
-          PTE<span className="text-brand-accent">Path</span>
-        </span>
-      </div>
-
-      {/* User info */}
-      <div className="flex items-center gap-2.5 border-b border-sidebar-divider px-5 py-3.5">
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-avatar text-label-sm font-bold text-action-hover">
-          {initials}
-        </div>
-        <div>
-          <div className="text-body-sm font-semibold text-white">{user?.name}</div>
-          <div className="text-label-sm text-sidebar-text-muted">Student</div>
-        </div>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 py-3">
-        {navSections.map((section) => (
-          <div key={section.label}>
-            <div className="px-5 pb-1 pt-2.5 text-label-sm uppercase tracking-wide text-sidebar-text-section">
-              {section.label}
-            </div>
-            {section.items.map((item) => {
-              const isActive =
-                item.href === ROUTES.student.dashboard
-                  ? pathname === ROUTES.student.dashboard
-                  : pathname.startsWith(item.href);
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={closeDrawer}
-                  className={`relative flex w-full items-center gap-2.5 px-5 py-2.5 text-body-sm font-medium transition-colors ${
-                    isActive
-                      ? 'bg-sidebar-active text-white'
-                      : 'text-sidebar-text hover:bg-sidebar-hover hover:text-white'
-                  }`}
-                >
-                  {isActive && (
-                    <span className="absolute bottom-0 left-0 top-0 w-[3px] rounded-r-sm bg-action-default" />
-                  )}
-                  <Icon className="h-[18px] w-[18px] shrink-0" />
-                  {item.label}
-                  {item.badge && (
-                    <span
-                      className={`ml-auto rounded-full px-[7px] py-px text-label-sm font-semibold ${
-                        isActive
-                          ? 'bg-sidebar-badge-active text-action-hover'
-                          : 'bg-sidebar-badge text-sidebar-badge-text'
-                      }`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                </Link>
-              );
-            })}
+    <SidebarPrimitive className="top-[68px] h-[calc(100svh-68px)] border-white/10">
+      <SidebarHeader className="gap-0 border-b border-white/10 p-0">
+        <div className="flex items-center gap-2.5 px-4 py-4">
+          <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-white">
+            PP
           </div>
-        ))}
-      </nav>
+          <span className="font-display text-[1.05rem] font-extrabold text-white">
+            PTE<span className="text-brand-accent">Path</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-2.5 border-t border-white/10 px-4 py-3.5">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-avatar text-label-sm font-bold text-action-hover">
+            {initials}
+          </div>
+          <div className="min-w-0">
+            <div className="truncate text-body-sm font-semibold text-white">{user?.name}</div>
+            <div className="text-label-sm text-sidebar-text-muted">Student</div>
+          </div>
+        </div>
+      </SidebarHeader>
 
-      {/* Logout */}
-      <div className="border-t border-sidebar-divider p-3">
-        <button
-          onClick={() => logout()}
-          className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-body-sm text-sidebar-logout transition-colors hover:bg-sidebar-hover hover:text-sidebar-logout-hover"
-        >
-          <LogOut className="h-[18px] w-[18px]" />
-          Logout
-        </button>
-      </div>
-    </aside>
+      <SidebarContent>
+        {navSections.map((section) => (
+          <SidebarGroup key={section.label}>
+            <SidebarGroupLabel className="text-label-sm uppercase tracking-wide text-sidebar-text-section">
+              {section.label}
+            </SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {section.items.map((item) => {
+                  const isActive =
+                    item.href === ROUTES.student.dashboard
+                      ? pathname === ROUTES.student.dashboard
+                      : pathname.startsWith(item.href);
+                  const Icon = item.icon;
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        isActive={isActive}
+                        onClick={() => setOpenMobile(false)}
+                        render={<Link href={item.href} />}
+                        className={`text-body-sm font-medium ${
+                          isActive
+                            ? 'bg-sidebar-active text-white data-active:bg-sidebar-active data-active:text-white'
+                            : 'text-sidebar-text hover:bg-white/10 hover:text-white'
+                        }`}
+                      >
+                        <Icon className="h-[18px] w-[18px] shrink-0" />
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <SidebarMenuBadge
+                            className={
+                              isActive
+                                ? 'bg-sidebar-badge-active text-action-hover'
+                                : 'bg-sidebar-badge text-sidebar-badge-text'
+                            }
+                          >
+                            {item.badge}
+                          </SidebarMenuBadge>
+                        )}
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+
+      <SidebarFooter className="border-t border-white/10">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => logout()}
+              className="text-body-sm text-sidebar-logout hover:bg-white/10 hover:text-sidebar-logout-hover"
+            >
+              <LogOut className="h-[18px] w-[18px]" />
+              <span>Logout</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
+    </SidebarPrimitive>
   );
 }

@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import Logo from '@/components/shared/Logo';
 import { ROUTES } from '@/config/routes';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
 
 const NAV_LINKS = [
   { label: 'Modules', href: '#modules' },
@@ -51,19 +59,32 @@ export default function LandingNavbar() {
         </nav>
 
         {/* Mobile hamburger */}
-        <button
-          className="inline-flex items-center justify-center rounded-lg p-2 text-white/80 transition-colors hover:bg-white/10 md:hidden"
-          onClick={() => setMobileOpen((v) => !v)}
-          aria-label="Toggle navigation"
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Open navigation"
+          className="text-white/80 hover:bg-white/10 hover:text-white md:hidden"
         >
-          {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-        </button>
+          <Menu className="h-5 w-5" />
+        </Button>
       </div>
 
-      {/* Mobile dropdown */}
-      {mobileOpen && (
-        <div className="border-t border-white/10 bg-brand-primary px-4 py-4 md:hidden">
-          <nav className="flex flex-col gap-1">
+      {/* Mobile drawer */}
+      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+        <SheetContent
+          side="right"
+          className="w-3/4 border-white/10 bg-brand-primary sm:max-w-xs [&>button]:text-white/80 [&>button:hover]:bg-white/10 [&>button:hover]:text-white"
+        >
+          <SheetHeader className="border-b border-white/10">
+            <SheetTitle>
+              <Logo variant="light" size="sm" />
+            </SheetTitle>
+            <SheetDescription className="sr-only">Site navigation menu</SheetDescription>
+          </SheetHeader>
+
+          <nav className="flex flex-col gap-1 px-4">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
@@ -84,8 +105,8 @@ export default function LandingNavbar() {
               </Link>
             </div>
           </nav>
-        </div>
-      )}
+        </SheetContent>
+      </Sheet>
     </header>
   );
 }
