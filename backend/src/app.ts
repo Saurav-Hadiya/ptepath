@@ -12,7 +12,9 @@ import { swaggerSpec } from './config/swagger';
 const app = express();
 
 // CORS — origins must be an array; credentials enabled for httpOnly refresh cookie.
-const allowedOrigins = Array.from(new Set([env.frontendUrl, 'http://localhost:3000']));
+const allowedOrigins = Array.from(
+  new Set([...env.frontendUrls, 'http://localhost:3000', 'https://localhost:3000'])
+);
 app.use(
   cors({
     origin: allowedOrigins,
