@@ -13,16 +13,16 @@ export default function FeaturesStrip() {
     <section className="bg-bg-page py-4 sm:py-6">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="overflow-hidden rounded-2xl border border-border-default bg-bg-card shadow-card">
-          <div className="grid grid-cols-2 divide-x divide-y divide-border-default sm:grid-cols-5 sm:divide-y-0">
+          <div className="grid grid-cols-1 divide-y divide-border-default sm:grid-cols-5 sm:divide-x sm:divide-y-0">
             {FEATURES.map(({ Icon, label, sub, color }) => (
               <div
                 key={label}
-                className="flex items-center gap-3 px-5 py-4 sm:py-5"
+                className="flex min-w-0 items-center gap-3 px-4 py-3.5 sm:px-5 sm:py-5"
               >
                 <Icon className={`h-4 w-4 shrink-0 ${color}`} />
                 <div className="min-w-0">
-                  <p className="text-label-md font-semibold text-text-primary">{label}</p>
-                  <p className="text-label-sm text-text-muted">{sub}</p>
+                  <p className="truncate text-label-md font-semibold text-text-primary">{label}</p>
+                  <p className="truncate text-label-sm text-text-muted">{sub}</p>
                 </div>
               </div>
             ))}

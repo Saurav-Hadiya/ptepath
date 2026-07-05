@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLogout } from '@/hooks/useAuth';
 import { ROUTES } from '@/config/routes';
+import { useNavDrawer } from '@/components/shared/AppShell';
 import {
   LayoutDashboard,
   Users,
@@ -55,9 +56,11 @@ const navSections = [
 export default function AdminSidebar() {
   const pathname = usePathname();
   const { mutate: logout } = useLogout();
+  const { setOpen } = useNavDrawer();
+  const closeDrawer = () => setOpen(false);
 
   return (
-    <aside className="flex w-[260px] shrink-0 flex-col bg-brand-primary">
+    <aside className="flex h-full w-[260px] max-w-[85vw] shrink-0 flex-col overflow-y-auto bg-brand-primary">
       {/* Logo */}
       <div className="flex items-center gap-2.5 border-b border-sidebar-divider px-5 pb-4 pt-5">
         <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-white">
@@ -93,6 +96,7 @@ export default function AdminSidebar() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={closeDrawer}
                   className={`relative flex w-full items-center gap-2.5 px-5 py-2 text-body-sm font-medium transition-colors ${
                     isActive
                       ? 'bg-sidebar-active text-white'

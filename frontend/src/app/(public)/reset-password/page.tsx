@@ -255,7 +255,7 @@ function ResetPasswordForm() {
         <Button
           type="submit"
           disabled={isPending}
-          className="w-full bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
+          className="h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
         >
           {isPending ? 'Resetting...' : 'Reset Password'}
         </Button>

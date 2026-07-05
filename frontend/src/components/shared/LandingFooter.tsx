@@ -25,9 +25,9 @@ export default function LandingFooter() {
   return (
     <footer className="border-t border-white/8 bg-brand-primary">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-4 lg:gap-12">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-4 lg:gap-12">
           {/* Brand */}
-          <div className="col-span-2 sm:col-span-1">
+          <div className="col-span-1 sm:col-span-1">
             <Logo variant="light" size="sm" />
             <p className="mt-4 max-w-[200px] text-body-sm leading-relaxed text-white/45">
               A focused PTE Academic practice platform for serious test-takers.

@@ -33,8 +33,8 @@ export default function DataTable<T extends Record<string, unknown>>({
   emptyMessage = 'No data found',
 }: DataTableProps<T>) {
   return (
-    <div className="overflow-hidden rounded-card border border-border-default bg-bg-card shadow-card">
-      <Table>
+    <div className="w-full overflow-x-auto rounded-card border border-border-default bg-bg-card shadow-card">
+      <Table className="min-w-[640px]">
         <TableHeader>
           <TableRow className="border-border-default bg-bg-page hover:bg-bg-page">
             {columns.map((column) => (

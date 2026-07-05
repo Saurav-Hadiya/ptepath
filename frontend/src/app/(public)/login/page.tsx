@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, AlertCircle, LogIn } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
 import PublicRoute from '@/components/shared/PublicRoute';
 import { useLogin } from '@/hooks/useAuth';
@@ -40,6 +40,11 @@ export default function LoginPage() {
   return (
     <PublicRoute>
       <AuthLayout badge="Secure Login">
+        {/* Icon */}
+        <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-action-subtle">
+          <LogIn className="h-6 w-6 text-action-default" />
+        </div>
+
         {/* Heading */}
         <div className="mb-8">
           <h1 className="font-display text-display-sm font-bold text-text-primary">Welcome back</h1>
@@ -81,7 +86,7 @@ export default function LoginPage() {
 
           {/* Password */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
               <Label htmlFor="password" className="text-label-md text-text-primary">
                 Password
               </Label>
@@ -120,7 +125,7 @@ export default function LoginPage() {
           <Button
             type="submit"
             disabled={isPending}
-            className="mt-1 w-full bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
+            className="mt-1 h-auto min-h-8 w-full whitespace-normal bg-action-default py-2.5 text-label-lg text-white shadow-button hover:bg-action-hover"
           >
             {isPending ? 'Signing in...' : 'Sign In'}
           </Button>
