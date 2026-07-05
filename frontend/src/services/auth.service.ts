@@ -32,6 +32,7 @@ export interface RefreshResponse {
   success: boolean;
   message: string;
   accessToken: string;
+  user: User;
 }
 
 export interface MeResponse {

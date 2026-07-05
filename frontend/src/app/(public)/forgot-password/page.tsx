@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Mail, KeyRound, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
-import PublicRoute from '@/components/shared/PublicRoute';
 import { useForgotPassword } from '@/hooks/useAuth';
 import { forgotPasswordSchema } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
@@ -32,7 +31,6 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <PublicRoute>
       <AuthLayout badge="Password Reset">
         {submitted ? (
           /* Success state */
@@ -128,6 +126,5 @@ export default function ForgotPasswordPage() {
           </>
         )}
       </AuthLayout>
-    </PublicRoute>
   );
 }

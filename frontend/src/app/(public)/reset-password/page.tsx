@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
-import PublicRoute from '@/components/shared/PublicRoute';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useResetPassword } from '@/hooks/useAuth';
 import { resetPasswordSchema } from '@/lib/validations/auth';
@@ -278,18 +277,16 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <PublicRoute>
-      <AuthLayout badge="Reset Password">
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center py-16">
-              <LoadingSpinner size="md" label="Verifying your reset link..." />
-            </div>
-          }
-        >
-          <ResetPasswordForm />
-        </Suspense>
-      </AuthLayout>
-    </PublicRoute>
+    <AuthLayout badge="Reset Password">
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center py-16">
+            <LoadingSpinner size="md" label="Verifying your reset link..." />
+          </div>
+        }
+      >
+        <ResetPasswordForm />
+      </Suspense>
+    </AuthLayout>
   );
 }

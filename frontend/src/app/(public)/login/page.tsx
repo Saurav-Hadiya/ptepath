@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, LogIn, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
-import PublicRoute from '@/components/shared/PublicRoute';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import { useLogin } from '@/hooks/useAuth';
 import { loginSchema } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
@@ -12,13 +13,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ROUTES } from '@/config/routes';
 
-export default function LoginPage() {
+function LoginForm() {
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const { mutate: login, isPending, error } = useLogin();
+  const { mutate: login, isPending, error } = useLogin(redirectTo);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,8 +42,7 @@ export default function LoginPage() {
   }
 
   return (
-    <PublicRoute>
-      <AuthLayout badge="Secure Login">
+    <AuthLayout badge="Secure Login">
         {/* Icon */}
         <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-action-subtle">
           <LogIn className="h-6 w-6 text-action-default" />
@@ -136,7 +139,14 @@ export default function LoginPage() {
           No account?{' '}
           <span className="text-text-secondary">Contact your instructor to get enrolled.</span>
         </p>
-      </AuthLayout>
-    </PublicRoute>
+    </AuthLayout>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner fullPage size="lg" label="Loading..." />}>
+      <LoginForm />
+    </Suspense>
   );
 }
