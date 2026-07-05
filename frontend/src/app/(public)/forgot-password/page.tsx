@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Mail, KeyRound, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
-import { useForgotPassword } from '@/hooks/useAuth';
+import LoadingSpinner from '@/components/shared/LoadingSpinner';
+import { useForgotPassword, useRedirectIfAuthenticated } from '@/hooks/useAuth';
 import { forgotPasswordSchema } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,10 +13,16 @@ import { Label } from '@/components/ui/label';
 import { ROUTES } from '@/config/routes';
 
 export default function ForgotPasswordPage() {
+  const { isChecking } = useRedirectIfAuthenticated();
+
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [fieldError, setFieldError] = useState('');
   const { mutate: forgotPassword, isPending, error } = useForgotPassword();
+
+  if (isChecking) {
+    return <LoadingSpinner fullPage size="lg" label="Checking your session..." />;
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

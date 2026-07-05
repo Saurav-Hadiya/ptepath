@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/auth.store';
@@ -49,11 +50,31 @@ export function useAuthSession() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Redirect an already-logged-in user away from login/forgot-password.
+// Exposes `isChecking` instead of rendering anything itself — the page shows
+// a spinner while true and its real UI once false. Stays true through the
+// authenticated case too, so the form never flashes before the redirect.
+//─────────────────────────────────────────────────────────────────────────────
+export function useRedirectIfAuthenticated() {
+  const router = useRouter();
+  const { data, isLoading } = useAuthSession();
+  const isAuthenticated = Boolean(data?.user);
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated && data?.user) {
+      router.replace(dashboardFor(data.user.role));
+    }
+  }, [isLoading, isAuthenticated, data, router]);
+
+  return { isChecking: isLoading || isAuthenticated };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Login
 // On success: writes to Zustand + populates the session query cache so both
-// stay consistent. Honors a validated `redirect` target (e.g. from middleware
-// bouncing an unauthenticated user off a protected route), falling back to
-// the role's dashboard.
+// stay consistent. Honors a validated `redirect` target (e.g. the page the
+// user originally tried to reach before ProtectedRoute sent them to login),
+// falling back to the role's dashboard.
 //─────────────────────────────────────────────────────────────────────────────
 export function useLogin(redirectTo?: string | null) {
   const { setAuth, setFirstLoginToken } = useAuthStore();

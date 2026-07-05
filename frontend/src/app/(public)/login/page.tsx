@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, AlertCircle, LogIn, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { useLogin } from '@/hooks/useAuth';
+import { useLogin, useRedirectIfAuthenticated } from '@/hooks/useAuth';
 import { loginSchema } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,8 @@ import { Label } from '@/components/ui/label';
 import { ROUTES } from '@/config/routes';
 
 function LoginForm() {
+  const { isChecking } = useRedirectIfAuthenticated();
+
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect');
 
@@ -23,6 +25,10 @@ function LoginForm() {
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const { mutate: login, isPending, error } = useLogin(redirectTo);
+
+  if (isChecking) {
+    return <LoadingSpinner fullPage size="lg" label="Checking your session..." />;
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

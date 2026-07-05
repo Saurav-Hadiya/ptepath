@@ -13,18 +13,11 @@ interface ProtectedRouteProps {
 }
 
 /**
- * Guards student/admin routes on the client.
- *
- * Middleware already blocks unauthenticated requests from ever reaching this
- * component (it never renders without a plausible session), so this only
- * has to cover two things the edge can't: (1) fetching the real access token
- * (never stored in a cookie) via a single /auth/refresh call, and (2)
- * reacting to a session becoming invalid *while the SPA is already open*
- * (token-version bump, account deactivated, cookie expired mid-session).
- *
- * The loading spinner is shown continuously through both the initial fetch
- * and any redirect-away decision — never a blank/null frame — to avoid the
- * flicker a `return null` would cause.
+ * Guards student/admin routes on the client — no middleware equivalent
+ * exists since the refresh cookie belongs to the backend's domain, not
+ * ours. Fetches the access token via useAuthSession and redirects on auth
+ * failure or role mismatch. Always shows the spinner, never a blank frame,
+ * while loading or redirecting.
  */
 export default function ProtectedRoute({ children, requireRole }: ProtectedRouteProps) {
   const { isAuthenticated, user } = useAuthStore();
