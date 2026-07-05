@@ -1,4 +1,4 @@
-# 18 — Public Pages
+# 18 — Public Pages - DONE
 
 ## What This Is
 Claude Code instruction file.

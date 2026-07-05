@@ -48,6 +48,11 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
+    // A 401 only means "the access token expired" for requests that actually
+    if (!original.headers?.Authorization) {
+      return Promise.reject(error);
+    } 
+
     if (isRefreshing) {
       return new Promise<string>((resolve, reject) => {
         failedQueue.push({ resolve, reject });
