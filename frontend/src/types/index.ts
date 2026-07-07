@@ -77,6 +77,44 @@ export interface DashboardStats {
   activeMockTests: number;
 }
 
+export interface SpeakingCounts {
+  read_aloud: number;
+  repeat_sentence: number;
+  describe_image: number;
+  respond_situation: number;
+  answer_short: number;
+}
+
+export interface SpeakingQuestionListItem {
+  id: string;
+  type: SpeakingQuestionType;
+  preview: string | null;
+  imageUrl: string | null;
+  speakingTime: number;
+  preparationTime: number;
+}
+
+export interface SpeakingQuestion {
+  id: string;
+  type: SpeakingQuestionType;
+  content: string;
+  imageUrl: string | null;
+  speakingTime: number;
+  preparationTime: number;
+}
+
+export interface SpeakingScoreResult {
+  contentScore: number | null;
+  fluencyScore: number | null;
+  pronunciationScore: number | null;
+  engagementScore: number | null;
+  finalScore: number;
+  displayScore: string;
+  wpm: number | null;
+  feedback: string;
+  correctAnswer?: string;
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;

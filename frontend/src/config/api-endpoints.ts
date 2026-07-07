@@ -74,6 +74,7 @@ export const API_ENDPOINTS = {
   },
 
   speaking: {
+    counts: '/speaking/questions/counts',
     list: (type: string) => `/speaking/questions/${type}`,
     random: (type: string) => `/speaking/question/${type}/random`,
     get: (type: string, id: string) => `/speaking/question/${type}/${id}`,

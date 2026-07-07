@@ -15,6 +15,7 @@ export const queryKeys = {
     dashboardStats: () => ['student', 'dashboard-stats'] as const,
   },
   speaking: {
+    counts: () => ['speaking', 'counts'] as const,
     list: (type: string) => ['speaking', 'list', type] as const,
     detail: (type: string, id: string) => ['speaking', type, id] as const,
   },
