@@ -54,6 +54,9 @@ const router = Router();
 
 router.use(authenticate);
 
+// Question counts per type for the module home page.
+router.get('/questions/counts', asyncHandler(speakingController.getSpeakingCounts));
+
 // Browse / pick a question of a type.
 router.get('/questions/:type', asyncHandler(speakingController.listQuestionsByType));
 
