@@ -88,6 +88,7 @@ export const API_ENDPOINTS = {
   },
 
   writing: {
+    counts: '/writing/questions/counts',
     list: (type: string) => `/writing/questions/${type}`,
     random: (type: string) => `/writing/${type}/random`,
     get: (type: string, id: string) => `/writing/${type}/${id}`,

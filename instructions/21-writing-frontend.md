@@ -32,10 +32,10 @@ Reference: docs/md/theming.md for all names.
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
-- `18-student-dashboard.md` complete
-- Backend writing routes working (10-writing-backend.md)
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
+- `19-student-dashboard.md` complete
+- Backend writing routes working (11-writing-backend.md)
 
 ---
 

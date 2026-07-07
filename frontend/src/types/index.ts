@@ -115,6 +115,39 @@ export interface SpeakingScoreResult {
   correctAnswer?: string;
 }
 
+export interface WritingCounts {
+  summarise_written_text: number;
+  write_essay: number;
+}
+
+export interface WritingQuestionListItem {
+  id: string;
+  type: WritingQuestionType;
+  preview: string | null;
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+export interface WritingQuestion {
+  id: string;
+  type: WritingQuestionType;
+  content: string;
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+export interface WritingScoreResult {
+  wordCount: number;
+  wordCountScore: number;
+  spellingScore: number;
+  finalScore: number;
+  displayScore: string;
+  feedback: string;
+  misspelledWords: string[];
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;

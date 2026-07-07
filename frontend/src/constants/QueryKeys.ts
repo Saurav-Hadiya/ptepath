@@ -20,6 +20,7 @@ export const queryKeys = {
     detail: (type: string, id: string) => ['speaking', type, id] as const,
   },
   writing: {
+    counts: () => ['writing', 'counts'] as const,
     list: (type: string) => ['writing', 'list', type] as const,
     detail: (type: string, id: string) => ['writing', type, id] as const,
   },
