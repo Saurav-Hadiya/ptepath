@@ -148,6 +148,108 @@ export interface WritingScoreResult {
   misspelledWords: string[];
 }
 
+export interface ReadingCounts {
+  rw_fill_blanks: number;
+  mcq_multiple: number;
+  reorder_paragraphs: number;
+  reading_fill_blanks: number;
+  mcq_single: number;
+}
+
+export interface ReadingQuestionListItem {
+  id: string;
+  type: ReadingQuestionType;
+  preview: string | null;
+}
+
+export interface ReadingOption {
+  label: string;
+  text: string;
+}
+
+export interface ReadingBlank {
+  position: number;
+  options: string[];
+}
+
+export interface ReadingParagraph {
+  text: string;
+}
+
+export interface ReadingQuestion {
+  id: string;
+  type: ReadingQuestionType;
+  passage: string;
+  question: string | null;
+  options?: ReadingOption[];
+  blanks?: ReadingBlank[];
+  wordPool?: string[];
+  paragraphs?: ReadingParagraph[];
+}
+
+export interface FillBlanksBreakdown {
+  score: number;
+  correctCount: number;
+  totalBlanks: number;
+  breakdown: Array<{
+    blank: number;
+    studentAnswer: string;
+    correctAnswer: string;
+    correct: boolean;
+  }>;
+}
+
+export type MCQResultState = 'correct_selected' | 'wrong_selected' | 'missed' | 'neutral';
+
+export interface MCQMultipleBreakdown {
+  score: number;
+  totalPoints: number;
+  numberOfCorrect: number;
+  optionResults: Array<{
+    label: string;
+    text: string;
+    selected: boolean;
+    isCorrect: boolean;
+    result: MCQResultState;
+  }>;
+}
+
+export interface ReorderBreakdown {
+  score: number;
+  correctPairs: number;
+  totalPairs: number;
+  studentSequence: string[];
+  correctSequence: string[];
+}
+
+export interface MCQSingleBreakdown {
+  score: number;
+  isCorrect: boolean;
+  studentAnswer: string;
+  correctAnswer: string;
+  correctAnswerText: string;
+  optionResults: Array<{
+    label: string;
+    text: string;
+    selected: boolean;
+    isCorrect: boolean;
+  }>;
+}
+
+export type ReadingBreakdown =
+  | FillBlanksBreakdown
+  | MCQMultipleBreakdown
+  | ReorderBreakdown
+  | MCQSingleBreakdown;
+
+export interface ReadingScoreResult {
+  questionType: ReadingQuestionType;
+  finalScore: number;
+  displayScore: string;
+  feedback: string;
+  breakdown: ReadingBreakdown;
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;

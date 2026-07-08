@@ -99,6 +99,7 @@ export const API_ENDPOINTS = {
   },
 
   reading: {
+    counts: '/reading/questions/counts',
     list: (type: string) => `/reading/questions/${type}`,
     random: (type: string) => `/reading/${type}/random`,
     get: (type: string, id: string) => `/reading/${type}/${id}`,

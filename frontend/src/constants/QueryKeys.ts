@@ -25,6 +25,7 @@ export const queryKeys = {
     detail: (type: string, id: string) => ['writing', type, id] as const,
   },
   reading: {
+    counts: () => ['reading', 'counts'] as const,
     list: (type: string) => ['reading', 'list', type] as const,
     detail: (type: string, id: string) => ['reading', type, id] as const,
   },

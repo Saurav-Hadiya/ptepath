@@ -32,11 +32,11 @@ Reference: docs/md/theming.md for all names.
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
-- `18-student-dashboard.md` complete
-- `19-speaking-frontend.md` complete (AudioPlayer component available)
-- Backend listening routes working (12-listening-backend.md)
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
+- `19-student-dashboard.md` complete
+- `20-speaking-frontend.md` complete (AudioPlayer component available)
+- Backend listening routes working (13-listening-backend.md)
 
 ---
 
@@ -45,7 +45,6 @@ Reference: docs/md/theming.md for all names.
 ### Page 1 — Listening Module Home
 
 **File:** `src/app/(student)/listening/page.tsx`
-**Type:** Client Component
 
 Reference: Section2_Student_Portal.html — Reference 2
 
@@ -129,7 +128,6 @@ Type slug mapping:
 ### Page 2 — Question List Page
 
 **File:** `src/app/(student)/listening/[type]/page.tsx`
-**Type:** Client Component
 
 Same layout as all other module question lists.
 
@@ -169,7 +167,7 @@ write_dictation:     "Audio + type exactly what you hear"
 ### Page 3 — Listening Attempt Page
 
 **File:** `src/app/(student)/listening/[type]/[id]/page.tsx`
-**Type:** Client Component ('use client')
+
 
 Reference: Section2_Student_Portal.html — Reference 7
 
@@ -610,6 +608,7 @@ Fill Blanks inputs on mobile:
 8. Highlight Summary: large paragraph options selectable
 9. All types: correct answer revealed after submission
 10. Mobile: audio player and inputs work with touch
+11.make sure this audio player works in all the browsers, all type od devices, android, Iphone, mac, etc... everywhere.
 
 ---
 
@@ -620,7 +619,7 @@ Fill Blanks inputs on mobile:
 - Transcript shown for fill_blanks and highlight_incorrect only
 - Fuzzy match note shown on fill_blanks ("typos forgiven")
 - Negative marking warning shown on mcq_multiple and highlight_incorrect
-- No timer in practice mode for listening
+- If backend provides the times, then show the timer.
 - Write Dictation input: font-size min 16px on mobile (prevents iOS zoom)
 - All types use same POST /api/listening/evaluate endpoint
 - answer format varies per type — see listening-api.ts
