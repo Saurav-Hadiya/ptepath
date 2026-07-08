@@ -31,6 +31,12 @@ export function useReadingQuestion(type: string, id: string) {
   });
 }
 
+export function useReadingNext() {
+  return useMutation({
+    mutationFn: ({ type, id }: { type: string; id: string }) => readingService.getNext(type, id),
+  });
+}
+
 export function useSubmitReading() {
   return useMutation({
     mutationFn: ({

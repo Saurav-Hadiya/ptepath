@@ -22,8 +22,8 @@ const SLUG_TO_NAME: Record<string, string> = {
 
 const SLUG_TO_DESC: Record<string, string> = {
   'summarise-written-text':
-    'Read a passage and write ONE sentence summarising the main idea. Use 5 to 75 words.',
-  'write-essay': 'Read an essay prompt and write a well-structured essay in 200 to 300 words.',
+    'Read a passage and write ONE sentence summarising the main idea.',
+  'write-essay': 'Read an essay prompt and write a well-structured essay',
 };
 
 interface Props {

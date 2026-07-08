@@ -82,7 +82,7 @@ export default function SummariseWrittenTextQuestion({ question, onScoreReceived
       </div>
 
       <p className="text-body-md text-text-secondary">
-        Read the passage below. Write ONE sentence summarising the main idea. Use 5 to 75 words.
+        Read the passage below. Write ONE sentence summarising the main idea.
       </p>
 
       <div className="max-h-[180px] overflow-y-auto rounded-card border border-border-default bg-bg-page p-4 sm:p-5">

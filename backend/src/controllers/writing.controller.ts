@@ -309,6 +309,49 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
   });
 }
 
+/**
+ * Deterministic "next question" — the active question of this type with the
+ * next-highest _id after the current one, wrapping around to the first
+ * (lowest _id) active question of the type when the current one is last.
+ */
+export async function getNextQuestion(req: AuthRequest, res: Response): Promise<void> {
+  const normalizedType = normalizeType(String(req.params.type));
+  if (!normalizedType) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const current = await WritingQuestion.findOne({
+    _id: req.params.id,
+    type: normalizedType,
+    isActive: true,
+  });
+  if (!current) {
+    res.status(404).json({ success: false, message: 'Question not found.' });
+    return;
+  }
+
+  let next = await WritingQuestion.findOne({
+    type: normalizedType,
+    isActive: true,
+    _id: { $gt: current._id },
+  }).sort({ _id: 1 });
+
+  if (!next) {
+    next = await WritingQuestion.findOne({ type: normalizedType, isActive: true }).sort({ _id: 1 });
+  }
+  if (!next) {
+    res.status(404).json({ success: false, message: 'No active questions available.' });
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: studentView(next) },
+  });
+}
+
 /** Shared evaluate flow for both writing question types. */
 async function evaluate(
   req: AuthRequest,

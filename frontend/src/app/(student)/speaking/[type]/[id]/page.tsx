@@ -6,5 +6,5 @@ export default async function SpeakingQuestionPage({
   params: Promise<{ type: string; id: string }>;
 }) {
   const { type, id } = await params;
-  return <SpeakingAttemptContent slug={type} id={id} />;
+  return <SpeakingAttemptContent key={id} slug={type} id={id} />;
 }

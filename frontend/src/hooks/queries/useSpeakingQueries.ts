@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { speakingService } from '@/services/speaking.service';
 import { queryKeys } from '@/constants/QueryKeys';
 
@@ -27,5 +27,11 @@ export function useSpeakingQuestion(type: string, id: string) {
     queryFn: () => speakingService.getQuestion(type, id),
     staleTime: 1000 * 60 * 5,
     enabled: !!type && !!id,
+  });
+}
+
+export function useSpeakingNext() {
+  return useMutation({
+    mutationFn: ({ type, id }: { type: string; id: string }) => speakingService.getNext(type, id),
   });
 }

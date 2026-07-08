@@ -55,6 +55,17 @@ export const writingService = {
     }
   },
 
+  async getNext(type: string, id: string): Promise<WritingQuestion> {
+    try {
+      const { data } = await api.get<ApiResponse<{ question: unknown }>>(
+        API_ENDPOINTS.writing.next(type, id)
+      );
+      return writingQuestionSchema.parse(data.data?.question) as WritingQuestion;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async submitSummarise(questionId: string, responseText: string): Promise<WritingScoreResult> {
     return postEvaluate(API_ENDPOINTS.writing.evaluate.summarise, { questionId, responseText });
   },

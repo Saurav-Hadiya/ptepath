@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,7 +14,7 @@ import MCQMultipleQuestion from '@/components/reading/MCQMultipleQuestion';
 import ReorderParagraphsQuestion from '@/components/reading/ReorderParagraphsQuestion';
 import ReadingFillBlanksQuestion from '@/components/reading/ReadingFillBlanksQuestion';
 import MCQSingleQuestion from '@/components/reading/MCQSingleQuestion';
-import { useReadingQuestion } from '@/hooks/queries/useReadingQueries';
+import { useReadingQuestion, useReadingNext } from '@/hooks/queries/useReadingQueries';
 import { ROUTES } from '@/config/routes';
 import type {
   FillBlanksBreakdown,
@@ -63,16 +64,31 @@ export default function ReadingAttemptContent({ slug, id }: Props) {
   const apiType = SLUG_TO_TYPE[slug] ?? slug;
   const typeName = SLUG_TO_NAME[slug] ?? slug;
   const [score, setScore] = useState<ReadingScoreResult | null>(null);
+  const [attemptKey, setAttemptKey] = useState(0);
 
   const { data: question, isLoading, isError, refetch } = useReadingQuestion(apiType, id);
+  const nextMutation = useReadingNext();
 
   const handleScoreReceived = useCallback((result: ReadingScoreResult) => {
     setScore(result);
   }, []);
 
+  const handleRetry = useCallback(() => {
+    setScore(null);
+    setAttemptKey((k) => k + 1);
+  }, []);
+
   const handleNext = useCallback(() => {
-    router.push(ROUTES.student.reading.type(slug));
-  }, [router, slug]);
+    nextMutation.mutate(
+      { type: apiType, id },
+      {
+        onSuccess: (next) => {
+          router.push(ROUTES.student.reading.question(slug, next.id));
+        },
+        onError: (error: Error) => toast.error(error.message),
+      }
+    );
+  }, [nextMutation, apiType, id, router, slug]);
 
   if (isLoading) {
     return (
@@ -133,19 +149,19 @@ export default function ReadingAttemptContent({ slug, id }: Props) {
         {/* Left panel — question content */}
         <div>
           {apiType === 'rw_fill_blanks' && (
-            <RWFillBlanksQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <RWFillBlanksQuestion key={attemptKey} question={question} onScoreReceived={handleScoreReceived} />
           )}
           {apiType === 'mcq_multiple' && (
-            <MCQMultipleQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <MCQMultipleQuestion key={attemptKey} question={question} onScoreReceived={handleScoreReceived} />
           )}
           {apiType === 'reorder_paragraphs' && (
-            <ReorderParagraphsQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <ReorderParagraphsQuestion key={attemptKey} question={question} onScoreReceived={handleScoreReceived} />
           )}
           {apiType === 'reading_fill_blanks' && (
-            <ReadingFillBlanksQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <ReadingFillBlanksQuestion key={attemptKey} question={question} onScoreReceived={handleScoreReceived} />
           )}
           {apiType === 'mcq_single' && (
-            <MCQSingleQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <MCQSingleQuestion key={attemptKey} question={question} onScoreReceived={handleScoreReceived} />
           )}
         </div>
 
@@ -159,8 +175,11 @@ export default function ReadingAttemptContent({ slug, id }: Props) {
                 finalScore={score.finalScore}
                 bars={getScoreBars(apiType, score)}
                 feedback={score.feedback}
+                onRetry={handleRetry}
+                retryLabel="Retry"
                 onNext={handleNext}
-                nextLabel="Try Another Question"
+                nextLabel="Next"
+                nextDisabled={nextMutation.isPending}
               />
               {extraInfo && (
                 <div className="rounded-card border border-border-default bg-bg-card p-3 text-body-sm text-text-secondary shadow-card">

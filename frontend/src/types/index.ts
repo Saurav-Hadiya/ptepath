@@ -146,6 +146,10 @@ export interface WritingScoreResult {
   displayScore: string;
   feedback: string;
   misspelledWords: string[];
+  breakdown: {
+    wordCount: { score: number; actual: number; min: number; max: number };
+    spelling: { score: number; correct: number; incorrect: number; total: number };
+  };
 }
 
 export interface ReadingCounts {

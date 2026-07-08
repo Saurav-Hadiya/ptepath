@@ -30,6 +30,12 @@ export function useWritingQuestion(type: string, id: string) {
   });
 }
 
+export function useWritingNext() {
+  return useMutation({
+    mutationFn: ({ type, id }: { type: string; id: string }) => writingService.getNext(type, id),
+  });
+}
+
 export function useSubmitSummarise() {
   return useMutation({
     mutationFn: ({ questionId, responseText }: { questionId: string; responseText: string }) =>

@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,9 +12,10 @@ import ScoreBreakdownCard from '@/components/shared/ScoreBreakdownCard';
 import EmptyState from '@/components/shared/EmptyState';
 import SummariseWrittenTextQuestion from '@/components/writing/SummariseWrittenTextQuestion';
 import WriteEssayQuestion from '@/components/writing/WriteEssayQuestion';
-import { useWritingQuestion } from '@/hooks/queries/useWritingQueries';
+import { useWritingQuestion, useWritingNext } from '@/hooks/queries/useWritingQueries';
 import { ROUTES } from '@/config/routes';
-import type { WritingScoreResult } from '@/types';
+import { formatDuration } from '@/lib/duration';
+import type { WritingQuestion, WritingScoreResult } from '@/types';
 
 const SLUG_TO_TYPE: Record<string, string> = {
   'summarise-written-text': 'summarise_written_text',
@@ -25,20 +27,28 @@ const SLUG_TO_NAME: Record<string, string> = {
   'write-essay': 'Write Essay',
 };
 
-const INFO_ROWS: Record<string, Array<{ label: string; value: string }>> = {
-  summarise_written_text: [
+/** Time limit and word range come from the question itself — admins can override
+ *  the per-type defaults, so these must never be hardcoded. */
+function getInfoRows(apiType: string, question: WritingQuestion): Array<{ label: string; value: string }> {
+  const timeLimit = formatDuration(question.timeLimit);
+  const wordRange = `${question.wordMin} – ${question.wordMax} words`;
+
+  if (apiType === 'write_essay') {
+    return [
+      { label: 'Type', value: 'Write Essay' },
+      { label: 'Time limit', value: timeLimit },
+      { label: 'Word range', value: wordRange },
+      { label: 'Target', value: 'Well-structured essay' },
+    ];
+  }
+
+  return [
     { label: 'Type', value: 'Summarise Written Text' },
-    { label: 'Time limit', value: '10 minutes' },
-    { label: 'Word range', value: '5 – 75 words' },
+    { label: 'Time limit', value: timeLimit },
+    { label: 'Word range', value: wordRange },
     { label: 'Sentences', value: 'Exactly one sentence' },
-  ],
-  write_essay: [
-    { label: 'Type', value: 'Write Essay' },
-    { label: 'Time limit', value: '20 minutes' },
-    { label: 'Word range', value: '200 – 300 words' },
-    { label: 'Target', value: 'Well-structured essay' },
-  ],
-};
+  ];
+}
 
 function getScoreBars(score: WritingScoreResult) {
   return [
@@ -57,16 +67,31 @@ export default function WritingAttemptContent({ slug, id }: Props) {
   const apiType = SLUG_TO_TYPE[slug] ?? slug;
   const typeName = SLUG_TO_NAME[slug] ?? slug;
   const [score, setScore] = useState<WritingScoreResult | null>(null);
+  const [attemptKey, setAttemptKey] = useState(0);
 
   const { data: question, isLoading, isError, refetch } = useWritingQuestion(apiType, id);
+  const nextMutation = useWritingNext();
 
   const handleScoreReceived = useCallback((result: WritingScoreResult) => {
     setScore(result);
   }, []);
 
+  const handleRetry = useCallback(() => {
+    setScore(null);
+    setAttemptKey((k) => k + 1);
+  }, []);
+
   const handleNext = useCallback(() => {
-    router.push(ROUTES.student.writing.type(slug));
-  }, [router, slug]);
+    nextMutation.mutate(
+      { type: apiType, id },
+      {
+        onSuccess: (next) => {
+          router.push(ROUTES.student.writing.question(slug, next.id));
+        },
+        onError: (error: Error) => toast.error(error.message),
+      }
+    );
+  }, [nextMutation, apiType, id, router, slug]);
 
   if (isLoading) {
     return (
@@ -99,7 +124,7 @@ export default function WritingAttemptContent({ slug, id }: Props) {
     );
   }
 
-  const infoRows = INFO_ROWS[apiType] ?? [];
+  const infoRows = getInfoRows(apiType, question);
 
   return (
     <div>
@@ -115,9 +140,13 @@ export default function WritingAttemptContent({ slug, id }: Props) {
         {/* Left panel — question content + writing area */}
         <div>
           {apiType === 'write_essay' ? (
-            <WriteEssayQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <WriteEssayQuestion key={attemptKey} question={question} onScoreReceived={handleScoreReceived} />
           ) : (
-            <SummariseWrittenTextQuestion question={question} onScoreReceived={handleScoreReceived} />
+            <SummariseWrittenTextQuestion
+              key={attemptKey}
+              question={question}
+              onScoreReceived={handleScoreReceived}
+            />
           )}
         </div>
 
@@ -131,14 +160,28 @@ export default function WritingAttemptContent({ slug, id }: Props) {
                 finalScore={score.finalScore}
                 bars={getScoreBars(score)}
                 feedback={score.feedback}
+                onRetry={handleRetry}
+                retryLabel="Retry"
                 onNext={handleNext}
-                nextLabel="Try Another Question"
+                nextLabel="Next"
+                nextDisabled={nextMutation.isPending}
               />
+              <div className="rounded-card border border-border-default bg-bg-card p-3 text-body-sm text-text-secondary shadow-card">
+                <p>
+                  Word count: {score.breakdown.wordCount.actual} (required: {score.breakdown.wordCount.min}–
+                  {score.breakdown.wordCount.max})
+                </p>
+                <p className="mt-1">
+                  Spelling: {score.breakdown.spelling.correct} / {score.breakdown.spelling.total} words correct
+                </p>
+              </div>
               {score.misspelledWords.length > 0 && (
                 <div className="rounded-card border border-border-default bg-bg-card p-4 shadow-card">
-                  <p className="mb-2 text-label-sm font-semibold text-text-secondary">Spelling errors found:</p>
+                  <p className="mb-2 text-label-sm font-semibold text-text-secondary">
+                    Spelling errors found ({score.misspelledWords.length}):
+                  </p>
                   <div className="flex flex-wrap gap-1.5">
-                    {score.misspelledWords.slice(0, 5).map((word) => (
+                    {score.misspelledWords.map((word) => (
                       <Badge
                         key={word}
                         className="rounded-pill border-none bg-feedback-error-bg px-2.5 py-0.5 text-label-sm text-feedback-error"
@@ -146,11 +189,6 @@ export default function WritingAttemptContent({ slug, id }: Props) {
                         {word}
                       </Badge>
                     ))}
-                    {score.misspelledWords.length > 5 && (
-                      <Badge className="rounded-pill border-none bg-bg-page px-2.5 py-0.5 text-label-sm text-text-muted">
-                        +{score.misspelledWords.length - 5} more
-                      </Badge>
-                    )}
                   </div>
                   <p className="mt-2 text-label-sm text-text-muted">Check your spelling of these words.</p>
                 </div>

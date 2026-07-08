@@ -5,12 +5,12 @@ import { toast } from 'sonner';
 import { Loader2, GripVertical, Check, X } from 'lucide-react';
 import {
   DndContext,
+  closestCenter,
   useDraggable,
   useDroppable,
   useSensor,
   useSensors,
   PointerSensor,
-  TouchSensor,
   type DragEndEvent,
 } from '@dnd-kit/core';
 import { SortableContext, useSortable, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -29,17 +29,13 @@ interface ParaItem {
   text: string;
 }
 
-function preview(text: string): string {
-  return text.length > 60 ? `${text.slice(0, 60)}...` : text;
-}
-
 function SourceBox({ item, disabled }: { item: ParaItem; disabled: boolean }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: item.id,
     data: { source: 'source' },
     disabled,
   });
-  const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)` } : undefined;
+  const style = transform ? { transform: CSS.Translate.toString(transform) } : undefined;
 
   return (
     <div
@@ -47,12 +43,12 @@ function SourceBox({ item, disabled }: { item: ParaItem; disabled: boolean }) {
       style={style}
       {...listeners}
       {...attributes}
-      className={`flex touch-none items-start gap-2 rounded-input border border-border-default bg-bg-card p-3 text-body-sm text-text-primary shadow-card cursor-grab active:cursor-grabbing ${
-        isDragging ? 'opacity-40' : ''
-      }`}
+      className={`flex touch-none items-start gap-2 rounded-input border border-border-default bg-bg-card p-3 text-body-sm text-text-primary shadow-card transition-colors cursor-grab active:cursor-grabbing ${
+        disabled ? '' : 'hover:border-action-default hover:bg-action-subtle'
+      } ${isDragging ? 'opacity-40' : ''}`}
     >
-      <GripVertical className="mt-0.5 size-4 shrink-0 text-text-muted" />
-      <span>{preview(item.text)}</span>
+      <GripVertical className="mt-0.5 size-4 shrink-0 text-action-default" />
+      <span className="whitespace-pre-wrap">{item.text}</span>
     </div>
   );
 }
@@ -85,12 +81,12 @@ function AnswerBox({
       style={style}
       {...listeners}
       {...attributes}
-      className={`flex touch-none items-start gap-2 rounded-input border p-3 text-body-sm text-text-primary shadow-card cursor-grab active:cursor-grabbing ${stateClass} ${
-        isDragging ? 'opacity-40' : ''
-      }`}
+      className={`flex touch-none items-start gap-2 rounded-input border p-3 text-body-sm text-text-primary shadow-card transition-shadow cursor-grab active:cursor-grabbing ${stateClass} ${
+        disabled ? '' : 'hover:shadow-hover'
+      } ${isDragging ? 'opacity-40' : ''}`}
     >
-      <GripVertical className="mt-0.5 size-4 shrink-0 text-text-muted" />
-      <span className="flex-1">{preview(item.text)}</span>
+      <GripVertical className="mt-0.5 size-4 shrink-0 text-action-default" />
+      <span className="flex-1 whitespace-pre-wrap">{item.text}</span>
       {resultState === 'correct' && <Check className="size-4 shrink-0 text-feedback-success" />}
       {resultState === 'wrong' && <X className="size-4 shrink-0 text-feedback-error" />}
     </div>
@@ -106,13 +102,20 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
   const [breakdown, setBreakdown] = useState<ReorderBreakdown | null>(null);
   const mutation = useSubmitReading();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
-  );
+  // A single PointerSensor covers mouse, touch and pen — mixing it with TouchSensor
+  // causes duplicate activation on touch devices and unreliable drags.
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   const { setNodeRef: setSourceRef, isOver: isSourceOver } = useDroppable({ id: 'source-zone', disabled: submitted });
-  const { setNodeRef: setAnswerRef, isOver: isAnswerOver } = useDroppable({ id: 'answer-zone', disabled: submitted });
+  // Disabled once the answer panel has items — otherwise this container's larger
+  // rect keeps winning collision detection over the individual sortable items
+  // nested inside it, so `over.id` never resolves to a specific item and
+  // reordering silently breaks. Once non-empty, the items themselves are the
+  // drop targets (and still catch drops arriving from the source panel).
+  const { setNodeRef: setAnswerRef, isOver: isAnswerOver } = useDroppable({
+    id: 'answer-zone',
+    disabled: submitted || answer.length > 0,
+  });
 
   function handleDragEnd(event: DragEndEvent) {
     if (submitted) return;
@@ -180,7 +183,13 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
         Drag the paragraph boxes from the left panel into the correct order in the right panel.
       </p>
 
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      {question.passage && (
+        <div className="rounded-card border border-border-default bg-bg-page p-4 sm:p-5">
+          <p className="whitespace-pre-wrap text-body-md leading-[1.8] text-text-primary">{question.passage}</p>
+        </div>
+      )}
+
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div>
             <p className="mb-2 text-label-md text-text-secondary">Source — Drag from here</p>
@@ -243,7 +252,7 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
                 {breakdown.studentSequence.map((text, i) => (
                   <li key={i} className="flex items-start gap-2 text-body-sm text-text-primary">
                     <span className="shrink-0 font-semibold">{i + 1}.</span>
-                    <span className="flex-1">{preview(text)}</span>
+                    <span className="flex-1 whitespace-pre-wrap">{text}</span>
                     {breakdown.correctSequence[i] === text ? (
                       <Check className="mt-0.5 size-4 shrink-0 text-feedback-success" />
                     ) : (
@@ -259,7 +268,7 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
                 {breakdown.correctSequence.map((text, i) => (
                   <li key={i} className="flex items-start gap-2 text-body-sm text-text-primary">
                     <span className="shrink-0 font-semibold">{i + 1}.</span>
-                    <span className="flex-1">{preview(text)}</span>
+                    <span className="flex-1 whitespace-pre-wrap">{text}</span>
                   </li>
                 ))}
               </ol>

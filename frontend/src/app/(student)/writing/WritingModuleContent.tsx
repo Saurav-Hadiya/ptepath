@@ -24,14 +24,14 @@ const TYPE_CARDS: TypeCard[] = [
     type: 'summarise_written_text',
     slug: 'summarise-written-text',
     name: 'Summarise Written Text',
-    description: 'Read a passage and write ONE sentence summarising the main idea. Use 5 to 75 words.',
+    description: 'Read a passage and write ONE sentence summarising the main idea.',
   },
   {
     number: 2,
     type: 'write_essay',
     slug: 'write-essay',
     name: 'Write Essay',
-    description: 'Read an essay prompt and write a well-structured essay in 200 to 300 words.',
+    description: 'Read an essay prompt and write a well-structured essay.',
   },
 ];
 

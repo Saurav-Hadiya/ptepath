@@ -95,7 +95,7 @@ export default function WriteEssayQuestion({ question, onScoreReceived }: Props)
       </div>
 
       <p className="text-body-md text-text-secondary">
-        Read the prompt below. Write a well-structured essay in 200 to 300 words.
+        Read the prompt below. Write a well-structured essay.
       </p>
 
       <div className="max-h-[180px] overflow-y-auto rounded-card border border-border-default bg-bg-page p-4 sm:p-5">

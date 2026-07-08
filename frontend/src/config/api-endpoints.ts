@@ -77,6 +77,7 @@ export const API_ENDPOINTS = {
     counts: '/speaking/questions/counts',
     list: (type: string) => `/speaking/questions/${type}`,
     random: (type: string) => `/speaking/question/${type}/random`,
+    next: (type: string, id: string) => `/speaking/question/${type}/${id}/next`,
     get: (type: string, id: string) => `/speaking/question/${type}/${id}`,
     evaluate: {
       readAloud: '/speaking/evaluate/read-aloud',
@@ -91,6 +92,7 @@ export const API_ENDPOINTS = {
     counts: '/writing/questions/counts',
     list: (type: string) => `/writing/questions/${type}`,
     random: (type: string) => `/writing/${type}/random`,
+    next: (type: string, id: string) => `/writing/${type}/${id}/next`,
     get: (type: string, id: string) => `/writing/${type}/${id}`,
     evaluate: {
       summarise: '/writing/evaluate/summarise',
@@ -102,6 +104,7 @@ export const API_ENDPOINTS = {
     counts: '/reading/questions/counts',
     list: (type: string) => `/reading/questions/${type}`,
     random: (type: string) => `/reading/${type}/random`,
+    next: (type: string, id: string) => `/reading/${type}/${id}/next`,
     get: (type: string, id: string) => `/reading/${type}/${id}`,
     evaluate: '/reading/evaluate',
   },
