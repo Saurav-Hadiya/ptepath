@@ -56,6 +56,8 @@ const router = Router();
 
 router.use(authenticate);
 
+router.get('/questions/counts', asyncHandler(writingController.getWritingCounts));
+
 // Browse / pick a question of a type.
 router.get('/questions/:type', asyncHandler(writingController.listQuestionsByType));
 

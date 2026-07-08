@@ -15,14 +15,17 @@ export const queryKeys = {
     dashboardStats: () => ['student', 'dashboard-stats'] as const,
   },
   speaking: {
+    counts: () => ['speaking', 'counts'] as const,
     list: (type: string) => ['speaking', 'list', type] as const,
     detail: (type: string, id: string) => ['speaking', type, id] as const,
   },
   writing: {
+    counts: () => ['writing', 'counts'] as const,
     list: (type: string) => ['writing', 'list', type] as const,
     detail: (type: string, id: string) => ['writing', type, id] as const,
   },
   reading: {
+    counts: () => ['reading', 'counts'] as const,
     list: (type: string) => ['reading', 'list', type] as const,
     detail: (type: string, id: string) => ['reading', type, id] as const,
   },
