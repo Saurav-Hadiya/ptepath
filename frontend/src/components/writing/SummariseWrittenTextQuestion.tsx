@@ -22,7 +22,11 @@ export default function SummariseWrittenTextQuestion({ question, onScoreReceived
   const [phase, setPhase] = useState<'writing' | 'processing' | 'scored'>('writing');
 
   const wordCount = countWords(responseText);
-  const canSubmit = wordCount >= question.wordMin && (phase as string) === 'writing';
+  // Backend never rejects for word count — it always scores whatever is submitted
+  // (too short/long just scores low). The only hard requirement is non-empty text,
+  // so submission is only blocked on that, never on the word-count band.
+  const canSubmit = wordCount > 0 && (phase as string) === 'writing';
+  const belowMin = wordCount > 0 && wordCount < question.wordMin;
 
   const mutation = useSubmitSummarise();
 

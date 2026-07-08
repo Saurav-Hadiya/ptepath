@@ -25,7 +25,11 @@ export default function WriteEssayQuestion({ question, onScoreReceived }: Props)
   const [phase, setPhase] = useState<'writing' | 'processing' | 'scored'>('writing');
 
   const wordCount = countWords(responseText);
-  const canSubmit = wordCount >= WARN_WORDS && (phase as string) === 'writing';
+  // Backend never rejects for word count — it always scores whatever is submitted
+  // (too short/long just scores low, per WORD_COUNT_BANDS in writing.scoring.ts).
+  // The only hard requirement is non-empty text, so submission is only blocked on
+  // that, never on the word-count band.
+  const canSubmit = wordCount > 0 && (phase as string) === 'writing';
 
   const mutation = useSubmitEssay();
 
