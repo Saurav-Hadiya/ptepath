@@ -1,3 +1,5 @@
+import SpeakingModuleContent from './SpeakingModuleContent';
+
 export default function SpeakingPage() {
-  return <main>Speaking</main>;
+  return <SpeakingModuleContent />;
 }
