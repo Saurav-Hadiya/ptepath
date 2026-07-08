@@ -1,4 +1,4 @@
-# 22 — Reading Frontend
+# 22 — Reading Frontend - DONE
 
 ## What This Is
 Claude Code instruction file.
@@ -32,10 +32,10 @@ Reference: docs/md/theming.md for all names.
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
-- `18-student-dashboard.md` complete
-- Backend reading routes working (11-reading-backend.md)
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
+- `19-student-dashboard.md` complete
+- Backend reading routes working (12-reading-backend.md)
 - @dnd-kit/core and @dnd-kit/sortable installed
 
 ---
@@ -45,7 +45,6 @@ Reference: docs/md/theming.md for all names.
 ### Page 1 — Reading Module Home
 
 **File:** `src/app/(student)/reading/page.tsx`
-**Type:** Client Component
 
 Reference: Section2_Student_Portal.html — Reference 2
 
@@ -111,7 +110,6 @@ Type slug mapping:
 ### Page 2 — Question List Page
 
 **File:** `src/app/(student)/reading/[type]/page.tsx`
-**Type:** Client Component
 
 Same layout as Writing and Speaking question lists.
 
@@ -145,7 +143,6 @@ mcq_single:           passage preview
 ### Page 3 — Reading Attempt Page
 
 **File:** `src/app/(student)/reading/[type]/[id]/page.tsx`
-**Type:** Client Component ('use client')
 
 Reference: Section2_Student_Portal.html — Reference 6
 
@@ -582,7 +579,7 @@ Submit button: full width on mobile
 - MCQ Single: radio buttons work
 - All types: correct answers revealed after submission
 - Answer state highlights correct/wrong/missed correctly
-- No timer in practice mode (correct per platform decision)
+- If backend provides the timer then it should be available here.
 
 ---
 
@@ -596,12 +593,11 @@ Submit button: full width on mobile
 7. MCQ Single: select one → submit → correct answer highlighted
 8. Negative marking warning visible on MCQ Multiple page
 9. Mobile: touch drag works on @dnd-kit components
-10. No timer visible on any reading attempt page
+10. If from backend timer comes so accordingly timer countdown should be available in frontend, that should not be statically on frontend without backend.
 
 ---
 
 ## Notes
-- No timer on reading pages in practice mode
 - @dnd-kit handles both mouse and touch events
 - Correct answers come from API response — never sent before submission
 - Reorder paragraphs: paragraphs shuffled by backend before sending

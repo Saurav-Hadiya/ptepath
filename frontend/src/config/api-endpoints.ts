@@ -10,6 +10,10 @@ export const API_ENDPOINTS = {
     updatePassword: '/auth/update-password',
   },
 
+  student: {
+    dashboardStats: '/student/dashboard-stats',
+  },
+
   admin: {
     students: {
       list: '/admin/students',
@@ -70,6 +74,7 @@ export const API_ENDPOINTS = {
   },
 
   speaking: {
+    counts: '/speaking/questions/counts',
     list: (type: string) => `/speaking/questions/${type}`,
     random: (type: string) => `/speaking/question/${type}/random`,
     get: (type: string, id: string) => `/speaking/question/${type}/${id}`,
@@ -83,6 +88,7 @@ export const API_ENDPOINTS = {
   },
 
   writing: {
+    counts: '/writing/questions/counts',
     list: (type: string) => `/writing/questions/${type}`,
     random: (type: string) => `/writing/${type}/random`,
     get: (type: string, id: string) => `/writing/${type}/${id}`,
@@ -93,6 +99,7 @@ export const API_ENDPOINTS = {
   },
 
   reading: {
+    counts: '/reading/questions/counts',
     list: (type: string) => `/reading/questions/${type}`,
     random: (type: string) => `/reading/${type}/random`,
     get: (type: string, id: string) => `/reading/${type}/${id}`,

@@ -1,6 +1,11 @@
 import { Response } from 'express';
 import { AuthRequest } from '../types';
 import { User, IUser } from '../models/user.model';
+import { SpeakingQuestion } from '../models/speaking-question.model';
+import { WritingQuestion } from '../models/writing-question.model';
+import { ReadingQuestion } from '../models/reading-question.model';
+import { ListeningQuestion } from '../models/listening-question.model';
+import { MockTestTemplate } from '../models/mocktest-template.model';
 import { hashPassword } from '../utils/hash.utils';
 
 function safeStudent(user: IUser) {
@@ -153,6 +158,34 @@ export async function updateStudentStatus(req: AuthRequest, res: Response): Prom
   res.status(200).json({
     success: true,
     message: isActive ? 'Student account enabled.' : 'Student account disabled.',
+  });
+}
+
+export async function getStudentDashboardStats(req: AuthRequest, res: Response): Promise<void> {
+  const student = await User.findById(req.user!.userId);
+  if (!student) {
+    res.status(404).json({ success: false, message: 'Student not found' });
+    return;
+  }
+
+  const [speaking, writing, reading, listening, activeMockTests] = await Promise.all([
+    SpeakingQuestion.countDocuments({ isActive: true }),
+    WritingQuestion.countDocuments({ isActive: true }),
+    ReadingQuestion.countDocuments({ isActive: true }),
+    ListeningQuestion.countDocuments({ isActive: true }),
+    MockTestTemplate.countDocuments({ isActive: true }),
+  ]);
+
+  res.status(200).json({
+    success: true,
+    message:'Student dashboard stats retrieved successfully.',
+    data: {
+      studentName: student.name,
+      totalAttempts: student.totalAttempts,
+      totalMockTests: student.totalMockTests,
+      questionCounts: { speaking, writing, reading, listening },
+      activeMockTests,
+    },
   });
 }
 

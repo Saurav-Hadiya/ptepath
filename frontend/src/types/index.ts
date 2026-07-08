@@ -64,6 +64,192 @@ export interface BaseQuestion {
   createdAt: string;
 }
 
+export interface DashboardStats {
+  studentName: string;
+  totalAttempts: number;
+  totalMockTests: number;
+  questionCounts: {
+    speaking: number;
+    writing: number;
+    reading: number;
+    listening: number;
+  };
+  activeMockTests: number;
+}
+
+export interface SpeakingCounts {
+  read_aloud: number;
+  repeat_sentence: number;
+  describe_image: number;
+  respond_situation: number;
+  answer_short: number;
+}
+
+export interface SpeakingQuestionListItem {
+  id: string;
+  type: SpeakingQuestionType;
+  preview: string | null;
+  imageUrl: string | null;
+  speakingTime: number;
+  preparationTime: number;
+}
+
+export interface SpeakingQuestion {
+  id: string;
+  type: SpeakingQuestionType;
+  content: string;
+  imageUrl: string | null;
+  speakingTime: number;
+  preparationTime: number;
+}
+
+export interface SpeakingScoreResult {
+  contentScore: number | null;
+  fluencyScore: number | null;
+  pronunciationScore: number | null;
+  engagementScore: number | null;
+  finalScore: number;
+  displayScore: string;
+  wpm: number | null;
+  feedback: string;
+  correctAnswer?: string;
+}
+
+export interface WritingCounts {
+  summarise_written_text: number;
+  write_essay: number;
+}
+
+export interface WritingQuestionListItem {
+  id: string;
+  type: WritingQuestionType;
+  preview: string | null;
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+export interface WritingQuestion {
+  id: string;
+  type: WritingQuestionType;
+  content: string;
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+export interface WritingScoreResult {
+  wordCount: number;
+  wordCountScore: number;
+  spellingScore: number;
+  finalScore: number;
+  displayScore: string;
+  feedback: string;
+  misspelledWords: string[];
+}
+
+export interface ReadingCounts {
+  rw_fill_blanks: number;
+  mcq_multiple: number;
+  reorder_paragraphs: number;
+  reading_fill_blanks: number;
+  mcq_single: number;
+}
+
+export interface ReadingQuestionListItem {
+  id: string;
+  type: ReadingQuestionType;
+  preview: string | null;
+}
+
+export interface ReadingOption {
+  label: string;
+  text: string;
+}
+
+export interface ReadingBlank {
+  position: number;
+  options: string[];
+}
+
+export interface ReadingParagraph {
+  text: string;
+}
+
+export interface ReadingQuestion {
+  id: string;
+  type: ReadingQuestionType;
+  passage: string;
+  question: string | null;
+  options?: ReadingOption[];
+  blanks?: ReadingBlank[];
+  wordPool?: string[];
+  paragraphs?: ReadingParagraph[];
+}
+
+export interface FillBlanksBreakdown {
+  score: number;
+  correctCount: number;
+  totalBlanks: number;
+  breakdown: Array<{
+    blank: number;
+    studentAnswer: string;
+    correctAnswer: string;
+    correct: boolean;
+  }>;
+}
+
+export type MCQResultState = 'correct_selected' | 'wrong_selected' | 'missed' | 'neutral';
+
+export interface MCQMultipleBreakdown {
+  score: number;
+  totalPoints: number;
+  numberOfCorrect: number;
+  optionResults: Array<{
+    label: string;
+    text: string;
+    selected: boolean;
+    isCorrect: boolean;
+    result: MCQResultState;
+  }>;
+}
+
+export interface ReorderBreakdown {
+  score: number;
+  correctPairs: number;
+  totalPairs: number;
+  studentSequence: string[];
+  correctSequence: string[];
+}
+
+export interface MCQSingleBreakdown {
+  score: number;
+  isCorrect: boolean;
+  studentAnswer: string;
+  correctAnswer: string;
+  correctAnswerText: string;
+  optionResults: Array<{
+    label: string;
+    text: string;
+    selected: boolean;
+    isCorrect: boolean;
+  }>;
+}
+
+export type ReadingBreakdown =
+  | FillBlanksBreakdown
+  | MCQMultipleBreakdown
+  | ReorderBreakdown
+  | MCQSingleBreakdown;
+
+export interface ReadingScoreResult {
+  questionType: ReadingQuestionType;
+  finalScore: number;
+  displayScore: string;
+  feedback: string;
+  breakdown: ReadingBreakdown;
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;
