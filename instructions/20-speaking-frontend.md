@@ -1,4 +1,4 @@
-# 20 — Speaking Frontend
+# 20 — Speaking Frontend - DONE
 
 ## What This Is
 Claude Code instruction file.
@@ -32,11 +32,11 @@ Reference: docs/md/theming.md for all names.
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
-- `17-public-pages.md` complete
-- `18-student-dashboard.md` complete
-- Backend speaking routes working (09-speaking-backend.md)
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
+- `18-public-pages.md` complete
+- `19-student-dashboard.md` complete
+- Backend speaking routes working (10-speaking-backend.md)
 
 ---
 
@@ -45,7 +45,6 @@ Reference: docs/md/theming.md for all names.
 ### Page 1 — Speaking Module Home
 
 **File:** `src/app/(student)/speaking/page.tsx`
-**Type:** Client Component
 
 Reference: Section2_Student_Portal.html — Reference 2
 
@@ -168,7 +167,6 @@ If no questions:
 ### Page 3 — Speaking Attempt Page (Shared Shell)
 
 **File:** `src/app/(student)/speaking/[type]/[id]/page.tsx`
-**Type:** Client Component ('use client')
 
 Reference: Section2_Student_Portal.html — Reference 4
 

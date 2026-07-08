@@ -7,10 +7,14 @@ interface QueueItem {
   reject: (error: unknown) => void;
 }
 
+// No default Content-Type here on purpose: axios sets 'application/json' for
+// plain object bodies automatically, and lets the browser attach the correct
+// 'multipart/form-data; boundary=...' header for FormData bodies (audio
+// uploads). A hardcoded default would override the FormData boundary and
+// silently break every multipart upload (e.g. speaking audio evaluation).
 const api = axios.create({
   baseURL: env.apiUrl,
   withCredentials: true,
-  headers: { 'Content-Type': 'application/json' },
 });
 
 api.interceptors.request.use((config) => {
