@@ -261,6 +261,27 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
 
 // ─── Student Controllers ────────────────────────────────────────────────────
 
+export async function getReadingCounts(_req: AuthRequest, res: Response): Promise<void> {
+  const counts = await ReadingQuestion.aggregate([
+    { $match: { isActive: true } },
+    { $group: { _id: '$type', count: { $sum: 1 } } },
+  ]);
+
+  const result: Record<ReadingQuestionType, number> = {
+    rw_fill_blanks: 0,
+    mcq_multiple: 0,
+    reorder_paragraphs: 0,
+    reading_fill_blanks: 0,
+    mcq_single: 0,
+  };
+
+  for (const item of counts) {
+    result[item._id as ReadingQuestionType] = item.count;
+  }
+
+  res.status(200).json({ success: true, message: 'Reading counts retrieved successfully.', data: result });
+}
+
 export async function listQuestionsByType(req: AuthRequest, res: Response): Promise<void> {
   const normalizedType = normalizeType(String(req.params.type));
   if (!normalizedType) {

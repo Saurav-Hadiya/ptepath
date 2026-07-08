@@ -1,3 +1,5 @@
+import ReadingModuleContent from './ReadingModuleContent';
+
 export default function ReadingPage() {
-  return <main>Reading</main>;
+  return <ReadingModuleContent />;
 }

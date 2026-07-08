@@ -1,3 +1,10 @@
-export default function SpeakingQuestionPage() {
-  return <main>Speaking Question</main>;
+import SpeakingAttemptContent from './SpeakingAttemptContent';
+
+export default async function SpeakingQuestionPage({
+  params,
+}: {
+  params: Promise<{ type: string; id: string }>;
+}) {
+  const { type, id } = await params;
+  return <SpeakingAttemptContent slug={type} id={id} />;
 }
