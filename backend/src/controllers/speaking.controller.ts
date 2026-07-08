@@ -240,6 +240,27 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
 
 // ─── Student Controllers ────────────────────────────────────────────────────
 
+export async function getSpeakingCounts(_req: AuthRequest, res: Response): Promise<void> {
+  const counts = await SpeakingQuestion.aggregate([
+    { $match: { isActive: true } },
+    { $group: { _id: '$type', count: { $sum: 1 } } },
+  ]);
+
+  const result: Record<string, number> = {
+    read_aloud: 0,
+    repeat_sentence: 0,
+    describe_image: 0,
+    respond_situation: 0,
+    answer_short: 0,
+  };
+
+  for (const item of counts) {
+    result[item._id as string] = item.count;
+  }
+
+  res.status(200).json({ success: true, data: result });
+}
+
 export async function listQuestionsByType(req: AuthRequest, res: Response): Promise<void> {
   const normalizedType = normalizeType(String(req.params.type));
   if (!normalizedType) {
