@@ -1,3 +1,5 @@
+import WritingModuleContent from './WritingModuleContent';
+
 export default function WritingPage() {
-  return <main>Writing</main>;
+  return <WritingModuleContent />;
 }

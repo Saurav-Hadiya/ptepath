@@ -221,6 +221,24 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
 
 // ─── Student Controllers ────────────────────────────────────────────────────
 
+export async function getWritingCounts(_req: AuthRequest, res: Response): Promise<void> {
+  const counts = await WritingQuestion.aggregate([
+    { $match: { isActive: true } },
+    { $group: { _id: '$type', count: { $sum: 1 } } },
+  ]);
+
+  const result: Record<WritingQuestionType, number> = {
+    summarise_written_text: 0,
+    write_essay: 0,
+  };
+
+  for (const item of counts) {
+    result[item._id as WritingQuestionType] = item.count;
+  }
+
+  res.status(200).json({ success: true, data: result });
+}
+
 export async function listQuestionsByType(req: AuthRequest, res: Response): Promise<void> {
   const normalizedType = normalizeType(String(req.params.type));
   if (!normalizedType) {
