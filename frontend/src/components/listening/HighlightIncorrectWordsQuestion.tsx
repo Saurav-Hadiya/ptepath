@@ -68,7 +68,7 @@ export default function HighlightIncorrectWordsQuestion({ question, onScoreRecei
 
       <div className="flex items-start gap-2.5 rounded-input border border-feedback-warning/30 bg-feedback-warning-bg p-3 text-body-sm text-feedback-warning-text">
         <TriangleAlert className="mt-0.5 size-4 shrink-0" />
-        <span>Clicking a correct word deducts points.</span>
+        <span>Clicking a Incorrect word deducts points.</span>
       </div>
 
       <AudioPlayer ref={audioPlayerRef} audioUrl={question.audioUrl} playLimit={question.playLimit} />
