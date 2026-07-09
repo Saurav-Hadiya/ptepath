@@ -1,3 +1,5 @@
+import MockTestResultContent from './MockTestResultContent';
+
 export default function MockTestResultPage() {
-  return <main>Mock Test Result</main>;
+  return <MockTestResultContent />;
 }

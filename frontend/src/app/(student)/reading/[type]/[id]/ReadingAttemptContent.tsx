@@ -15,6 +15,7 @@ import ReorderParagraphsQuestion from '@/components/reading/ReorderParagraphsQue
 import ReadingFillBlanksQuestion from '@/components/reading/ReadingFillBlanksQuestion';
 import MCQSingleQuestion from '@/components/reading/MCQSingleQuestion';
 import { useReadingQuestion, useReadingNext } from '@/hooks/queries/useReadingQueries';
+import { deriveScoreBars } from '@/lib/score-bars';
 import { ROUTES } from '@/config/routes';
 import type {
   FillBlanksBreakdown,
@@ -47,12 +48,6 @@ const SCORING_DESC: Record<string, string> = {
   reading_fill_blanks: '1 point per correct blank',
   mcq_single: 'Binary — correct or wrong',
 };
-
-function getScoreBars(apiType: string, score: ReadingScoreResult) {
-  if (apiType === 'mcq_single') return [];
-  if (apiType === 'reorder_paragraphs') return [{ label: 'Order Accuracy', score: score.finalScore }];
-  return [{ label: 'Accuracy', score: score.finalScore }];
-}
 
 interface Props {
   slug: string;
@@ -173,7 +168,7 @@ export default function ReadingAttemptContent({ slug, id }: Props) {
                 title="Your Score"
                 displayScore={score.displayScore}
                 finalScore={score.finalScore}
-                bars={getScoreBars(apiType, score)}
+                bars={deriveScoreBars(score.breakdown, score.finalScore)}
                 feedback={score.feedback}
                 onRetry={handleRetry}
                 retryLabel="Retry"

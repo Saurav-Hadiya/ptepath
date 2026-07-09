@@ -32,6 +32,7 @@ export const ROUTES = {
     },
     mockTests: {
       home: '/mock-tests',
+      confirm: (id: string) => `/mock-tests/${id}/confirm`,
       attempt: '/mock-tests/attempt',
       result: '/mock-tests/result',
     },

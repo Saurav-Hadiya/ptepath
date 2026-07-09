@@ -25,7 +25,7 @@ const TYPE_CARDS: TypeCard[] = [
     type: 'summarise_spoken',
     slug: 'summarise-spoken',
     name: 'Summarise Spoken Text',
-    description: 'Listen to audio and write a 50–70 word summary.',
+    description: 'Listen to audio and write a summary.',
     details: 'Word count + spelling scored',
   },
   {

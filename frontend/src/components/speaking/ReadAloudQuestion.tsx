@@ -13,9 +13,15 @@ import type { SpeakingQuestion, SpeakingScoreResult } from '@/types';
 interface Props {
   question: SpeakingQuestion;
   onScoreReceived: (score: SpeakingScoreResult) => void;
+  /** Shown once scored — override for contexts (e.g. mock test) where "see your score" doesn't apply yet. */
+  completionMessage?: string;
 }
 
-export default function ReadAloudQuestion({ question, onScoreReceived }: Props) {
+export default function ReadAloudQuestion({
+  question,
+  onScoreReceived,
+  completionMessage = 'Response submitted — see your score',
+}: Props) {
   const {
     phase,
     submitError,
@@ -64,9 +70,7 @@ export default function ReadAloudQuestion({ question, onScoreReceived }: Props) 
       ) : phase === 'scored' ? (
         <div className="flex items-center justify-center gap-2 rounded-card border border-feedback-success/20 bg-feedback-success-bg p-5 text-center">
           <CheckCircle2 className="size-5 text-feedback-success" />
-          <span className="text-body-sm font-medium text-feedback-success-text">
-            Response submitted — see your score
-          </span>
+          <span className="text-body-sm font-medium text-feedback-success-text">{completionMessage}</span>
         </div>
       ) : (
         <RecordButton

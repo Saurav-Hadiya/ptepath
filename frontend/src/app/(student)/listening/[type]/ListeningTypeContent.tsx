@@ -33,7 +33,7 @@ const SLUG_TO_NAME: Record<string, string> = {
 };
 
 const SLUG_TO_DESC: Record<string, string> = {
-  'summarise-spoken': 'Listen to audio and write a 50–70 word summary.',
+  'summarise-spoken': 'Listen to audio and write a summary.',
   'mcq-multiple': 'Listen and select ALL correct answers.',
   'fill-blanks': 'Listen and type missing words into the transcript.',
   'highlight-correct-summary': 'Listen and select which summary best matches.',

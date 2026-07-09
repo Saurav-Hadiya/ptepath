@@ -11,8 +11,8 @@ const listeningQuestionType = z.enum([
   'write_dictation',
 ]);
 
-const listeningOptionSchema = z.object({ label: z.string(), text: z.string() });
-const listeningBlankSchema = z.object({ position: z.number() });
+export const listeningOptionSchema = z.object({ label: z.string(), text: z.string() });
+export const listeningBlankSchema = z.object({ position: z.number() });
 
 /** Question shape varies by type — every conditional field is optional here. */
 export const listeningQuestionSchema = z.object({

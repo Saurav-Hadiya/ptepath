@@ -180,7 +180,7 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
   return (
     <div className="space-y-5">
       <p className="text-body-md text-text-secondary">
-        Drag the paragraph boxes from the left panel into the correct order in the right panel.
+        Drag the paragraph boxes from the Source panel into the correct order in the Answer panel.
       </p>
 
       {question.passage && (

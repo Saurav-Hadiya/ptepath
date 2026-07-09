@@ -38,6 +38,12 @@ export function useTimer({ initialSeconds, onExpire, autoStart = false }: UseTim
     [clear, initialSeconds]
   );
 
+  // Tick — the updater stays a pure function of its previous value. Firing
+  // onExpire (or any other side effect) from inside a setState updater is
+  // invalid: React can invoke that updater while a *different* component is
+  // mid-render, and onExpire here cascades into a parent's setState — which
+  // is exactly the "Cannot update a component while rendering a different
+  // component" class of bug. Side effects belong in the effect below instead.
   useEffect(() => {
     if (!isRunning) {
       clear();
@@ -45,19 +51,21 @@ export function useTimer({ initialSeconds, onExpire, autoStart = false }: UseTim
     }
 
     intervalRef.current = setInterval(() => {
-      setSeconds((prev) => {
-        if (prev <= 1) {
-          clear();
-          setIsRunning(false);
-          onExpireRef.current?.();
-          return 0;
-        }
-        return prev - 1;
-      });
+      setSeconds((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
     return clear;
   }, [isRunning, clear]);
+
+  // Fires exactly once when the countdown reaches zero, as its own effect —
+  // safe to call setState here (including a parent's, via onExpire) since
+  // effects always run after the commit, never during another render.
+  useEffect(() => {
+    if (isRunning && seconds === 0) {
+      setIsRunning(false);
+      onExpireRef.current?.();
+    }
+  }, [seconds, isRunning]);
 
   useEffect(() => {
     return clear;

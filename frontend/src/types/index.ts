@@ -376,17 +376,136 @@ export interface ListeningScoreResult {
   breakdown: ListeningBreakdown;
 }
 
+export interface MockTestQuestionRule {
+  module: ModuleType;
+  type: string;
+  count: number;
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;
   description: string;
   totalTime: number;
-  questionRules: Array<{
-    module: ModuleType;
-    type: string;
-    count: number;
-  }>;
+  questionRules: MockTestQuestionRule[];
   isActive: boolean;
   attemptCount: number;
   avgScore: number;
+}
+
+/** Student-facing template summary — never exposes attemptCount / avgScore. */
+export interface MockTestTemplateSummary {
+  id: string;
+  name: string;
+  description: string;
+  /** Total time in minutes. */
+  totalTime: number;
+  questionRules: MockTestQuestionRule[];
+  totalQuestions: number;
+}
+
+/** Per-module question payloads returned by the start endpoint (correct answers stripped). */
+export interface MockSpeakingData {
+  content: string;
+  imageUrl: string | null;
+}
+
+export interface MockWritingData {
+  content: string;
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+export interface MockReadingData {
+  passage: string;
+  question: string | null;
+  options?: ReadingOption[];
+  blanks?: ReadingBlank[];
+  wordPool?: string[];
+  paragraphs?: ReadingParagraph[];
+}
+
+export interface MockListeningData {
+  audioUrl: string;
+  playLimit: number;
+  question: string | null;
+  options?: ListeningOption[];
+  transcript?: string;
+  blanks?: ListeningBlank[];
+}
+
+export type MockQuestionData =
+  | MockSpeakingData
+  | MockWritingData
+  | MockReadingData
+  | MockListeningData;
+
+interface MockTestQuestionBase {
+  id: string;
+  questionType: string;
+  /** Speaking / writing only — seconds; null for reading & listening. */
+  speakingTime: number | null;
+  preparationTime: number | null;
+}
+
+/**
+ * Discriminated union on `module` — narrowing on `question.module` (e.g. in a
+ * switch) automatically narrows `questionData` to the matching shape, so
+ * consumers never need an `as MockSpeakingData`-style cast.
+ */
+export type MockTestQuestion =
+  | (MockTestQuestionBase & { module: 'speaking'; questionData: MockSpeakingData })
+  | (MockTestQuestionBase & { module: 'writing'; questionData: MockWritingData })
+  | (MockTestQuestionBase & { module: 'reading'; questionData: MockReadingData })
+  | (MockTestQuestionBase & { module: 'listening'; questionData: MockListeningData });
+
+export interface MockTestStartData {
+  templateId: string;
+  templateName: string;
+  /** Total time in minutes. */
+  totalTime: number;
+  totalQuestions: number;
+  questions: MockTestQuestion[];
+}
+
+/** A single answer value as expected by the module scorers on submit. */
+export type MockAnswerValue = string | string[] | number[];
+
+export interface MockTestAnswerPayload {
+  questionId: string;
+  questionType: string;
+  module: ModuleType;
+  /** Raw answer for non-speaking modules; null for speaking / unanswered. */
+  answer?: MockAnswerValue | null;
+  /** Pre-scored value for speaking (via Groq during the test); null otherwise. */
+  score?: number | null;
+}
+
+export interface MockTestSubmitPayload {
+  answers: MockTestAnswerPayload[];
+  /** Whole minutes elapsed. */
+  timeTaken: number;
+}
+
+export interface MockTestQuestionResult {
+  questionId: string;
+  questionType: string;
+  score: number;
+  displayScore: string;
+  breakdown: unknown;
+}
+
+export interface MockTestModuleResult {
+  score: number;
+  displayScore: string;
+  questions: MockTestQuestionResult[];
+}
+
+export interface MockTestResult {
+  overallScore: number;
+  displayScore: string;
+  timeTaken: number;
+  questionsAnswered: number;
+  modules: Record<ModuleType, MockTestModuleResult>;
 }

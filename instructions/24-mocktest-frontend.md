@@ -33,13 +33,13 @@ Reference: docs/md/theming.md for all names.
 ---
 
 ## Prerequisites
-- `15-frontend-foundation.md` complete
-- `16-shared-components.md` complete
-- `19-speaking-frontend.md` complete (useSpeakingRecorder, useTimer)
-- `20-writing-frontend.md` complete (word counter logic)
-- `21-reading-frontend.md` complete (MCQ, fill blanks, reorder)
-- `22-listening-frontend.md` complete (AudioPlayer, all listening components)
-- Backend mock test routes working (13-mocktest-backend.md)
+- `16-frontend-foundation.md` complete
+- `17-shared-components.md` complete
+- `20-speaking-frontend.md` complete (useSpeakingRecorder, useTimer)
+- `21-writing-frontend.md` complete (word counter logic)
+- `22-reading-frontend.md` complete (MCQ, fill blanks, reorder)
+- `23-listening-frontend.md` complete (AudioPlayer, all listening components)
+- Backend mock test routes working (14-mocktest-backend.md)
 
 ---
 
@@ -138,7 +138,6 @@ On confirm: call startMockTest API then navigate to attempt page
 ### Page 2 — Mock Test Attempt Page
 
 **File:** `src/app/(student)/mock-tests/attempt/page.tsx`
-**Type:** Client Component ('use client')
 
 Reference: Section2_Student_Portal.html — Reference 8
 

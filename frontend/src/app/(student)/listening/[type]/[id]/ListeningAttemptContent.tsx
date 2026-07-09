@@ -18,6 +18,7 @@ import SelectMissingWordQuestion from '@/components/listening/SelectMissingWordQ
 import HighlightIncorrectWordsQuestion from '@/components/listening/HighlightIncorrectWordsQuestion';
 import WriteDictationQuestion from '@/components/listening/WriteDictationQuestion';
 import { useListeningQuestion, useListeningNext } from '@/hooks/queries/useListeningQueries';
+import { deriveScoreBars } from '@/lib/score-bars';
 import { ROUTES } from '@/config/routes';
 import type {
   FillBlanksListeningBreakdown,
@@ -60,27 +61,6 @@ const SCORING_DESC: Record<string, string> = {
   highlight_incorrect: '+1 / −1 per word',
   write_dictation: 'Word match + spelling',
 };
-
-const NO_BAR_TYPES = new Set(['highlight_summary', 'mcq_single', 'select_missing']);
-
-function getScoreBars(apiType: string, score: ListeningScoreResult) {
-  if (NO_BAR_TYPES.has(apiType)) return [];
-  if (apiType === 'summarise_spoken') {
-    const b = score.breakdown as { wordCountScore: number; spellingScore: number };
-    return [
-      { label: 'Word Count', score: b.wordCountScore },
-      { label: 'Spelling', score: b.spellingScore },
-    ];
-  }
-  if (apiType === 'write_dictation') {
-    const b = score.breakdown as WriteDictationBreakdown;
-    return [
-      { label: 'Word Match', score: b.wordMatchScore },
-      { label: 'Spelling', score: b.spellingScore },
-    ];
-  }
-  return [{ label: 'Accuracy', score: score.finalScore }];
-}
 
 interface Props {
   slug: string;
@@ -222,7 +202,7 @@ export default function ListeningAttemptContent({ slug, id }: Props) {
                 title="Your Score"
                 displayScore={score.displayScore}
                 finalScore={score.finalScore}
-                bars={getScoreBars(apiType, score)}
+                bars={deriveScoreBars(score.breakdown, score.finalScore)}
                 feedback={score.feedback}
                 onRetry={handleRetry}
                 retryLabel="Retry"
