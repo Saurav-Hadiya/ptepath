@@ -110,8 +110,10 @@ export const API_ENDPOINTS = {
   },
 
   listening: {
+    counts: '/listening/questions/counts',
     list: (type: string) => `/listening/questions/${type}`,
     random: (type: string) => `/listening/${type}/random`,
+    next: (type: string, id: string) => `/listening/${type}/${id}/next`,
     get: (type: string, id: string) => `/listening/${type}/${id}`,
     evaluate: '/listening/evaluate',
   },

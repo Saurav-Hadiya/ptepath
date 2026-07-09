@@ -1,3 +1,5 @@
+import ListeningModuleContent from './ListeningModuleContent';
+
 export default function ListeningPage() {
-  return <main>Listening</main>;
+  return <ListeningModuleContent />;
 }

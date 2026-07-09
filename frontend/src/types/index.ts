@@ -254,6 +254,128 @@ export interface ReadingScoreResult {
   breakdown: ReadingBreakdown;
 }
 
+export interface ListeningOption {
+  label: string;
+  text: string;
+}
+
+export interface ListeningBlank {
+  position: number;
+}
+
+export interface ListeningQuestionListItem {
+  id: string;
+  type: ListeningQuestionType;
+  audioUrl: string;
+  playLimit: number;
+  preview: string | null;
+}
+
+export interface ListeningQuestion {
+  id: string;
+  type: ListeningQuestionType;
+  audioUrl: string;
+  playLimit: number;
+  question: string | null;
+  options?: ListeningOption[];
+  transcript?: string;
+  blanks?: ListeningBlank[];
+  /** Seconds. summarise_spoken only — undefined for every other type. */
+  timeLimit?: number;
+}
+
+export interface ListeningCounts {
+  summarise_spoken: number;
+  mcq_multiple: number;
+  fill_blanks: number;
+  highlight_summary: number;
+  mcq_single: number;
+  select_missing: number;
+  highlight_incorrect: number;
+  write_dictation: number;
+}
+
+export interface SpellingResult {
+  total: number;
+  correct: number;
+  incorrect: number;
+  misspelled: string[];
+  score: number;
+}
+
+export interface SummariseSpokenBreakdown {
+  score: number;
+  wordCount: number;
+  wordCountScore: number;
+  spellingScore: number;
+  spellingResult: SpellingResult;
+  misspelledWords: string[];
+}
+
+export type FillBlankState = 'exact' | 'close' | 'wrong';
+
+export interface FillBlanksListeningBreakdown {
+  score: number;
+  totalPoints: number;
+  totalBlanks: number;
+  breakdown: Array<{
+    blank: number;
+    studentAnswer: string;
+    correctAnswer: string;
+    distance: number;
+    points: number;
+    result: FillBlankState;
+  }>;
+}
+
+export type HighlightWordState = 'correct_click' | 'wrong_click' | 'missed' | 'neutral';
+
+export interface HighlightIncorrectBreakdown {
+  score: number;
+  totalPoints: number;
+  totalIncorrect: number;
+  wordResults: Array<{
+    index: number;
+    clicked: boolean;
+    isIncorrect: boolean;
+    result: HighlightWordState;
+  }>;
+}
+
+export type DictationState = 'exact' | 'close' | 'missed';
+
+export interface WriteDictationBreakdown {
+  score: number;
+  wordMatchScore: number;
+  spellingScore: number;
+  matchedWords: number;
+  exactMatches: number;
+  totalWords: number;
+  correctSentence: string;
+  breakdown: Array<{
+    correctWord: string;
+    studentWord: string | null;
+    distance: number;
+    result: DictationState;
+  }>;
+}
+
+export type ListeningBreakdown =
+  | SummariseSpokenBreakdown
+  | MCQMultipleBreakdown
+  | MCQSingleBreakdown
+  | FillBlanksListeningBreakdown
+  | HighlightIncorrectBreakdown
+  | WriteDictationBreakdown;
+
+export interface ListeningScoreResult {
+  questionType: ListeningQuestionType;
+  finalScore: number;
+  displayScore: string;
+  feedback: string;
+  breakdown: ListeningBreakdown;
+}
+
 export interface MockTestTemplate {
   id: string;
   name: string;

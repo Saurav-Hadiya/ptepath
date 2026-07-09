@@ -29,6 +29,9 @@ const OPTION_TYPES: ListeningQuestionType[] = [
 // Types that show a transcript to the student.
 const TRANSCRIPT_TYPES: ListeningQuestionType[] = ['fill_blanks', 'highlight_incorrect'];
 
+// Only summarise_spoken is timed. Default applied on create when not supplied.
+const DEFAULT_SUMMARISE_SPOKEN_TIME_LIMIT = 600;
+
 /** Map canonical / hyphenated URL forms to the DB enum. */
 function normalizeType(raw: string): ListeningQuestionType | null {
   const v = raw.trim().toLowerCase().replace(/-/g, '_') as ListeningQuestionType;
@@ -61,6 +64,9 @@ function studentView(question: IListeningQuestion): Record<string, unknown> {
   if (question.type === 'fill_blanks') {
     base.blanks = question.blanks.map((b) => ({ position: b.position }));
   }
+  if (question.type === 'summarise_spoken') {
+    base.timeLimit = question.timeLimit ?? DEFAULT_SUMMARISE_SPOKEN_TIME_LIMIT;
+  }
 
   return base;
 }
@@ -92,6 +98,7 @@ function adminView(question: IListeningQuestion) {
     blanks: question.blanks,
     incorrectWordIndices: question.incorrectWordIndices,
     correctSentence: question.correctSentence ?? null,
+    timeLimit: question.timeLimit,
     isActive: question.isActive,
     attemptCount: question.attemptCount,
     avgScore: Math.round(question.avgScore * 10) / 10,
@@ -119,17 +126,27 @@ async function updateStudentStats(userId: string): Promise<void> {
 
 export async function addQuestion(req: AuthRequest, res: Response): Promise<void> {
   // Body validated & coerced (incl. per-type rules) by createListeningQuestionSchema.
-  const { type, playLimit, question, options, transcript, blanks, incorrectWordIndices, correctSentence } =
-    req.body as {
-      type: ListeningQuestionType;
-      playLimit?: number;
-      question?: string;
-      options?: IListeningQuestion['options'];
-      transcript?: string;
-      blanks?: IListeningQuestion['blanks'];
-      incorrectWordIndices?: number[];
-      correctSentence?: string;
-    };
+  const {
+    type,
+    playLimit,
+    question,
+    options,
+    transcript,
+    blanks,
+    incorrectWordIndices,
+    correctSentence,
+    timeLimit,
+  } = req.body as {
+    type: ListeningQuestionType;
+    playLimit?: number;
+    question?: string;
+    options?: IListeningQuestion['options'];
+    transcript?: string;
+    blanks?: IListeningQuestion['blanks'];
+    incorrectWordIndices?: number[];
+    correctSentence?: string;
+    timeLimit?: number;
+  };
 
   // Audio file is mandatory for every type.
   if (!req.file) {
@@ -148,6 +165,7 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
     blanks: type === 'fill_blanks' ? blanks ?? [] : [],
     incorrectWordIndices: type === 'highlight_incorrect' ? incorrectWordIndices ?? [] : [],
     correctSentence: type === 'write_dictation' ? correctSentence ?? null : null,
+    timeLimit: type === 'summarise_spoken' ? timeLimit ?? DEFAULT_SUMMARISE_SPOKEN_TIME_LIMIT : null,
   });
 
   res.status(201).json({
@@ -199,16 +217,25 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
   }
 
   // type is immutable. Structural shape already validated by updateListeningQuestionSchema.
-  const { playLimit, question: questionText, options, transcript, blanks, incorrectWordIndices, correctSentence } =
-    req.body as {
-      playLimit?: number;
-      question?: string;
-      options?: IListeningQuestion['options'];
-      transcript?: string;
-      blanks?: IListeningQuestion['blanks'];
-      incorrectWordIndices?: number[];
-      correctSentence?: string;
-    };
+  const {
+    playLimit,
+    question: questionText,
+    options,
+    transcript,
+    blanks,
+    incorrectWordIndices,
+    correctSentence,
+    timeLimit,
+  } = req.body as {
+    playLimit?: number;
+    question?: string;
+    options?: IListeningQuestion['options'];
+    transcript?: string;
+    blanks?: IListeningQuestion['blanks'];
+    incorrectWordIndices?: number[];
+    correctSentence?: string;
+    timeLimit?: number;
+  };
 
   // Build the candidate (existing values overlaid with updates) and re-validate
   // the per-type invariants against the question's existing type.
@@ -253,6 +280,9 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
   if (question.type === 'write_dictation' && correctSentence !== undefined) {
     question.correctSentence = correctSentence;
   }
+  if (question.type === 'summarise_spoken' && timeLimit !== undefined) {
+    question.timeLimit = timeLimit;
+  }
 
   await question.save();
 
@@ -296,6 +326,30 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
 }
 
 // ─── Student Controllers ────────────────────────────────────────────────────
+
+export async function getListeningCounts(_req: AuthRequest, res: Response): Promise<void> {
+  const counts = await ListeningQuestion.aggregate([
+    { $match: { isActive: true } },
+    { $group: { _id: '$type', count: { $sum: 1 } } },
+  ]);
+
+  const result: Record<ListeningQuestionType, number> = {
+    summarise_spoken: 0,
+    mcq_multiple: 0,
+    fill_blanks: 0,
+    highlight_summary: 0,
+    mcq_single: 0,
+    select_missing: 0,
+    highlight_incorrect: 0,
+    write_dictation: 0,
+  };
+
+  for (const item of counts) {
+    result[item._id as ListeningQuestionType] = item.count;
+  }
+
+  res.status(200).json({ success: true, message: 'Listening counts retrieved successfully.', data: result });
+}
 
 export async function listQuestionsByType(req: AuthRequest, res: Response): Promise<void> {
   const normalizedType = normalizeType(String(req.params.type));
@@ -366,6 +420,49 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
     success: true,
     message: 'Question retrieved successfully.',
     data: { question: studentView(question) },
+  });
+}
+
+/**
+ * Deterministic "next question" — the active question of this type with the
+ * next-highest _id after the current one, wrapping around to the first
+ * (lowest _id) active question of the type when the current one is last.
+ */
+export async function getNextQuestion(req: AuthRequest, res: Response): Promise<void> {
+  const normalizedType = normalizeType(String(req.params.type));
+  if (!normalizedType) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const current = await ListeningQuestion.findOne({
+    _id: req.params.id,
+    type: normalizedType,
+    isActive: true,
+  });
+  if (!current) {
+    res.status(404).json({ success: false, message: 'Question not found.' });
+    return;
+  }
+
+  let next = await ListeningQuestion.findOne({
+    type: normalizedType,
+    isActive: true,
+    _id: { $gt: current._id },
+  }).sort({ _id: 1 });
+
+  if (!next) {
+    next = await ListeningQuestion.findOne({ type: normalizedType, isActive: true }).sort({ _id: 1 });
+  }
+  if (!next) {
+    res.status(404).json({ success: false, message: 'No active questions available.' });
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: studentView(next) },
   });
 }
 
