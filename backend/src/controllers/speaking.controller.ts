@@ -145,14 +145,18 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
 }
 
 export async function getAllQuestions(req: AuthRequest, res: Response): Promise<void> {
-  let filter: Record<string, unknown> = {};
+  const filter: Record<string, unknown> = {};
   if (req.query.type !== undefined) {
     const typeParam = normalizeType(String(req.query.type));
     if (!typeParam) {
       res.status(400).json({ success: false, message: 'Invalid question type filter.' });
       return;
     }
-    filter = { type: typeParam };
+    filter.type = typeParam;
+  }
+  if (req.query.search !== undefined && String(req.query.search).trim() !== '') {
+    const escaped = String(req.query.search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    filter.content = { $regex: escaped, $options: 'i' };
   }
 
   const questions = await SpeakingQuestion.find(filter).sort({ createdAt: -1 });
@@ -160,6 +164,20 @@ export async function getAllQuestions(req: AuthRequest, res: Response): Promise<
   res.status(200).json({
     success: true,
     data: { questions: questions.map(adminView), total: questions.length },
+  });
+}
+
+export async function getOneQuestion(req: AuthRequest, res: Response): Promise<void> {
+  const question = await SpeakingQuestion.findById(req.params.id);
+  if (!question) {
+    res.status(404).json({ success: false, message: 'Question not found.' });
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: adminView(question) },
   });
 }
 

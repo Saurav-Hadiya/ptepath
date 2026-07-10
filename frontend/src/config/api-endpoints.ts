@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
   },
 
   admin: {
+    dashboardStats: '/admin/dashboard-stats',
     students: {
       list: '/admin/students',
       create: '/admin/students',
@@ -27,6 +28,7 @@ export const API_ENDPOINTS = {
     speaking: {
       list: '/admin/speaking/questions',
       create: '/admin/speaking/questions',
+      get: (id: string) => `/admin/speaking/questions/${id}`,
       update: (id: string) => `/admin/speaking/questions/${id}`,
       delete: (id: string) => `/admin/speaking/questions/${id}`,
       status: (id: string) => `/admin/speaking/questions/${id}/status`,

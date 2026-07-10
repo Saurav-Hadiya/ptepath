@@ -1,3 +1,5 @@
+import DashboardContent from './DashboardContent';
+
 export default function AdminDashboardPage() {
-  return <main>Admin Dashboard</main>;
+  return <DashboardContent />;
 }

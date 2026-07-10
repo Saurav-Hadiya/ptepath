@@ -8,11 +8,24 @@ export const queryKeys = {
     me: () => ['auth', 'me'] as const,
   },
   students: {
-    all: () => ['students'] as const,
+    all: (search?: string) => ['students', search ?? ''] as const,
     detail: (id: string) => ['students', id] as const,
   },
   student: {
     dashboardStats: () => ['student', 'dashboard-stats'] as const,
+  },
+  adminDashboard: {
+    stats: () => ['admin', 'dashboard-stats'] as const,
+  },
+  adminQuestions: {
+    list: (module: string, type: string, search?: string) =>
+      ['admin', module, 'questions', type, search ?? ''] as const,
+    all: (module: string) => ['admin', module, 'questions'] as const,
+    detail: (module: string, id: string) => ['admin', module, 'question', id] as const,
+  },
+  adminMockTests: {
+    list: (search?: string) => ['admin', 'mock-tests', search ?? ''] as const,
+    all: () => ['admin', 'mock-tests'] as const,
   },
   speaking: {
     counts: () => ['speaking', 'counts'] as const,

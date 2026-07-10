@@ -1,3 +1,5 @@
+import WritingHubContent from './WritingHubContent';
+
 export default function AdminWritingPage() {
-  return <main>Admin Writing</main>;
+  return <WritingHubContent />;
 }

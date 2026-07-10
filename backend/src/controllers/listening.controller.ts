@@ -176,14 +176,19 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
 }
 
 export async function getAllQuestions(req: AuthRequest, res: Response): Promise<void> {
-  let filter: Record<string, unknown> = {};
+  const filter: Record<string, unknown> = {};
   if (req.query.type !== undefined) {
     const typeParam = normalizeType(String(req.query.type));
     if (!typeParam) {
       res.status(400).json({ success: false, message: 'Invalid question type filter.' });
       return;
     }
-    filter = { type: typeParam };
+    filter.type = typeParam;
+  }
+  if (req.query.search !== undefined && String(req.query.search).trim() !== '') {
+    const escaped = String(req.query.search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = { $regex: escaped, $options: 'i' };
+    filter.$or = [{ question: regex }, { transcript: regex }, { correctSentence: regex }];
   }
 
   const questions = await ListeningQuestion.find(filter).sort({ createdAt: -1 });

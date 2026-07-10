@@ -162,7 +162,13 @@ export async function createTemplate(req: AuthRequest, res: Response): Promise<v
 }
 
 export async function getAllTemplates(req: AuthRequest, res: Response): Promise<void> {
-  const templates = await MockTestTemplate.find().sort({ createdAt: -1 });
+  const filter: Record<string, unknown> = {};
+  if (req.query.search !== undefined && String(req.query.search).trim() !== '') {
+    const escaped = String(req.query.search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    filter.name = { $regex: escaped, $options: 'i' };
+  }
+
+  const templates = await MockTestTemplate.find(filter).sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,

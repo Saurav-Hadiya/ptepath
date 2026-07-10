@@ -77,6 +77,109 @@ export interface DashboardStats {
   activeMockTests: number;
 }
 
+export interface AdminStudent {
+  id: string;
+  name: string;
+  email: string;
+  isActive: boolean;
+  isFirstLogin: boolean;
+  totalAttempts: number;
+  totalMockTests: number;
+  lastActiveAt: string | null;
+  createdAt: string;
+}
+
+export interface AdminDashboardStats {
+  totalStudents: number;
+  activeStudents: number;
+  totalQuestions: number;
+  attemptsToday: number;
+  totalMockTestAttempts: number;
+  recentLogins: Array<{
+    id: string;
+    name: string;
+    email: string;
+    lastActiveAt: string | null;
+    isActive: boolean;
+  }>;
+  lowestScoringQuestions: Array<{
+    id: string;
+    type: string;
+    module: ModuleType;
+    content: string;
+    attemptCount: number;
+    avgScore: number;
+  }>;
+}
+
+export interface AdminSpeakingQuestion extends BaseQuestion {
+  type: SpeakingQuestionType;
+  content: string;
+  imageUrl: string | null;
+  acceptedAnswers: string[];
+  speakingTime: number;
+  preparationTime: number;
+}
+
+export interface AdminWritingQuestion extends BaseQuestion {
+  type: WritingQuestionType;
+  content: string;
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+export interface AdminReadingBlank {
+  position: number;
+  correctAnswer: string;
+  options: string[];
+}
+
+export interface AdminReadingOption {
+  label: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface AdminReadingParagraph {
+  label: string;
+  text: string;
+}
+
+export interface AdminReadingQuestion extends BaseQuestion {
+  type: ReadingQuestionType;
+  passage: string;
+  question: string | null;
+  blanks: AdminReadingBlank[];
+  options: AdminReadingOption[];
+  paragraphs: AdminReadingParagraph[];
+  wordPool: string[];
+}
+
+export interface AdminListeningOption {
+  label: string;
+  text: string;
+  isCorrect: boolean;
+}
+
+export interface AdminListeningBlank {
+  position: number;
+  correctWord: string;
+}
+
+export interface AdminListeningQuestion extends BaseQuestion {
+  type: ListeningQuestionType;
+  audioUrl: string;
+  playLimit: number;
+  question: string | null;
+  options: AdminListeningOption[];
+  transcript: string | null;
+  blanks: AdminListeningBlank[];
+  incorrectWordIndices: number[];
+  correctSentence: string | null;
+  timeLimit: number | null;
+}
+
 export interface SpeakingCounts {
   read_aloud: number;
   repeat_sentence: number;

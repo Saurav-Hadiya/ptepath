@@ -45,10 +45,10 @@ const navSections = [
   {
     label: 'Questions',
     items: [
-      { label: 'Speaking', href: ROUTES.admin.speaking, icon: Mic },
-      { label: 'Writing', href: ROUTES.admin.writing, icon: PenLine },
-      { label: 'Reading', href: ROUTES.admin.reading, icon: BookOpen },
-      { label: 'Listening', href: ROUTES.admin.listening, icon: Headphones },
+      { label: 'Speaking', href: ROUTES.admin.speaking.home, icon: Mic },
+      { label: 'Writing', href: ROUTES.admin.writing.home, icon: PenLine },
+      { label: 'Reading', href: ROUTES.admin.reading.home, icon: BookOpen },
+      { label: 'Listening', href: ROUTES.admin.listening.home, icon: Headphones },
     ],
   },
   {

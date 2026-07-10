@@ -28,6 +28,11 @@ adminSpeakingRouter.post(
   asyncHandler(speakingController.addQuestion)
 );
 adminSpeakingRouter.get('/questions', asyncHandler(speakingController.getAllQuestions));
+adminSpeakingRouter.get(
+  '/questions/:id',
+  validateObjectId(),
+  asyncHandler(speakingController.getOneQuestion)
+);
 adminSpeakingRouter.put(
   '/questions/:id',
   validateObjectId(),
