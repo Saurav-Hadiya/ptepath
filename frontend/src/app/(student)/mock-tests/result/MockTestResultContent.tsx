@@ -191,21 +191,21 @@ export default function MockTestResultContent() {
                       key={rowKey}
                       className="overflow-hidden rounded-card border border-border-default bg-bg-card shadow-card"
                     >
-                      <div className="flex flex-wrap items-center gap-3 p-3 sm:p-4">
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 p-3 sm:p-4">
                         <span className="flex size-8 shrink-0 items-center justify-center rounded-input bg-bg-page text-label-md text-text-secondary">
                           {number}
                         </span>
-                        <div className="min-w-0 flex-1">
-                          <QuestionTypeBadge type={question.questionType} module={module} />
-                        </div>
-                        <span className={`shrink-0 text-label-md font-semibold tabular-nums ${scoreColor(question.score)}`}>
+                        <QuestionTypeBadge type={question.questionType} module={module} />
+                        <span
+                          className={`ml-auto shrink-0 text-label-md font-semibold tabular-nums ${scoreColor(question.score)}`}
+                        >
                           {question.displayScore}
                         </span>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => setExpandedKey(isExpanded ? null : rowKey)}
-                          className="shrink-0 gap-1 border-border-default text-action-default hover:bg-action-subtle"
+                          className="w-full shrink-0 gap-1 border-border-default text-action-default hover:bg-action-subtle sm:w-auto"
                         >
                           {isExpanded ? 'Hide' : 'View'} Details
                           <ChevronDown className={`size-3.5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
