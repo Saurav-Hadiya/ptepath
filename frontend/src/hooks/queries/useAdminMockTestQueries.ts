@@ -8,6 +8,14 @@ import {
 } from '@/services/admin-mocktest.service';
 import { queryKeys } from '@/constants/QueryKeys';
 
+export function useAdminMockTestDetail(id: string | undefined) {
+  return useQuery({
+    queryKey: queryKeys.adminMockTests.detail(id ?? ''),
+    queryFn: () => adminMockTestService.getOne(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useAdminMockTestList(search?: string) {
   return useQuery({
     queryKey: queryKeys.adminMockTests.list(search),

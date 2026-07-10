@@ -8,6 +8,7 @@ export const queryKeys = {
     me: () => ['auth', 'me'] as const,
   },
   students: {
+    base: () => ['students'] as const,
     all: (search?: string) => ['students', search ?? ''] as const,
     detail: (id: string) => ['students', id] as const,
   },
@@ -26,6 +27,7 @@ export const queryKeys = {
   adminMockTests: {
     list: (search?: string) => ['admin', 'mock-tests', search ?? ''] as const,
     all: () => ['admin', 'mock-tests'] as const,
+    detail: (id: string) => ['admin', 'mock-tests', id] as const,
   },
   speaking: {
     counts: () => ['speaking', 'counts'] as const,

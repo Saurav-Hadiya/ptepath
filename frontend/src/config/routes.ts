@@ -41,7 +41,11 @@ export const ROUTES = {
   admin: {
     dashboard: '/admin/dashboard',
     settings: '/admin/settings',
-    students: '/admin/students',
+    students: {
+      home: '/admin/students',
+      new: '/admin/students/new',
+      detail: (id: string) => `/admin/students/${id}`,
+    },
     speaking: {
       home: '/admin/speaking',
       type: (type: string) => `/admin/speaking/${type}`,
@@ -66,6 +70,10 @@ export const ROUTES = {
       new: (type: string) => `/admin/listening/${type}/new`,
       edit: (type: string, id: string) => `/admin/listening/${type}/${id}/edit`,
     },
-    mockTests: '/admin/mock-tests',
+    mockTests: {
+      home: '/admin/mock-tests',
+      new: '/admin/mock-tests/new',
+      edit: (id: string) => `/admin/mock-tests/${id}/edit`,
+    },
   },
 } as const;

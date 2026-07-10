@@ -24,6 +24,17 @@ export interface CreateStudentResult {
 }
 
 export const adminStudentService = {
+  async getOne(id: string): Promise<AdminStudent> {
+    try {
+      const { data } = await api.get<ApiResponse<{ student: AdminStudent }>>(
+        API_ENDPOINTS.admin.students.get(id)
+      );
+      return (data.data as { student: AdminStudent }).student;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async list(search?: string): Promise<{ students: AdminStudent[]; total: number }> {
     try {
       const { data } = await api.get<ApiResponse<{ students: AdminStudent[]; total: number }>>(

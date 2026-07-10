@@ -39,7 +39,7 @@ const navSections = [
   {
     label: 'Students',
     items: [
-      { label: 'Students', href: ROUTES.admin.students, icon: Users },
+      { label: 'Students', href: ROUTES.admin.students.home, icon: Users },
     ],
   },
   {
@@ -54,7 +54,7 @@ const navSections = [
   {
     label: 'Tests',
     items: [
-      { label: 'Mock Tests', href: ROUTES.admin.mockTests, icon: Target },
+      { label: 'Mock Tests', href: ROUTES.admin.mockTests.home, icon: Target },
     ],
   },
   {

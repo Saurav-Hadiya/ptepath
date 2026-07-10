@@ -11,6 +11,17 @@ export interface MockTestTemplatePayload {
 }
 
 export const adminMockTestService = {
+  async getOne(id: string): Promise<MockTestTemplate> {
+    try {
+      const { data } = await api.get<ApiResponse<{ template: MockTestTemplate }>>(
+        API_ENDPOINTS.admin.mockTests.get(id)
+      );
+      return (data.data as { template: MockTestTemplate }).template;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async list(search?: string): Promise<{ templates: MockTestTemplate[]; total: number }> {
     try {
       const { data } = await api.get<ApiResponse<{ templates: MockTestTemplate[]; total: number }>>(

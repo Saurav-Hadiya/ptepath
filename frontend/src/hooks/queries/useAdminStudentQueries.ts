@@ -9,9 +9,6 @@ import {
 } from '@/services/admin-student.service';
 import { queryKeys } from '@/constants/QueryKeys';
 
-/** Base key prefix shared by every search variant — used for invalidation so all searches refresh. */
-const STUDENTS_KEY_PREFIX = ['students'] as const;
-
 export function useAdminStudents(search?: string) {
   return useQuery({
     queryKey: queryKeys.students.all(search),
@@ -20,12 +17,20 @@ export function useAdminStudents(search?: string) {
   });
 }
 
+export function useAdminStudent(id: string | undefined) {
+  return useQuery({
+    queryKey: queryKeys.students.detail(id ?? ''),
+    queryFn: () => adminStudentService.getOne(id as string),
+    enabled: !!id,
+  });
+}
+
 export function useCreateStudent() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: CreateStudentPayload) => adminStudentService.create(payload),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEY_PREFIX });
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.base() });
       toast.success('Student created successfully.');
     },
     onError: (error: Error) => {
@@ -39,8 +44,9 @@ export function useUpdateStudent() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: UpdateStudentPayload }) =>
       adminStudentService.update(id, payload),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEY_PREFIX });
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.base() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.detail(variables.id) });
       toast.success('Student updated successfully.');
     },
     onError: (error: Error) => {
@@ -55,7 +61,7 @@ export function useResetStudentPassword() {
     mutationFn: ({ id, temporaryPassword }: { id: string; temporaryPassword: string }) =>
       adminStudentService.resetPassword(id, temporaryPassword),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEY_PREFIX });
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.base() });
       toast.success('Password reset. Student must change it on next login.');
     },
     onError: (error: Error) => {
@@ -69,8 +75,9 @@ export function useToggleStudentStatus() {
   return useMutation({
     mutationFn: ({ id, isActive }: { id: string; isActive: boolean }) =>
       adminStudentService.toggleStatus(id, isActive),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEY_PREFIX });
+    onSuccess: (_data, variables) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.base() });
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.detail(variables.id) });
       toast.success('Status updated.');
     },
     onError: (error: Error) => {
@@ -84,7 +91,7 @@ export function useDeleteStudent() {
   return useMutation({
     mutationFn: (id: string) => adminStudentService.remove(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: STUDENTS_KEY_PREFIX });
+      queryClient.invalidateQueries({ queryKey: queryKeys.students.base() });
       toast.success('Student deleted successfully.');
     },
     onError: (error: Error) => {
