@@ -1,9 +1,14 @@
 import { z } from 'zod';
 
+const temporaryPasswordSchema = z
+  .string()
+  .min(8, 'Password must be at least 8 characters')
+  .regex(/\d/, 'Password must contain at least one number');
+
 export const createStudentSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
-  temporaryPassword: z.string().min(6, 'Password must be at least 6 characters'),
+  temporaryPassword: temporaryPasswordSchema,
 });
 
 export const updateStudentSchema = z.object({
@@ -12,7 +17,7 @@ export const updateStudentSchema = z.object({
 });
 
 export const resetPasswordAdminSchema = z.object({
-  temporaryPassword: z.string().min(6, 'Password must be at least 6 characters'),
+  temporaryPassword: temporaryPasswordSchema,
 });
 
 export const adminChangePasswordSchema = z

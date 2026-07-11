@@ -98,15 +98,12 @@ export interface AdminDashboardStats {
   recentLogins: Array<{
     id: string;
     name: string;
-    email: string;
     lastActiveAt: string | null;
-    isActive: boolean;
   }>;
-  lowestScoringQuestions: Array<{
-    id: string;
+  lowestScoringTypes: Array<{
     type: string;
     module: ModuleType;
-    content: string;
+    label: string;
     attemptCount: number;
     avgScore: number;
   }>;

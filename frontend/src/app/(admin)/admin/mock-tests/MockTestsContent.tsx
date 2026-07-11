@@ -46,7 +46,7 @@ export default function MockTestsContent() {
     },
     [urlSearch, searchParams, router]
   );
-  useDebouncedCallback(searchInput, debouncedUpdateSearch, 300);
+  useDebouncedCallback(searchInput, debouncedUpdateSearch, 800);
 
   const { data, isLoading } = useAdminMockTestList(urlSearch);
   const deleteMutation = useDeleteMockTestTemplate();

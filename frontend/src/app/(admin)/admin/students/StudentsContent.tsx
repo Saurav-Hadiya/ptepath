@@ -53,7 +53,7 @@ export default function StudentsContent() {
     },
     [urlSearch, searchParams, router]
   );
-  useDebouncedCallback(searchInput, debouncedUpdateSearch, 300);
+  useDebouncedCallback(searchInput, debouncedUpdateSearch, 800);
 
   const { data, isLoading } = useAdminStudents(urlSearch);
   const toggleStatusMutation = useToggleStudentStatus();

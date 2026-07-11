@@ -4,21 +4,22 @@ import { AlertTriangle, BarChart3, Users } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import StatCard from '@/components/shared/StatCard';
 import EmptyState from '@/components/shared/EmptyState';
-import QuestionPreview from '@/components/admin/QuestionPreview';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useAdminDashboardStats } from '@/hooks/queries/useAdminDashboardQueries';
 import { formatRelativeTime, getInitials } from '@/lib/utils';
 
+const MODULE_COLORS: Record<string, string> = {
+  speaking: 'bg-action-subtle text-module-speaking',
+  writing: 'bg-action-subtle text-module-writing',
+  reading: 'bg-action-subtle text-module-reading',
+  listening: 'bg-action-subtle text-module-listening',
+};
+
 function scoreColorClass(score: number): string {
   if (score >= 80) return 'text-feedback-success';
   if (score >= 50) return 'text-feedback-warning';
   return 'text-feedback-error';
-}
-
-function isRecentlyActive(lastActiveAt: string | null): boolean {
-  if (!lastActiveAt) return false;
-  return Date.now() - new Date(lastActiveAt).getTime() < 30 * 60 * 1000;
 }
 
 export default function DashboardContent() {
@@ -54,7 +55,7 @@ export default function DashboardContent() {
     );
   }
 
-  const { totalStudents, activeStudents, totalQuestions, attemptsToday, totalMockTestAttempts, recentLogins, lowestScoringQuestions } = data;
+  const { totalStudents, activeStudents, totalQuestions, attemptsToday, totalMockTestAttempts, recentLogins, lowestScoringTypes } = data;
 
   return (
     <div>
@@ -68,56 +69,51 @@ export default function DashboardContent() {
       </div>
 
       <div className="grid grid-cols-1 items-start gap-3 sm:gap-4 lg:grid-cols-2">
+        {/* Recent Student Logins */}
         <div className="rounded-card border border-border-default bg-bg-card p-5">
           <div className="mb-3 font-display text-display-sm text-brand-primary">Recent Student Logins</div>
           {recentLogins.length === 0 ? (
             <EmptyState icon={Users} title="No recent logins" />
           ) : (
             <ul className="space-y-3">
-              {recentLogins.slice(0, 10).map((login) => {
-                const active = isRecentlyActive(login.lastActiveAt);
-                return (
-                  <li key={login.id} className="flex items-center gap-3">
-                    <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sidebar-avatar text-label-sm font-semibold text-action-default">
-                      {getInitials(login.name)}
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-body-sm font-semibold text-text-primary">{login.name}</div>
-                      <div className="text-label-sm text-text-secondary">{formatRelativeTime(login.lastActiveAt)}</div>
-                    </div>
-                    <span
-                      className={`shrink-0 rounded-4xl px-2 py-0.5 text-label-sm font-medium ${
-                        active ? 'bg-feedback-success-bg text-feedback-success' : 'bg-bg-page text-text-muted'
-                      }`}
-                    >
-                      {active ? 'Active' : 'Away'}
-                    </span>
-                  </li>
-                );
-              })}
+              {recentLogins.slice(0, 10).map((login) => (
+                <li key={login.id} className="flex items-center gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-sidebar-avatar text-label-sm font-semibold text-action-default">
+                    {getInitials(login.name)}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-body-sm font-semibold text-text-primary">{login.name}</div>
+                    <div className="text-label-sm text-text-secondary">{formatRelativeTime(login.lastActiveAt)}</div>
+                  </div>
+                </li>
+              ))}
             </ul>
           )}
         </div>
 
+        {/* Lowest Scoring Question Types */}
         <div className="rounded-card border border-border-default bg-bg-card p-5">
-          <div className="mb-3 font-display text-display-sm text-brand-primary">Lowest Scoring Questions</div>
-          {lowestScoringQuestions.length === 0 ? (
+          <div className="mb-3 font-display text-display-sm text-brand-primary">Lowest Scoring Question Types</div>
+          {lowestScoringTypes.length === 0 ? (
             <EmptyState icon={BarChart3} title="Not enough attempts yet" />
           ) : (
             <ul className="space-y-3">
-              {lowestScoringQuestions.slice(0, 5).map((question, index) => (
-                <li key={question.id} className="flex items-center gap-3">
+              {lowestScoringTypes.map((item, index) => (
+                <li key={`${item.module}-${item.type}`} className="flex items-center gap-3">
                   <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-bg-page text-label-sm font-semibold text-text-secondary">
                     {index + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <QuestionPreview content={question.content} maxLength={60} />
-                    <div className="text-label-sm text-text-muted">
-                      {question.module} · {question.attemptCount} attempts
+                    <div className="truncate text-body-sm font-semibold text-text-primary">{item.label}</div>
+                    <div className="flex items-center gap-1.5 text-label-sm text-text-muted">
+                      <span className={`rounded px-1.5 py-0.5 text-label-sm font-medium capitalize ${MODULE_COLORS[item.module] ?? 'bg-bg-page text-text-muted'}`}>
+                        {item.module}
+                      </span>
+                      <span>{item.attemptCount} attempts</span>
                     </div>
                   </div>
-                  <span className={`shrink-0 text-label-lg font-semibold ${scoreColorClass(question.avgScore)}`}>
-                    {question.avgScore}%
+                  <span className={`shrink-0 text-label-lg font-semibold ${scoreColorClass(item.avgScore)}`}>
+                    {item.avgScore}%
                   </span>
                 </li>
               ))}

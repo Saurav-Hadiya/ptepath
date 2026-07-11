@@ -74,7 +74,7 @@ export const adminStudentService = {
   async resetPassword(id: string, temporaryPassword: string): Promise<{ message?: string }> {
     try {
       const { data } = await api.patch<ApiResponse>(API_ENDPOINTS.admin.students.resetPassword(id), {
-        temporaryPassword,
+        newTemporaryPassword: temporaryPassword,
       });
       return { message: data.message };
     } catch (error) {
