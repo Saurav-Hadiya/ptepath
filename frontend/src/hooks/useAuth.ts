@@ -16,7 +16,7 @@ function sanitizeRedirect(path: string | null | undefined): string | null {
   return path;
 }
 
-function dashboardFor(role: User['role']): string {
+export function dashboardFor(role: User['role']): string {
   return role === 'admin' ? ROUTES.admin.dashboard : ROUTES.student.dashboard;
 }
 

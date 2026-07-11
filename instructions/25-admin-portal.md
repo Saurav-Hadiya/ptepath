@@ -1,4 +1,4 @@
-# 25 — Admin Portal
+# 25 — Admin Portal - DONE
 
 ## What This Is
 Claude Code instruction file.

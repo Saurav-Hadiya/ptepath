@@ -27,6 +27,7 @@ import {
   Target,
   Settings,
   LogOut,
+  GraduationCap,
 } from 'lucide-react';
 
 const navSections = [
@@ -73,14 +74,18 @@ export default function AdminSidebar() {
   return (
     <SidebarPrimitive className="border-primary-foreground/10">
       <SidebarHeader className="gap-0 border-b border-primary-foreground/10 p-0">
-        <div className="flex items-center gap-2.5 px-4 py-4">
+        <Link
+          href={ROUTES.public.landing}
+          onClick={() => setOpenMobile(false)}
+          className="flex items-center gap-2.5 px-4 py-4 transition-opacity hover:opacity-90"
+        >
           <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-primary-foreground">
             PP
           </div>
           <span className="font-display text-[1.05rem] font-extrabold text-primary-foreground">
             PTE<span className="text-brand-accent">Path</span>
           </span>
-        </div>
+        </Link>
         <div className="px-4 pb-3 pt-1">
           <span className="inline-flex items-center gap-1 rounded-full border border-sidebar-admin-badge-border bg-sidebar-admin-badge-bg px-2 py-0.5 text-label-sm font-bold uppercase tracking-wide text-brand-accent">
             <Settings className="h-3 w-3" />
@@ -129,6 +134,16 @@ export default function AdminSidebar() {
 
       <SidebarFooter className="border-t border-primary-foreground/10">
         <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              onClick={() => setOpenMobile(false)}
+              render={<Link href={ROUTES.student.dashboard} />}
+              className="text-body-sm text-sidebar-text hover:bg-primary-foreground/10 hover:text-primary-foreground"
+            >
+              <GraduationCap className="h-4 w-4" />
+              <span>Student Portal</span>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => logout()}
