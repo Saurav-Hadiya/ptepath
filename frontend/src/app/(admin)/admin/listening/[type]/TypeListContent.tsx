@@ -228,7 +228,7 @@ export default function TypeListContent({ type }: TypeListContentProps) {
                   </Badge>
                   {question.attemptCount > 0 && (
                     <span className={`text-label-sm font-semibold ${scoreColorClass(question.avgScore)}`}>
-                      Avg {question.avgScore}/90
+                      Avg {question.avgScore}
                     </span>
                   )}
                 </div>
