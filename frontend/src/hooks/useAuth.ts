@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { useAuthStore } from '@/store/auth.store';
 import { authService } from '@/services/auth.service';
 import { queryKeys } from '@/constants/QueryKeys';
@@ -188,8 +189,15 @@ export function useChangePassword() {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Update password — authenticated user changing their own password.
+// Backend clears the refresh cookie + bumps tokenVersion on success, so the
+// current session is invalidated — clear local auth state and send the user
+// back to login.
 // ─────────────────────────────────────────────────────────────────────────────
 export function useUpdatePassword() {
+  const { clearAuth } = useAuthStore();
+  const queryClient = useQueryClient();
+  const router = useRouter();
+
   return useMutation({
     mutationFn: ({
       currentPassword,
@@ -200,5 +208,11 @@ export function useUpdatePassword() {
       newPassword: string;
       confirmPassword: string;
     }) => authService.updatePassword(currentPassword, newPassword, confirmPassword),
+    onSuccess: (data) => {
+      toast.success(data.message ?? 'Password updated. Please log in again.');
+      queryClient.removeQueries({ queryKey: queryKeys.auth.session() });
+      clearAuth();
+      router.push(ROUTES.public.login);
+    },
   });
 }
