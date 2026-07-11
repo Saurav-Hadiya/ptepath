@@ -8,9 +8,9 @@ const readingQuestionType = z.enum([
   'mcq_single',
 ]);
 
-const readingOptionSchema = z.object({ label: z.string(), text: z.string() });
-const readingBlankSchema = z.object({ position: z.number(), options: z.array(z.string()) });
-const readingParagraphSchema = z.object({ text: z.string() });
+export const readingOptionSchema = z.object({ label: z.string(), text: z.string() });
+export const readingBlankSchema = z.object({ position: z.number(), options: z.array(z.string()) });
+export const readingParagraphSchema = z.object({ text: z.string() });
 
 /** Validates the question-fetch response before it reaches UI state — the shape varies by type. */
 export const readingQuestionSchema = z.object({

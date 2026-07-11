@@ -18,6 +18,7 @@ interface ScoreBreakdownCardProps {
   feedback: string;
   onNext?: () => void;
   nextLabel?: string;
+  nextDisabled?: boolean;
   onRetry?: () => void;
   retryLabel?: string;
 }
@@ -42,6 +43,7 @@ export default function ScoreBreakdownCard({
   feedback,
   onNext,
   nextLabel = 'Try Another Question',
+  nextDisabled = false,
   onRetry,
   retryLabel = 'Retry',
 }: ScoreBreakdownCardProps) {
@@ -101,6 +103,7 @@ export default function ScoreBreakdownCard({
             <Button
               type="button"
               onClick={onNext}
+              disabled={nextDisabled}
               className="w-full min-w-0 gap-1.5 bg-brand-primary text-primary-foreground hover:bg-brand-primary/90"
             >
               <span className="truncate">

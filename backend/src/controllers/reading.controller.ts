@@ -142,14 +142,18 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
 }
 
 export async function getAllQuestions(req: AuthRequest, res: Response): Promise<void> {
-  let filter: Record<string, unknown> = {};
+  const filter: Record<string, unknown> = {};
   if (req.query.type !== undefined) {
     const typeParam = normalizeType(String(req.query.type));
     if (!typeParam) {
       res.status(400).json({ success: false, message: 'Invalid question type filter.' });
       return;
     }
-    filter = { type: typeParam };
+    filter.type = typeParam;
+  }
+  if (req.query.search !== undefined && String(req.query.search).trim() !== '') {
+    const escaped = String(req.query.search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    filter.passage = { $regex: escaped, $options: 'i' };
   }
 
   const questions = await ReadingQuestion.find(filter).sort({ createdAt: -1 });
@@ -348,6 +352,49 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
     success: true,
     message: 'Question retrieved successfully.',
     data: { question: studentView(question) },
+  });
+}
+
+/**
+ * Deterministic "next question" — the active question of this type with the
+ * next-highest _id after the current one, wrapping around to the first
+ * (lowest _id) active question of the type when the current one is last.
+ */
+export async function getNextQuestion(req: AuthRequest, res: Response): Promise<void> {
+  const normalizedType = normalizeType(String(req.params.type));
+  if (!normalizedType) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const current = await ReadingQuestion.findOne({
+    _id: req.params.id,
+    type: normalizedType,
+    isActive: true,
+  });
+  if (!current) {
+    res.status(404).json({ success: false, message: 'Question not found.' });
+    return;
+  }
+
+  let next = await ReadingQuestion.findOne({
+    type: normalizedType,
+    isActive: true,
+    _id: { $gt: current._id },
+  }).sort({ _id: 1 });
+
+  if (!next) {
+    next = await ReadingQuestion.findOne({ type: normalizedType, isActive: true }).sort({ _id: 1 });
+  }
+  if (!next) {
+    res.status(404).json({ success: false, message: 'No active questions available.' });
+    return;
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Question retrieved successfully.',
+    data: { question: studentView(next) },
   });
 }
 

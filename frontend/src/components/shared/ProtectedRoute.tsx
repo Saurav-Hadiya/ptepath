@@ -25,7 +25,11 @@ export default function ProtectedRoute({ children, requireRole }: ProtectedRoute
   const router = useRouter();
   const pathname = usePathname();
 
-  const roleMismatch = requireRole !== undefined && user?.role !== requireRole;
+  // Admins may also browse the student portal (cross-portal nav); students
+  // may never access admin routes.
+  const roleMismatch =
+    requireRole !== undefined &&
+    !(user?.role === requireRole || (requireRole === 'student' && user?.role === 'admin'));
   const shouldRedirect = !isLoading && (isError || !isAuthenticated || roleMismatch);
 
   useEffect(() => {

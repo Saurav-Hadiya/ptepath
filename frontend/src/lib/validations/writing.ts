@@ -9,6 +9,15 @@ export const writingScoreResultSchema = z.object({
   displayScore: z.string(),
   feedback: z.string(),
   misspelledWords: z.array(z.string()),
+  breakdown: z.object({
+    wordCount: z.object({ score: z.number(), actual: z.number(), min: z.number(), max: z.number() }),
+    spelling: z.object({
+      score: z.number(),
+      correct: z.number(),
+      incorrect: z.number(),
+      total: z.number(),
+    }),
+  }),
 });
 
 export const writingQuestionSchema = z.object({

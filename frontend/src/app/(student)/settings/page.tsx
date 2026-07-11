@@ -1,3 +1,5 @@
+import SettingsContent from './SettingsContent';
+
 export default function StudentSettingsPage() {
-  return <main>Student Settings</main>;
+  return <SettingsContent />;
 }

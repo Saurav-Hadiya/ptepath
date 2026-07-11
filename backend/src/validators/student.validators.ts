@@ -15,7 +15,8 @@ const email = z
 const password = (label: string) =>
   z
     .string({ error: `${label} is required.` })
-    .min(6, `${label} must be at least 6 characters.`);
+    .min(8, `${label} must be at least 8 characters.`)
+    .regex(/\d/, `${label} must contain at least one number.`);
 
 export const createStudentSchema = z.object({
   name,

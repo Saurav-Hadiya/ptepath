@@ -32,6 +32,7 @@ export const ROUTES = {
     },
     mockTests: {
       home: '/mock-tests',
+      confirm: (id: string) => `/mock-tests/${id}/confirm`,
       attempt: '/mock-tests/attempt',
       result: '/mock-tests/result',
     },
@@ -40,11 +41,39 @@ export const ROUTES = {
   admin: {
     dashboard: '/admin/dashboard',
     settings: '/admin/settings',
-    students: '/admin/students',
-    speaking: '/admin/speaking',
-    writing: '/admin/writing',
-    reading: '/admin/reading',
-    listening: '/admin/listening',
-    mockTests: '/admin/mock-tests',
+    students: {
+      home: '/admin/students',
+      new: '/admin/students/new',
+      detail: (id: string) => `/admin/students/${id}`,
+    },
+    speaking: {
+      home: '/admin/speaking',
+      type: (type: string) => `/admin/speaking/${type}`,
+      new: (type: string) => `/admin/speaking/${type}/new`,
+      edit: (type: string, id: string) => `/admin/speaking/${type}/${id}/edit`,
+    },
+    writing: {
+      home: '/admin/writing',
+      type: (type: string) => `/admin/writing/${type}`,
+      new: (type: string) => `/admin/writing/${type}/new`,
+      edit: (type: string, id: string) => `/admin/writing/${type}/${id}/edit`,
+    },
+    reading: {
+      home: '/admin/reading',
+      type: (type: string) => `/admin/reading/${type}`,
+      new: (type: string) => `/admin/reading/${type}/new`,
+      edit: (type: string, id: string) => `/admin/reading/${type}/${id}/edit`,
+    },
+    listening: {
+      home: '/admin/listening',
+      type: (type: string) => `/admin/listening/${type}`,
+      new: (type: string) => `/admin/listening/${type}/new`,
+      edit: (type: string, id: string) => `/admin/listening/${type}/${id}/edit`,
+    },
+    mockTests: {
+      home: '/admin/mock-tests',
+      new: '/admin/mock-tests/new',
+      edit: (id: string) => `/admin/mock-tests/${id}/edit`,
+    },
   },
 } as const;

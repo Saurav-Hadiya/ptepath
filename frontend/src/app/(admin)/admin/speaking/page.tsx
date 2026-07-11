@@ -1,3 +1,5 @@
+import SpeakingHubContent from './SpeakingHubContent';
+
 export default function AdminSpeakingPage() {
-  return <main>Admin Speaking</main>;
+  return <SpeakingHubContent />;
 }

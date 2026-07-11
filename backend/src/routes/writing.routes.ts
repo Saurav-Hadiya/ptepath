@@ -73,8 +73,9 @@ router.post(
   asyncHandler(writingController.evaluateEssay)
 );
 
-// `random` must be declared before `:id` so it is not captured as an id.
+// `random` and `:id/next` must be declared before `:id` so they are not captured as an id.
 router.get('/:type/random', asyncHandler(writingController.getRandomQuestion));
+router.get('/:type/:id/next', validateObjectId(), asyncHandler(writingController.getNextQuestion));
 router.get('/:type/:id', validateObjectId(), asyncHandler(writingController.getQuestion));
 
 export default router;

@@ -86,7 +86,9 @@ function studentTemplateView(t: IMockTestTemplate) {
 // ─── Per-module "safe" question views (correct answers stripped) ─────────────
 
 function speakingData(q: ISpeakingQuestion): Record<string, unknown> {
-  return { content: q.content, imageUrl: q.imageUrl };
+  // describe_image has no content — normalize to null (not undefined) so the
+  // frontend's questionData schema always sees a well-typed value.
+  return { content: q.content ?? null, imageUrl: q.imageUrl };
 }
 
 function writingData(q: IWritingQuestion): Record<string, unknown> {
@@ -162,7 +164,13 @@ export async function createTemplate(req: AuthRequest, res: Response): Promise<v
 }
 
 export async function getAllTemplates(req: AuthRequest, res: Response): Promise<void> {
-  const templates = await MockTestTemplate.find().sort({ createdAt: -1 });
+  const filter: Record<string, unknown> = {};
+  if (req.query.search !== undefined && String(req.query.search).trim() !== '') {
+    const escaped = String(req.query.search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    filter.name = { $regex: escaped, $options: 'i' };
+  }
+
+  const templates = await MockTestTemplate.find(filter).sort({ createdAt: -1 });
 
   res.status(200).json({
     success: true,

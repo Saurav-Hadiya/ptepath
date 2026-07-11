@@ -108,6 +108,16 @@ const transcriptOptional = z.preprocess(
   z.string().trim().min(1, 'transcript cannot be empty.').max(20000, 'transcript is too long.').optional()
 );
 
+const timeLimitOptional = z.preprocess(
+  toNumber,
+  z
+    .number({ error: 'timeLimit must be a number.' })
+    .int('timeLimit must be a whole number.')
+    .min(60, 'timeLimit must be 60 seconds or greater.')
+    .max(1800, 'timeLimit must be 1800 seconds or fewer.')
+    .optional()
+);
+
 const correctSentenceOptional = z.preprocess(
   emptyToUndefined,
   z
@@ -250,6 +260,7 @@ export const createListeningQuestionSchema = z
     blanks: blanksOptional,
     incorrectWordIndices: incorrectWordIndicesOptional,
     correctSentence: correctSentenceOptional,
+    timeLimit: timeLimitOptional,
   })
   .superRefine((data, ctx) => {
     const message = listeningTypeError(data.type, data);
@@ -267,6 +278,7 @@ export const updateListeningQuestionSchema = z.object({
   blanks: blanksOptional,
   incorrectWordIndices: incorrectWordIndicesOptional,
   correctSentence: correctSentenceOptional,
+  timeLimit: timeLimitOptional,
 });
 
 export const toggleListeningStatusSchema = z.object({

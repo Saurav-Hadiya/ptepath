@@ -1,3 +1,5 @@
+import ReadingHubContent from './ReadingHubContent';
+
 export default function AdminReadingPage() {
-  return <main>Admin Reading</main>;
+  return <ReadingHubContent />;
 }

@@ -60,8 +60,15 @@ export async function createStudent(req: AuthRequest, res: Response): Promise<vo
   });
 }
 
-export async function listStudents(_req: AuthRequest, res: Response): Promise<void> {
-  const users = await User.find({ role: 'student' }).sort({ createdAt: -1 });
+export async function listStudents(req: AuthRequest, res: Response): Promise<void> {
+  const filter: Record<string, unknown> = { role: 'student' };
+  if (req.query.search !== undefined && String(req.query.search).trim() !== '') {
+    const escaped = String(req.query.search).trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = { $regex: escaped, $options: 'i' };
+    filter.$or = [{ name: regex }, { email: regex }];
+  }
+
+  const users = await User.find(filter).sort({ createdAt: -1 });
   const students = users.map(safeStudent);
 
   res.status(200).json({

@@ -72,9 +72,9 @@ export default function ReadingFillBlanksQuestion({ question, onScoreReceived }:
                     >
                       <SelectValue placeholder="Select..." />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="w-auto min-w-[--anchor-width] max-w-[min(20rem,90vw)]">
                       {blanks[i].options.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
+                        <SelectItem key={opt} value={opt} className="whitespace-normal">
                           {opt}
                         </SelectItem>
                       ))}

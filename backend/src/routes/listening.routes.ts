@@ -52,6 +52,10 @@ adminListeningRouter.patch(
   validateBody(toggleListeningStatusSchema),
   asyncHandler(listeningController.toggleStatus)
 );
+adminListeningRouter.patch(
+  '/type-settings/:type',
+  asyncHandler(listeningController.updateTypeSettings)
+);
 
 /**
  * Student router — mounted at /api/listening.
@@ -60,6 +64,8 @@ adminListeningRouter.patch(
 const router = Router();
 
 router.use(authenticate);
+
+router.get('/questions/counts', asyncHandler(listeningController.getListeningCounts));
 
 // Browse / pick a question of a type.
 router.get('/questions/:type', asyncHandler(listeningController.listQuestionsByType));
@@ -71,8 +77,9 @@ router.post(
   asyncHandler(listeningController.evaluate)
 );
 
-// `random` must be declared before `:id` so it is not captured as an id.
+// `random` and `:id/next` must be declared before `:id` so they are not captured as an id.
 router.get('/:type/random', asyncHandler(listeningController.getRandomQuestion));
+router.get('/:type/:id/next', validateObjectId(), asyncHandler(listeningController.getNextQuestion));
 router.get('/:type/:id', validateObjectId(), asyncHandler(listeningController.getQuestion));
 
 export default router;

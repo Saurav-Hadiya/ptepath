@@ -27,6 +27,7 @@ import {
   Target,
   Settings,
   LogOut,
+  ShieldCheck,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -89,21 +90,27 @@ export default function Sidebar() {
   return (
     <SidebarPrimitive className="border-primary-foreground/10">
       <SidebarHeader className="gap-0 border-b border-primary-foreground/10 p-0">
-        <div className="flex items-center gap-2.5 px-4 py-4">
+        <Link
+          href={ROUTES.public.landing}
+          onClick={() => setOpenMobile(false)}
+          className="flex items-center gap-2.5 px-4 py-4 transition-opacity hover:opacity-90"
+        >
           <div className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[7px] bg-action-default text-label-sm font-extrabold text-primary-foreground">
             PP
           </div>
           <span className="font-display text-[1.05rem] font-extrabold text-primary-foreground">
             PTE<span className="text-brand-accent">Path</span>
           </span>
-        </div>
+        </Link>
         <div className="flex items-center gap-2.5 border-t border-primary-foreground/10 px-4 py-3.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-sidebar-avatar text-label-sm font-bold text-action-hover">
             {initials}
           </div>
           <div className="min-w-0">
             <div className="truncate text-body-sm font-semibold text-primary-foreground">{user?.name}</div>
-            <div className="text-label-sm text-sidebar-text-muted">Student</div>
+            <div className="text-label-sm text-sidebar-text-muted">
+              {user?.role === 'admin' ? 'Admin viewing as Student' : 'Student'}
+            </div>
           </div>
         </div>
       </SidebarHeader>
@@ -148,6 +155,18 @@ export default function Sidebar() {
 
       <SidebarFooter className="border-t border-primary-foreground/10">
         <SidebarMenu>
+          {user?.role === 'admin' && (
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={() => setOpenMobile(false)}
+                render={<Link href={ROUTES.admin.dashboard} />}
+                className="text-body-sm text-sidebar-text hover:bg-primary-foreground/10 hover:text-primary-foreground"
+              >
+                <ShieldCheck className="h-[18px] w-[18px]" />
+                <span>Admin Portal</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          )}
           <SidebarMenuItem>
             <SidebarMenuButton
               onClick={() => logout()}

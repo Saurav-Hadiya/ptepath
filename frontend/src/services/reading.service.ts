@@ -52,6 +52,17 @@ export const readingService = {
     }
   },
 
+  async getNext(type: string, id: string): Promise<ReadingQuestion> {
+    try {
+      const { data } = await api.get<ApiResponse<{ question: unknown }>>(
+        API_ENDPOINTS.reading.next(type, id)
+      );
+      return readingQuestionSchema.parse(data.data?.question) as ReadingQuestion;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async evaluate(
     questionId: string,
     questionType: ReadingQuestionType,

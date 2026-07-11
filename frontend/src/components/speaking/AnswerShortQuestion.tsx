@@ -14,9 +14,18 @@ import type { SpeakingQuestion, SpeakingScoreResult } from '@/types';
 interface Props {
   question: SpeakingQuestion;
   onScoreReceived: (score: SpeakingScoreResult) => void;
+  /** Shown once scored — override for contexts (e.g. mock test) where "see your score" doesn't apply yet. */
+  completionMessage?: string;
+  /** Whether to reveal the correct answer immediately after scoring — false in a mock test, where answers are only revealed at the end. */
+  revealAnswer?: boolean;
 }
 
-export default function AnswerShortQuestion({ question, onScoreReceived }: Props) {
+export default function AnswerShortQuestion({
+  question,
+  onScoreReceived,
+  completionMessage = 'Response submitted — see your score',
+  revealAnswer = true,
+}: Props) {
   const {
     phase,
     textRevealed,
@@ -79,9 +88,7 @@ export default function AnswerShortQuestion({ question, onScoreReceived }: Props
       ) : phase === 'scored' ? (
         <div className="flex items-center justify-center gap-2 rounded-card border border-feedback-success/20 bg-feedback-success-bg p-5 text-center">
           <CheckCircle2 className="size-5 text-feedback-success" />
-          <span className="text-body-sm font-medium text-feedback-success-text">
-            Response submitted — see your score
-          </span>
+          <span className="text-body-sm font-medium text-feedback-success-text">{completionMessage}</span>
         </div>
       ) : (
         phase !== 'listening' && (
@@ -89,7 +96,7 @@ export default function AnswerShortQuestion({ question, onScoreReceived }: Props
         )
       )}
 
-      {phase === 'scored' && score?.correctAnswer && (
+      {revealAnswer && phase === 'scored' && score?.correctAnswer && (
         <div className="rounded-card border border-feedback-success/20 bg-feedback-success-bg p-4">
           <span className="text-label-sm text-text-secondary">Correct answer:</span>
           <p className="mt-1 text-body-md font-medium text-feedback-success-text">

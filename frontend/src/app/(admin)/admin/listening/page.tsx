@@ -1,3 +1,5 @@
+import ListeningHubContent from './ListeningHubContent';
+
 export default function AdminListeningPage() {
-  return <main>Admin Listening</main>;
+  return <ListeningHubContent />;
 }

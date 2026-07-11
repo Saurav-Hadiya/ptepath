@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 import { Lock, Eye, EyeOff, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
 import AuthLayout from '@/components/shared/AuthLayout';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
-import { useResetPassword } from '@/hooks/useAuth';
+import { useResetPassword, useRedirectIfAuthenticated } from '@/hooks/useAuth';
 import { resetPasswordSchema } from '@/lib/validations/auth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -33,6 +33,7 @@ const STRENGTH_COLOR: Record<number, string> = {
 };
 
 function ResetPasswordForm() {
+  const { isChecking } = useRedirectIfAuthenticated();
   const params = useSearchParams();
   const token = params.get('token');
   const userId = params.get('id');
@@ -49,6 +50,14 @@ function ResetPasswordForm() {
   const strength = getStrength(newPassword);
   const meetsLength = newPassword.length >= 8;
   const meetsNumber = /\d/.test(newPassword);
+
+  if (isChecking) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <LoadingSpinner size="md" label="Checking your session..." />
+      </div>
+    );
+  }
 
   /* Invalid link */
   if (!token || !userId) {

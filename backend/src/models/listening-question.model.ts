@@ -23,6 +23,8 @@ export interface IListeningQuestion extends Document {
   blanks: IListeningBlank[];
   incorrectWordIndices: number[];
   correctSentence: string | null;
+  // Seconds. summarise_spoken only — null for every other type. Default (600) applied in controller.
+  timeLimit: number | null;
   isActive: boolean;
   createdAt: Date;
   attemptCount: number;
@@ -78,6 +80,8 @@ const listeningQuestionSchema = new Schema<IListeningQuestion>({
   incorrectWordIndices: { type: [Number], default: [] },
   // write_dictation only — the exact spoken sentence used for scoring.
   correctSentence: { type: String, default: null },
+  // summarise_spoken only — seconds. Default (600) applied in controller.
+  timeLimit: { type: Number, default: null },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now },
   attemptCount: { type: Number, default: 0 },

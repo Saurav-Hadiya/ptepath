@@ -97,7 +97,7 @@ export default function ChangePasswordPage() {
       <div className="mb-6 flex items-start gap-3 rounded-xl border border-action-default/15 bg-action-subtle px-4 py-3.5">
         <Info className="mt-0.5 h-4 w-4 shrink-0 text-action-default" />
         <p className="text-body-sm text-text-secondary">
-          Your account was created by your instructor with a temporary password. Set a new
+          Your account was created by your Admin with a temporary password. Set a new
           password that only you know to continue.
         </p>
       </div>

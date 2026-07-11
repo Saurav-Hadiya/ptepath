@@ -22,7 +22,11 @@ export default function SummariseWrittenTextQuestion({ question, onScoreReceived
   const [phase, setPhase] = useState<'writing' | 'processing' | 'scored'>('writing');
 
   const wordCount = countWords(responseText);
-  const canSubmit = wordCount >= question.wordMin && (phase as string) === 'writing';
+  // Backend never rejects for word count — it always scores whatever is submitted
+  // (too short/long just scores low). The only hard requirement is non-empty text,
+  // so submission is only blocked on that, never on the word-count band.
+  const canSubmit = wordCount > 0 && (phase as string) === 'writing';
+  const belowMin = wordCount > 0 && wordCount < question.wordMin;
 
   const mutation = useSubmitSummarise();
 
@@ -82,7 +86,7 @@ export default function SummariseWrittenTextQuestion({ question, onScoreReceived
       </div>
 
       <p className="text-body-md text-text-secondary">
-        Read the passage below. Write ONE sentence summarising the main idea. Use 5 to 75 words.
+        Read the passage below. Write ONE sentence summarising the main idea.
       </p>
 
       <div className="max-h-[180px] overflow-y-auto rounded-card border border-border-default bg-bg-page p-4 sm:p-5">

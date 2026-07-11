@@ -65,6 +65,17 @@ export const speakingService = {
     }
   },
 
+  async getNext(type: string, id: string): Promise<SpeakingQuestion> {
+    try {
+      const { data } = await api.get<ApiResponse<{ question: unknown }>>(
+        API_ENDPOINTS.speaking.next(type, id)
+      );
+      return speakingQuestionSchema.parse(data.data?.question) as SpeakingQuestion;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async evaluateReadAloud(questionId: string, audioBlob: Blob): Promise<SpeakingScoreResult> {
     return postEvaluate(API_ENDPOINTS.speaking.evaluate.readAloud, buildAudioFormData(audioBlob, questionId));
   },

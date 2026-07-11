@@ -28,6 +28,11 @@ adminSpeakingRouter.post(
   asyncHandler(speakingController.addQuestion)
 );
 adminSpeakingRouter.get('/questions', asyncHandler(speakingController.getAllQuestions));
+adminSpeakingRouter.get(
+  '/questions/:id',
+  validateObjectId(),
+  asyncHandler(speakingController.getOneQuestion)
+);
 adminSpeakingRouter.put(
   '/questions/:id',
   validateObjectId(),
@@ -46,6 +51,10 @@ adminSpeakingRouter.patch(
   validateBody(toggleSpeakingStatusSchema),
   asyncHandler(speakingController.toggleStatus)
 );
+adminSpeakingRouter.patch(
+  '/type-settings/:type',
+  asyncHandler(speakingController.updateTypeSettings)
+);
 
 /**
  * Student router — mounted at /api/speaking.
@@ -60,8 +69,13 @@ router.get('/questions/counts', asyncHandler(speakingController.getSpeakingCount
 // Browse / pick a question of a type.
 router.get('/questions/:type', asyncHandler(speakingController.listQuestionsByType));
 
-// `random` must be declared before `:id` so it is not captured as an id.
+// `random` and `:id/next` must be declared before `:id` so they are not captured as an id.
 router.get('/question/:type/random', asyncHandler(speakingController.getRandomQuestion));
+router.get(
+  '/question/:type/:id/next',
+  validateObjectId(),
+  asyncHandler(speakingController.getNextQuestion)
+);
 router.get('/question/:type/:id', validateObjectId(), asyncHandler(speakingController.getQuestion));
 
 router.post(

@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, X, TriangleAlert } from 'lucide-react';
+import { Check, X, TriangleAlert, SquareCheck } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -79,14 +79,18 @@ export default function MCQOption({
       onClick={handleClick}
       disabled={disabled}
       aria-pressed={selected}
-      className={`h-auto w-full items-center justify-start gap-2.5 rounded-input border px-3.5 py-2.5 text-left whitespace-normal disabled:cursor-default disabled:opacity-100 ${containerClass}`}
+      className={`h-auto w-full items-center justify-start gap-2.5 rounded-input px-3.5 py-2.5 text-left whitespace-normal disabled:cursor-default disabled:opacity-100 ${multiSelect ? 'border-2' : 'border'} ${containerClass}`}
     >
       <span
         className={`flex size-5 shrink-0 items-center justify-center border text-label-sm font-bold ${
-          multiSelect ? 'rounded-lg' : 'rounded-full'
+          multiSelect ? 'rounded-md' : 'rounded-full'
         } ${markerClass}`}
       >
-        {label}
+        {multiSelect && selected && !resultState ? (
+          <SquareCheck className="size-3.5" strokeWidth={3} />
+        ) : (
+          label
+        )}
       </span>
       <span className="flex-1 text-body-sm font-normal text-text-primary">{text}</span>
       {resultInfo && ResultIcon && (

@@ -7,7 +7,7 @@ interface QuestionTypeBadgeProps {
   module: string;
 }
 
-const TYPE_LABELS: Record<string, string> = {
+export const TYPE_LABELS: Record<string, string> = {
   read_aloud: 'Read Aloud',
   repeat_sentence: 'Repeat Sentence',
   describe_image: 'Describe Image',

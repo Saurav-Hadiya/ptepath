@@ -64,8 +64,9 @@ router.get('/questions/:type', asyncHandler(readingController.listQuestionsByTyp
 // Single evaluate endpoint for all 5 types (POST — declared before generic GETs).
 router.post('/evaluate', validateBody(evaluateReadingSchema), asyncHandler(readingController.evaluate));
 
-// `random` must be declared before `:id` so it is not captured as an id.
+// `random` and `:id/next` must be declared before `:id` so they are not captured as an id.
 router.get('/:type/random', asyncHandler(readingController.getRandomQuestion));
+router.get('/:type/:id/next', validateObjectId(), asyncHandler(readingController.getNextQuestion));
 router.get('/:type/:id', validateObjectId(), asyncHandler(readingController.getQuestion));
 
 export default router;

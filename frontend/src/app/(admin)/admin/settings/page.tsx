@@ -1,3 +1,5 @@
+import SettingsContent from './SettingsContent';
+
 export default function AdminSettingsPage() {
-  return <main>Admin Settings</main>;
+  return <SettingsContent />;
 }

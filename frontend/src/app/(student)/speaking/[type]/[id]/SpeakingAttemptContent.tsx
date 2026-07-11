@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,8 +14,9 @@ import RepeatSentenceQuestion from '@/components/speaking/RepeatSentenceQuestion
 import DescribeImageQuestion from '@/components/speaking/DescribeImageQuestion';
 import RespondSituationQuestion from '@/components/speaking/RespondSituationQuestion';
 import AnswerShortQuestion from '@/components/speaking/AnswerShortQuestion';
-import { useSpeakingQuestion } from '@/hooks/queries/useSpeakingQueries';
+import { useSpeakingQuestion, useSpeakingNext } from '@/hooks/queries/useSpeakingQueries';
 import { ROUTES } from '@/config/routes';
+import { formatDuration } from '@/lib/duration';
 import type { SpeakingScoreResult } from '@/types';
 
 const SLUG_TO_TYPE: Record<string, string> = {
@@ -72,6 +74,7 @@ export default function SpeakingAttemptContent({ slug, id }: Props) {
   const [attemptKey, setAttemptKey] = useState(0);
 
   const { data: question, isLoading, isError, refetch } = useSpeakingQuestion(apiType, id);
+  const nextMutation = useSpeakingNext();
 
   const handleScoreReceived = useCallback((result: SpeakingScoreResult) => {
     setScore(result);
@@ -83,8 +86,16 @@ export default function SpeakingAttemptContent({ slug, id }: Props) {
   }, []);
 
   const handleNext = useCallback(() => {
-    router.push(ROUTES.student.speaking.type(slug));
-  }, [router, slug]);
+    nextMutation.mutate(
+      { type: apiType, id },
+      {
+        onSuccess: (next) => {
+          router.push(ROUTES.student.speaking.question(slug, next.id));
+        },
+        onError: (error: Error) => toast.error(error.message),
+      }
+    );
+  }, [nextMutation, apiType, id, router, slug]);
 
   if (isLoading) {
     return (
@@ -152,23 +163,31 @@ export default function SpeakingAttemptContent({ slug, id }: Props) {
             for attention with the score. */}
         <div className="space-y-4">
           {score ? (
-            <ScoreBreakdownCard
-              title="Your Score"
-              displayScore={score.displayScore}
-              finalScore={score.finalScore}
-              bars={getScoreBars(apiType, score)}
-              feedback={score.feedback}
-              onRetry={handleRetry}
-              retryLabel="Retry This Question"
-              onNext={handleNext}
-              nextLabel="Next Question"
-            />
+            <>
+              <ScoreBreakdownCard
+                title="Your Score"
+                displayScore={score.displayScore}
+                finalScore={score.finalScore}
+                bars={getScoreBars(apiType, score)}
+                feedback={score.feedback}
+                onRetry={handleRetry}
+                retryLabel="Retry"
+                onNext={handleNext}
+                nextLabel="Next"
+                nextDisabled={nextMutation.isPending}
+              />
+              {score.wpm !== null && (
+                <div className="rounded-card border border-border-default bg-bg-card p-3 text-body-sm text-text-secondary shadow-card">
+                  Speaking pace: {score.wpm} words per minute
+                </div>
+              )}
+            </>
           ) : (
             <div className="rounded-card border border-border-default bg-bg-page p-3">
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-label-sm text-text-secondary">
                 <span>{typeName}</span>
-                <span>Speaking: {question.speakingTime}s</span>
-                {question.preparationTime > 0 && <span>Prep: {question.preparationTime}s</span>}
+                <span>Speaking: {formatDuration(question.speakingTime)}</span>
+                {question.preparationTime > 0 && <span>Prep: {formatDuration(question.preparationTime)}</span>}
               </div>
             </div>
           )}

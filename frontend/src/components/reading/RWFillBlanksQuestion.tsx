@@ -5,12 +5,12 @@ import { toast } from 'sonner';
 import { Loader2 } from 'lucide-react';
 import {
   DndContext,
+  closestCenter,
   useDraggable,
   useDroppable,
   useSensor,
   useSensors,
   PointerSensor,
-  TouchSensor,
   type DragEndEvent,
 } from '@dnd-kit/core';
 import { Button } from '@/components/ui/button';
@@ -55,7 +55,7 @@ function WordChip({
       {...listeners}
       {...attributes}
       disabled={disabled}
-      className={`min-h-10 touch-none cursor-grab rounded-input border border-border-default bg-bg-card px-3 py-2 text-body-sm text-text-primary shadow-card active:cursor-grabbing disabled:cursor-default disabled:opacity-60 ${
+      className={`min-h-10 touch-none cursor-grab rounded-input border border-border-default bg-bg-card px-3 py-2 text-body-sm text-text-primary shadow-card transition-colors hover:border-action-default hover:bg-action-subtle active:cursor-grabbing disabled:cursor-default disabled:opacity-60 disabled:hover:border-border-default disabled:hover:bg-bg-card ${
         isDragging ? 'opacity-40' : ''
       }`}
     >
@@ -102,7 +102,11 @@ function BlankDropZone({
           ref={setDragRef}
           {...listeners}
           {...attributes}
-          className={disabled ? undefined : 'touch-none cursor-grab'}
+          className={
+            disabled
+              ? undefined
+              : 'touch-none cursor-grab rounded-input px-1 transition-shadow hover:shadow-hover active:cursor-grabbing'
+          }
         >
           {item.word}
         </span>
@@ -123,10 +127,9 @@ export default function RWFillBlanksQuestion({ question, onScoreReceived }: Prop
   const [breakdown, setBreakdown] = useState<FillBlanksBreakdown | null>(null);
   const mutation = useSubmitReading();
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 150, tolerance: 5 } })
-  );
+  // A single PointerSensor covers mouse, touch and pen — mixing it with TouchSensor
+  // causes duplicate activation on touch devices and unreliable drags.
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
 
   function handleDragEnd(event: DragEndEvent) {
     if (submitted) return;
@@ -194,7 +197,7 @@ export default function RWFillBlanksQuestion({ question, onScoreReceived }: Prop
         Drag words from the box below into the correct blank spaces.
       </p>
 
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <div className="rounded-card border border-border-default bg-bg-page p-4 sm:p-5">
           <p className="whitespace-pre-wrap text-body-md leading-[2.4] text-text-primary">
             {segments.map((segment, i) => (

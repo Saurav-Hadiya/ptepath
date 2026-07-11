@@ -6,5 +6,5 @@ export default async function WritingQuestionPage({
   params: Promise<{ type: string; id: string }>;
 }) {
   const { type, id } = await params;
-  return <WritingAttemptContent slug={type} id={id} />;
+  return <WritingAttemptContent key={id} slug={type} id={id} />;
 }
