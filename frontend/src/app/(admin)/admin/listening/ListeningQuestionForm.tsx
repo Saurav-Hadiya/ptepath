@@ -8,13 +8,13 @@ import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import FormSection from '@/components/admin/FormSection';
 import AudioUpload from '@/components/admin/AudioUpload';
+import BlankableTextarea from '@/components/admin/BlankableTextarea';
 import OptionsListEditor from '@/components/admin/OptionsListEditor';
 import TranscriptWordPicker from './TranscriptWordPicker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import {
   useAdminListeningDetail,
   useAdminListeningCreate,
@@ -64,11 +64,10 @@ export default function ListeningQuestionForm({ mode, type, questionId }: Listen
     if (form.type === 'fill_blanks') {
       const count = detectBlankCount(form.transcript);
       if (form.blankAnswers.length !== count) {
-        setForm((prev) => {
-          const next = [...prev.blankAnswers];
-          next.length = count;
-          return { ...prev, blankAnswers: next.map((v) => v ?? '') };
-        });
+        setForm((prev) => ({
+          ...prev,
+          blankAnswers: Array.from({ length: count }, (_, i) => prev.blankAnswers[i] ?? ''),
+        }));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,21 +124,11 @@ export default function ListeningQuestionForm({ mode, type, questionId }: Listen
             {fieldErrors.audio && <p className="text-label-sm text-feedback-error">{fieldErrors.audio}</p>}
           </div>
 
-          <div className="mt-4 space-y-1.5">
-            <Label className="text-label-md text-text-primary">Play Limit</Label>
-            <p className="text-label-sm text-text-muted">How many times can students play this audio?</p>
-            <Select
-              value={String(form.playLimit)}
-              onValueChange={(v) => setForm((prev) => ({ ...prev, playLimit: Number(v) }))}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1">Play once (recommended — matches the real exam)</SelectItem>
-                <SelectItem value="0">Unlimited replays</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="mt-4 rounded-lg border border-border-default bg-bg-accent p-3">
+            <p className="text-label-sm text-text-secondary">
+              <strong>Play limit</strong> is managed at the question type level. Go back to the question list and
+              use the &quot;Type-wide Audio Play Limit&quot; card to change it for all questions of this type.
+            </p>
           </div>
 
           {form.type === 'summarise_spoken' && (
@@ -207,22 +196,16 @@ export default function ListeningQuestionForm({ mode, type, questionId }: Listen
 
         {form.type === 'fill_blanks' && (
           <FormSection title="Transcript & Blanks">
-            <div className="space-y-1.5">
-              <Label htmlFor="listening-transcript" className="text-label-md text-text-primary">
-                Transcript
-              </Label>
-              <Textarea
-                id="listening-transcript"
-                value={form.transcript}
-                onChange={(e) => setForm((prev) => ({ ...prev, transcript: e.target.value }))}
-                placeholder="Type [BLANK] where each blank should appear"
-                className="min-h-32"
-              />
-              <p className="text-label-sm text-text-muted">
-                Minor typos in the student&apos;s answer are still accepted (fuzzy matching).
-              </p>
-              {fieldErrors.transcript && <p className="text-label-sm text-feedback-error">{fieldErrors.transcript}</p>}
-            </div>
+            <BlankableTextarea
+              id="listening-transcript"
+              label="Transcript"
+              value={form.transcript}
+              onChange={(v) => setForm((prev) => ({ ...prev, transcript: v }))}
+              placeholder="Type the transcript — click Insert [BLANK] to mark each missing word"
+              className="min-h-32"
+              hint="Minor typos in the student's answer are still accepted (fuzzy matching)."
+              error={fieldErrors.transcript}
+            />
             {form.blankAnswers.length > 0 && (
               <div className="mt-4 space-y-2">
                 <Label className="text-label-md text-text-primary">Correct Word for Each Blank</Label>

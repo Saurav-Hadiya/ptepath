@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type {
   MockAnswerValue,
   MockTestAnswerPayload,
@@ -26,6 +26,10 @@ export interface MockAnswerRecord {
 export function useMockTestState(questions: MockTestQuestion[]) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<(MockAnswerRecord | null)[]>([]);
+  // Holds a speaking score set in the current call tick, before React flushes
+  // the state update — allows buildAnswersPayload to read the fresh score even
+  // when it's called synchronously right after setSpeakingScore.
+  const pendingSpeakingRef = useRef<{ index: number; score: number } | null>(null);
 
   // Reset when a fresh question set is loaded (stable reference from start data).
   useEffect(() => {
@@ -57,6 +61,9 @@ export function useMockTestState(questions: MockTestQuestion[]) {
 
   const setSpeakingScore = useCallback(
     (index: number, score: number) => {
+      // Record the score immediately in the ref so buildAnswersPayload can
+      // read it in the same synchronous call chain (before React flushes state).
+      pendingSpeakingRef.current = { index, score };
       setAnswers((prev) => {
         const question = questions[index];
         if (!question) return prev;
@@ -68,6 +75,8 @@ export function useMockTestState(questions: MockTestQuestion[]) {
           answer: null,
           score,
         };
+        // Clear the pending ref once state has been applied.
+        pendingSpeakingRef.current = null;
         return next;
       });
     },
@@ -93,15 +102,20 @@ export function useMockTestState(questions: MockTestQuestion[]) {
 
   /** Builds the exact payload the submit endpoint expects for every question. */
   const buildAnswersPayload = useCallback((): MockTestAnswerPayload[] => {
+    const pending = pendingSpeakingRef.current;
     return questions.map((question, i) => {
       const record = answers[i];
       const isSpeaking = question.module === 'speaking';
+      // Use the pending ref score for the question that was just scored
+      // synchronously — the React state update may not have flushed yet.
+      const speakingScore =
+        isSpeaking && pending?.index === i ? pending.score : record?.score ?? null;
       return {
         questionId: question.id,
         questionType: question.questionType,
         module: question.module,
         answer: isSpeaking ? null : record?.answer ?? null,
-        score: isSpeaking ? record?.score ?? null : null,
+        score: isSpeaking ? speakingScore : null,
       };
     });
   }, [questions, answers]);

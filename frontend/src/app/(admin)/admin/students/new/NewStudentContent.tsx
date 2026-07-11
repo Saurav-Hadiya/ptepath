@@ -107,7 +107,7 @@ export default function NewStudentContent() {
               type="text"
               value={temporaryPassword}
               onChange={(e) => setTemporaryPassword(e.target.value)}
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters and 1 number"
               autoComplete="new-password"
               className="max-w-sm"
             />

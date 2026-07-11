@@ -330,6 +330,33 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
   });
 }
 
+/** Bulk-update play limit for every question of a given listening type. */
+export async function updateTypeSettings(req: AuthRequest, res: Response): Promise<void> {
+  const type = normalizeType(String(req.params.type ?? ''));
+  if (!type) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const { playLimit } = req.body as { playLimit?: number };
+  if (playLimit === undefined) {
+    res.status(400).json({ success: false, message: 'playLimit is required.' });
+    return;
+  }
+  if (playLimit !== 0 && playLimit !== 1) {
+    res.status(400).json({ success: false, message: 'playLimit must be 0 (unlimited) or 1 (once).' });
+    return;
+  }
+
+  const result = await ListeningQuestion.updateMany({ type }, { $set: { playLimit } });
+
+  res.status(200).json({
+    success: true,
+    message: `Updated ${result.modifiedCount} question${result.modifiedCount !== 1 ? 's' : ''}.`,
+    data: { modifiedCount: result.modifiedCount, settings: { playLimit } },
+  });
+}
+
 // ─── Student Controllers ────────────────────────────────────────────────────
 
 export async function getListeningCounts(_req: AuthRequest, res: Response): Promise<void> {

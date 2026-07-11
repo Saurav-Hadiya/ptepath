@@ -115,4 +115,12 @@ export const adminListeningService = {
       throw normalizeError(error);
     }
   },
+
+  async updateTypeSettings(type: string, settings: { playLimit: number }): Promise<void> {
+    try {
+      await api.patch(API_ENDPOINTS.admin.listening.typeSettings(type), settings);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
 };

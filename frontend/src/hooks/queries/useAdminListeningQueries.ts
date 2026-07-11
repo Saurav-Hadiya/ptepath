@@ -89,3 +89,18 @@ export function useAdminListeningToggleStatus(type: string) {
     },
   });
 }
+
+export function useAdminListeningUpdateTypeSettings(type: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (settings: { playLimit: number }) =>
+      adminListeningService.updateTypeSettings(type, settings),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminQuestions.all('listening') });
+      toast.success('Play limit updated for all questions of this type.');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update settings.');
+    },
+  });
+}

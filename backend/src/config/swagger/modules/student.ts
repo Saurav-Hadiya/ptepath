@@ -150,7 +150,7 @@ export const studentPaths = {
                   summary: 'Password too short',
                   value: {
                     success: false,
-                    message: 'Temporary password must be at least 6 characters.',
+                    message: 'Temporary password must be at least 8 characters and 1 number.',
                   },
                 },
               },

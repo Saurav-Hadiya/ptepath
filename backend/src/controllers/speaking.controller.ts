@@ -256,6 +256,37 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
   });
 }
 
+/** Bulk-update timing for every question of a given speaking type. */
+export async function updateTypeSettings(req: AuthRequest, res: Response): Promise<void> {
+  const type = normalizeType(String(req.params.type ?? ''));
+  if (!type) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const { speakingTime, preparationTime } = req.body as {
+    speakingTime?: number;
+    preparationTime?: number;
+  };
+
+  const update: Record<string, unknown> = {};
+  if (speakingTime !== undefined) update.speakingTime = speakingTime;
+  if (preparationTime !== undefined) update.preparationTime = preparationTime;
+
+  if (Object.keys(update).length === 0) {
+    res.status(400).json({ success: false, message: 'At least one setting must be provided.' });
+    return;
+  }
+
+  const result = await SpeakingQuestion.updateMany({ type }, { $set: update });
+
+  res.status(200).json({
+    success: true,
+    message: `Updated ${result.modifiedCount} question${result.modifiedCount !== 1 ? 's' : ''}.`,
+    data: { modifiedCount: result.modifiedCount, settings: { speakingTime, preparationTime } },
+  });
+}
+
 // ─── Student Controllers ────────────────────────────────────────────────────
 
 export async function getSpeakingCounts(_req: AuthRequest, res: Response): Promise<void> {

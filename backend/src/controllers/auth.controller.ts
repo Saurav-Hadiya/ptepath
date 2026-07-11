@@ -73,6 +73,9 @@ export async function login(req: Request, res: Response): Promise<void> {
     return;
   }
 
+  user.lastActiveAt = new Date();
+  await user.save();
+
   const accessToken = generateAccessToken(String(user._id), user.role, user.tokenVersion);
   const refreshToken = generateRefreshToken(String(user._id), user.role, user.tokenVersion);
 
@@ -157,6 +160,7 @@ export async function changePasswordFirstLogin(req: AuthRequest, res: Response):
   user.passwordHash = await hashPassword(newPassword);
   user.isFirstLogin = false;
   user.tokenVersion += 1;
+  user.lastActiveAt = new Date();
   await user.save();
 
   const accessToken = generateAccessToken(String(user._id), user.role, user.tokenVersion);

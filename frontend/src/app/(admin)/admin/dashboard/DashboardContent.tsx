@@ -1,6 +1,6 @@
 'use client';
 
-import { AlertTriangle, BarChart3, Users } from 'lucide-react';
+import { AlertTriangle, BarChart3, RefreshCw, Users } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import StatCard from '@/components/shared/StatCard';
 import EmptyState from '@/components/shared/EmptyState';
@@ -59,7 +59,16 @@ export default function DashboardContent() {
 
   return (
     <div>
-      <PageHeader title="Admin Dashboard" subtitle="Platform overview" />
+      <PageHeader
+        title="Admin Dashboard"
+        subtitle="Platform overview"
+        actions={
+          <Button variant="outline" size="sm" onClick={() => refetch()} className="gap-1.5">
+            <RefreshCw className="size-3.5" />
+            Refresh
+          </Button>
+        }
+      />
 
       <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard value={totalStudents} label="Total Students" subtext={`${activeStudents} active`} subtextColor="success" />

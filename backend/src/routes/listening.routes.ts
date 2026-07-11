@@ -52,6 +52,10 @@ adminListeningRouter.patch(
   validateBody(toggleListeningStatusSchema),
   asyncHandler(listeningController.toggleStatus)
 );
+adminListeningRouter.patch(
+  '/type-settings/:type',
+  asyncHandler(listeningController.updateTypeSettings)
+);
 
 /**
  * Student router — mounted at /api/listening.

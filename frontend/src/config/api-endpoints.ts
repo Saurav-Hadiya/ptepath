@@ -32,6 +32,7 @@ export const API_ENDPOINTS = {
       update: (id: string) => `/admin/speaking/questions/${id}`,
       delete: (id: string) => `/admin/speaking/questions/${id}`,
       status: (id: string) => `/admin/speaking/questions/${id}/status`,
+      typeSettings: (type: string) => `/admin/speaking/type-settings/${type}`,
     },
     writing: {
       list: '/admin/writing/questions',
@@ -55,6 +56,7 @@ export const API_ENDPOINTS = {
       get: (id: string) => `/admin/listening/questions/${id}`,
       update: (id: string) => `/admin/listening/questions/${id}`,
       delete: (id: string) => `/admin/listening/questions/${id}`,
+      typeSettings: (type: string) => `/admin/listening/type-settings/${type}`,
       status: (id: string) => `/admin/listening/questions/${id}/status`,
     },
     mockTests: {

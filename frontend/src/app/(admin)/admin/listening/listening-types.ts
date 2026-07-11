@@ -46,7 +46,7 @@ export const LISTENING_TYPES: ListeningTypeConfig[] = [
   {
     type: 'select_missing',
     label: 'Select Missing Word',
-    description: 'Student listens to audio that cuts off and selects the missing final word.',
+    description: 'Student listens to audio that *BEEP* off and selects the missing final word.',
   },
   {
     type: 'highlight_incorrect',

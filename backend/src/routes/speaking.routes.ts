@@ -51,6 +51,10 @@ adminSpeakingRouter.patch(
   validateBody(toggleSpeakingStatusSchema),
   asyncHandler(speakingController.toggleStatus)
 );
+adminSpeakingRouter.patch(
+  '/type-settings/:type',
+  asyncHandler(speakingController.updateTypeSettings)
+);
 
 /**
  * Student router — mounted at /api/speaking.

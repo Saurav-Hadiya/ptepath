@@ -90,3 +90,18 @@ export function useAdminSpeakingToggleStatus(type: string) {
     },
   });
 }
+
+export function useAdminSpeakingUpdateTypeSettings(type: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (settings: { speakingTime: number; preparationTime?: number }) =>
+      adminSpeakingService.updateTypeSettings(type, settings),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminQuestions.all('speaking') });
+      toast.success('Timing updated for all questions of this type.');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update settings.');
+    },
+  });
+}

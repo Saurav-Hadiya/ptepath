@@ -105,4 +105,15 @@ export const adminSpeakingService = {
       throw normalizeError(error);
     }
   },
+
+  async updateTypeSettings(
+    type: string,
+    settings: { speakingTime: number; preparationTime?: number }
+  ): Promise<void> {
+    try {
+      await api.patch(API_ENDPOINTS.admin.speaking.typeSettings(type), settings);
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
 };

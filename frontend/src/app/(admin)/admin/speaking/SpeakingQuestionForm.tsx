@@ -9,15 +9,15 @@ import FormSection from '@/components/admin/FormSection';
 import ImageUpload from '@/components/admin/ImageUpload';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import {
   useAdminSpeakingCreate,
   useAdminSpeakingUpdate,
 } from '@/hooks/queries/useAdminSpeakingQueries';
 import { adminSpeakingFormSchema } from '@/lib/validations/admin';
 import { ROUTES } from '@/config/routes';
-import { getSpeakingTypeConfig, SPEAKING_TIME_BOUNDS, PREPARATION_TIME_BOUNDS } from './speaking-types';
+import { getSpeakingTypeConfig } from './speaking-types';
 import type { AdminSpeakingQuestion } from '@/types';
 
 interface SpeakingQuestionFormProps {
@@ -160,40 +160,20 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
         </FormSection>
 
         <FormSection title="Timing">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div className="flex flex-col gap-1.5">
-              <Label>Speaking Time (seconds)</Label>
-              <Input
-                type="number"
-                min={SPEAKING_TIME_BOUNDS.min}
-                max={SPEAKING_TIME_BOUNDS.max}
-                value={form.speakingTime}
-                onChange={(e) => setForm((prev) => ({ ...prev, speakingTime: Number(e.target.value) }))}
-              />
-              <p className="text-label-sm text-text-muted">
-                Between {SPEAKING_TIME_BOUNDS.min} and {SPEAKING_TIME_BOUNDS.max} seconds.
-              </p>
-              {errors.speakingTime && <p className="text-label-sm text-feedback-error">{errors.speakingTime}</p>}
-            </div>
-            {config.hasPreparationTime && (
-              <div className="flex flex-col gap-1.5">
-                <Label>Preparation Time (seconds)</Label>
-                <Input
-                  type="number"
-                  min={PREPARATION_TIME_BOUNDS.min}
-                  max={PREPARATION_TIME_BOUNDS.max}
-                  value={form.preparationTime}
-                  onChange={(e) => setForm((prev) => ({ ...prev, preparationTime: Number(e.target.value) }))}
-                />
-                <p className="text-label-sm text-text-muted">
-                  Between {PREPARATION_TIME_BOUNDS.min} and {PREPARATION_TIME_BOUNDS.max} seconds.
-                </p>
-                {errors.preparationTime && (
-                  <p className="text-label-sm text-feedback-error">{errors.preparationTime}</p>
-                )}
-              </div>
+          <div className="flex flex-wrap gap-2">
+            <span className="inline-flex items-center rounded-full border border-border-default px-3 py-1 text-label-sm text-text-secondary">
+              Speaking Time: {form.speakingTime}s
+            </span>
+            {config.hasPreparationTime && form.preparationTime > 0 && (
+              <span className="inline-flex items-center rounded-full border border-border-default px-3 py-1 text-label-sm text-text-secondary">
+                Preparation Time: {form.preparationTime}s
+              </span>
             )}
           </div>
+          <p className="mt-2 text-label-sm text-text-muted">
+            Timing is managed at the type level. Go back to the question list and use the &quot;Type-wide Timing
+            Settings&quot; card to change it for all questions.
+          </p>
         </FormSection>
 
         {type === 'answer_short' && (

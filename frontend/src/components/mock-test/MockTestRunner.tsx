@@ -219,7 +219,7 @@ export default function MockTestRunner({ startData }: Props) {
           <Button
             type="button"
             onClick={handleNext}
-            disabled={(!isCurrentAnswered && !isLastQuestion) || isSubmitting}
+            disabled={!isCurrentAnswered || isSubmitting}
             className="gap-1.5 bg-action-default text-primary-foreground hover:bg-action-hover"
           >
             {isSubmitting && <Loader2 className="size-4 animate-spin" />}

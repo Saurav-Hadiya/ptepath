@@ -3,13 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, Headphones, Plus, SearchX } from 'lucide-react';
+import { ArrowLeft, Headphones, Pencil, Plus, SearchX, Volume2, X } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/shared/EmptyState';
 import ConfirmModal from '@/components/shared/ConfirmModal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import QuestionPreview from '@/components/admin/QuestionPreview';
 import QuestionSearchInput from '@/components/admin/QuestionSearchInput';
 import QuestionActionButtons from '@/components/admin/QuestionActionButtons';
@@ -18,10 +19,80 @@ import {
   useAdminListeningList,
   useAdminListeningDelete,
   useAdminListeningToggleStatus,
+  useAdminListeningUpdateTypeSettings,
 } from '@/hooks/queries/useAdminListeningQueries';
 import { ROUTES } from '@/config/routes';
 import { getListeningTypeConfig } from '../listening-types';
 import type { AdminListeningQuestion } from '@/types';
+
+function PlayLimitSettingsCard({ type, questions }: { type: string; questions: AdminListeningQuestion[] }) {
+  const updateMutation = useAdminListeningUpdateTypeSettings(type);
+  const currentPlayLimit = questions[0]?.playLimit ?? 1;
+  const [editing, setEditing] = useState(false);
+  const [playLimit, setPlayLimit] = useState(currentPlayLimit);
+
+  function openEdit() {
+    setPlayLimit(currentPlayLimit);
+    setEditing(true);
+  }
+
+  function handleSave() {
+    updateMutation.mutate({ playLimit }, { onSuccess: () => setEditing(false) });
+  }
+
+  return (
+    <div className="mb-4 rounded-card border border-border-default bg-bg-card p-4 shadow-card">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2">
+          <Volume2 className="size-4 text-module-listening" />
+          <span className="text-label-md font-semibold text-text-primary">Type-wide Audio Play Limit</span>
+        </div>
+        {!editing && (
+          <Button variant="outline" size="sm" onClick={openEdit} className="gap-1.5">
+            <Pencil className="size-3.5" />
+            Edit
+          </Button>
+        )}
+      </div>
+
+      {!editing ? (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Badge variant="outline" className="text-label-sm">
+            {currentPlayLimit === 0 ? 'Unlimited replays' : 'Play once'}
+          </Badge>
+          <span className="text-label-sm text-text-muted">Applied to all questions of this type.</span>
+        </div>
+      ) : (
+        <div className="mt-3 space-y-3">
+          <Select value={String(playLimit)} onValueChange={(v) => setPlayLimit(Number(v))}>
+            <SelectTrigger className="w-full max-w-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="1">Play once (recommended — matches the real exam)</SelectItem>
+              <SelectItem value="0">Unlimited replays</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="flex gap-2">
+            <Button size="sm" onClick={handleSave} disabled={updateMutation.isPending}>
+              {updateMutation.isPending ? 'Saving...' : 'Apply to All Questions'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setEditing(false)}
+              disabled={updateMutation.isPending}
+              className="gap-1"
+            >
+              <X className="size-3.5" />
+              Cancel
+            </Button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function scoreColorClass(score: number): string {
   if (score >= 80) return 'text-feedback-success';
@@ -86,6 +157,8 @@ export default function TypeListContent({ type }: TypeListContentProps) {
           </Button>
         }
       />
+
+      <PlayLimitSettingsCard type={type} questions={questions} />
 
       <div className="mb-4">
         <QuestionSearchInput placeholder="Search by question, transcript, or sentence..." />

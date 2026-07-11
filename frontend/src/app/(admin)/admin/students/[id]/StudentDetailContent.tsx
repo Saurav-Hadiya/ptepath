@@ -284,7 +284,7 @@ export default function StudentDetailContent({ id }: { id: string }) {
                 type="text"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                placeholder="At least 6 characters"
+                placeholder="At least 8 characters and 1 number"
                 autoComplete="new-password"
                 className="max-w-sm"
               />

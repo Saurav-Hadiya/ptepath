@@ -7,6 +7,7 @@ import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import FormSection from '@/components/admin/FormSection';
+import BlankableTextarea from '@/components/admin/BlankableTextarea';
 import OptionsListEditor from '@/components/admin/OptionsListEditor';
 import ParagraphsEditor from './ParagraphsEditor';
 import { Button } from '@/components/ui/button';
@@ -60,24 +61,22 @@ export default function ReadingQuestionForm({ mode, type, questionId }: ReadingQ
     if (form.type === 'rw_fill_blanks') {
       const count = detectBlankCount(form.passage);
       if (form.blankAnswers.length !== count) {
-        setForm((prev) => {
-          const next = [...prev.blankAnswers];
-          next.length = count;
-          return { ...prev, blankAnswers: next.map((v) => v ?? '') };
-        });
+        setForm((prev) => ({
+          ...prev,
+          blankAnswers: Array.from({ length: count }, (_, i) => prev.blankAnswers[i] ?? ''),
+        }));
       }
     }
     if (form.type === 'reading_fill_blanks') {
       const count = detectBlankCount(form.passage);
       if (form.readingBlanks.length !== count) {
-        setForm((prev) => {
-          const next = [...prev.readingBlanks];
-          next.length = count;
-          return {
-            ...prev,
-            readingBlanks: next.map((v) => v ?? { correctAnswer: '', wrongOptions: ['', ''] }),
-          };
-        });
+        setForm((prev) => ({
+          ...prev,
+          readingBlanks: Array.from(
+            { length: count },
+            (_, i) => prev.readingBlanks[i] ?? { correctAnswer: '', wrongOptions: ['', ''] }
+          ),
+        }));
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -122,25 +121,32 @@ export default function ReadingQuestionForm({ mode, type, questionId }: ReadingQ
 
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <FormSection title="Reading Passage">
-          <div className="space-y-1.5">
-            <Label htmlFor="reading-passage" className="text-label-md text-text-primary">
-              Reading Passage
-            </Label>
-            <Textarea
+          {(form.type === 'rw_fill_blanks' || form.type === 'reading_fill_blanks') ? (
+            <BlankableTextarea
               id="reading-passage"
+              label="Reading Passage"
               value={form.passage}
-              onChange={(e) => setForm((prev) => ({ ...prev, passage: e.target.value }))}
-              placeholder="Enter the passage text students will read"
+              onChange={(v) => setForm((prev) => ({ ...prev, passage: v }))}
+              placeholder="Enter the passage — click Insert [BLANK] to add blanks"
               className="min-h-40"
+              hint="Each [BLANK] marker becomes a fill-in-the-blank question for the student."
+              error={fieldErrors.passage}
             />
-            {(form.type === 'rw_fill_blanks' || form.type === 'reading_fill_blanks') && (
-              <p className="text-label-sm text-text-muted">
-                Type <span className="font-semibold">[BLANK]</span> anywhere in the passage to mark a blank —
-                each one becomes a question for the student.
-              </p>
-            )}
-            {fieldErrors.passage && <p className="text-label-sm text-feedback-error">{fieldErrors.passage}</p>}
-          </div>
+          ) : (
+            <div className="space-y-1.5">
+              <Label htmlFor="reading-passage" className="text-label-md text-text-primary">
+                Reading Passage
+              </Label>
+              <Textarea
+                id="reading-passage"
+                value={form.passage}
+                onChange={(e) => setForm((prev) => ({ ...prev, passage: e.target.value }))}
+                placeholder="Enter the passage text students will read"
+                className="min-h-40"
+              />
+              {fieldErrors.passage && <p className="text-label-sm text-feedback-error">{fieldErrors.passage}</p>}
+            </div>
+          )}
         </FormSection>
 
         {form.type === 'rw_fill_blanks' && (
