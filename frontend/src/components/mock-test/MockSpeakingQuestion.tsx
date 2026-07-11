@@ -30,7 +30,7 @@ export default function MockSpeakingQuestion({ question, onScored }: Props) {
     () => ({
       id: question.id,
       type: question.questionType as SpeakingQuestionType,
-      content: data.content,
+      content: data.content ?? '',
       imageUrl: data.imageUrl ?? null,
       speakingTime: question.speakingTime ?? 0,
       preparationTime: question.preparationTime ?? 0,

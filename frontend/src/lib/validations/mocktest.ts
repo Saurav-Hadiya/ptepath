@@ -24,7 +24,8 @@ export const mockTestTemplateListSchema = z.array(mockTestTemplateSummarySchema)
 // ─── Per-module questionData shapes (reusing each module's own sub-schemas) ──
 
 const mockSpeakingDataSchema = z.object({
-  content: z.string(),
+  // Null for describe_image — that type is image-only, with no text content.
+  content: z.string().nullable(),
   imageUrl: z.string().nullable(),
 });
 

@@ -86,7 +86,9 @@ function studentTemplateView(t: IMockTestTemplate) {
 // ─── Per-module "safe" question views (correct answers stripped) ─────────────
 
 function speakingData(q: ISpeakingQuestion): Record<string, unknown> {
-  return { content: q.content, imageUrl: q.imageUrl };
+  // describe_image has no content — normalize to null (not undefined) so the
+  // frontend's questionData schema always sees a well-typed value.
+  return { content: q.content ?? null, imageUrl: q.imageUrl };
 }
 
 function writingData(q: IWritingQuestion): Record<string, unknown> {

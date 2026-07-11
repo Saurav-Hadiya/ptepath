@@ -506,7 +506,8 @@ export interface MockTestTemplateSummary {
 
 /** Per-module question payloads returned by the start endpoint (correct answers stripped). */
 export interface MockSpeakingData {
-  content: string;
+  /** null for describe_image — that type is image-only, with no text content. */
+  content: string | null;
   imageUrl: string | null;
 }
 
