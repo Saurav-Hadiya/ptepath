@@ -1,7 +1,7 @@
 import api from '@/lib/api';
 import { normalizeError } from '@/lib/api-error';
 import { API_ENDPOINTS } from '@/config/api-endpoints';
-import type { ApiResponse, AdminWritingQuestion } from '@/types';
+import type { ApiResponse, AdminWritingQuestion, AdminWritingTypeSettings } from '@/types';
 
 export interface AdminWritingQuestionsResponse {
   questions: AdminWritingQuestion[];
@@ -11,12 +11,10 @@ export interface AdminWritingQuestionsResponse {
 export interface AdminWritingFormInput {
   type: string;
   content: string;
-  timeLimit?: number;
 }
 
 export interface AdminWritingUpdateInput {
   content?: string;
-  timeLimit?: number;
 }
 
 export const adminWritingService = {
@@ -85,6 +83,29 @@ export const adminWritingService = {
         { isActive }
       );
       return (data.data as { question: AdminWritingQuestion }).question;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async getTypeSettings(type: string): Promise<AdminWritingTypeSettings> {
+    try {
+      const { data } = await api.get<ApiResponse<{ settings: AdminWritingTypeSettings }>>(
+        API_ENDPOINTS.admin.writing.typeSettings(type)
+      );
+      return (data.data as { settings: AdminWritingTypeSettings }).settings;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async updateTypeSettings(type: string, settings: { timeLimit: number }): Promise<AdminWritingTypeSettings> {
+    try {
+      const { data } = await api.patch<ApiResponse<{ settings: AdminWritingTypeSettings }>>(
+        API_ENDPOINTS.admin.writing.typeSettings(type),
+        settings
+      );
+      return (data.data as { settings: AdminWritingTypeSettings }).settings;
     } catch (error) {
       throw normalizeError(error);
     }

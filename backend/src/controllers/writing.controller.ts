@@ -3,15 +3,22 @@ import { AuthRequest, WritingQuestionType } from '../types';
 import { WritingQuestion, IWritingQuestion } from '../models/writing-question.model';
 import { User } from '../models/user.model';
 import { scoreWriting, WritingScore } from '../scoring/writing.scoring';
+import { getTypeConfig, getTypeConfigsMap, upsertTypeConfig } from '../services/question-type-config.service';
 
-/** Per-type defaults and immutable word ranges. */
-const TYPE_CONFIG: Record<
-  WritingQuestionType,
-  { wordMin: number; wordMax: number; defaultTimeLimit: number }
-> = {
-  summarise_written_text: { wordMin: 5, wordMax: 75, defaultTimeLimit: 600 },
-  write_essay: { wordMin: 200, wordMax: 300, defaultTimeLimit: 1200 },
-};
+/** Timing/word-range values for a type — config is the source of truth, question fields are the dual-read fallback. */
+interface WritingConstraints {
+  timeLimit: number;
+  wordMin: number;
+  wordMax: number;
+}
+
+function resolveConstraints(question: IWritingQuestion, config: Record<string, number>): WritingConstraints {
+  return {
+    timeLimit: config.timeLimit ?? question.timeLimit,
+    wordMin: config.wordMin ?? question.wordMin,
+    wordMax: config.wordMax ?? question.wordMax,
+  };
+}
 
 /** Map canonical / hyphenated / short URL forms to the DB enum. */
 function normalizeType(raw: string): WritingQuestionType | null {
@@ -24,38 +31,41 @@ function normalizeType(raw: string): WritingQuestionType | null {
 }
 
 /** Student-facing single-question view. */
-function studentView(question: IWritingQuestion) {
+function studentView(question: IWritingQuestion, config: Record<string, number>) {
+  const c = resolveConstraints(question, config);
   return {
     id: question._id,
     type: question.type,
     content: question.content,
-    timeLimit: question.timeLimit,
-    wordMin: question.wordMin,
-    wordMax: question.wordMax,
+    timeLimit: c.timeLimit,
+    wordMin: c.wordMin,
+    wordMax: c.wordMax,
   };
 }
 
 /** Student-facing list-item view for the "pick a question" screen. */
-function listView(question: IWritingQuestion) {
+function listView(question: IWritingQuestion, config: Record<string, number>) {
+  const c = resolveConstraints(question, config);
   return {
     id: question._id,
     type: question.type,
     preview: question.content ? question.content.slice(0, 120) : null,
-    timeLimit: question.timeLimit,
-    wordMin: question.wordMin,
-    wordMax: question.wordMax,
+    timeLimit: c.timeLimit,
+    wordMin: c.wordMin,
+    wordMax: c.wordMax,
   };
 }
 
 /** Admin-facing view — full document minus internal Mongoose noise. */
-function adminView(question: IWritingQuestion) {
+function adminView(question: IWritingQuestion, config: Record<string, number>) {
+  const c = resolveConstraints(question, config);
   return {
     id: question._id,
     type: question.type,
     content: question.content,
-    timeLimit: question.timeLimit,
-    wordMin: question.wordMin,
-    wordMax: question.wordMax,
+    timeLimit: c.timeLimit,
+    wordMin: c.wordMin,
+    wordMax: c.wordMax,
     isActive: question.isActive,
     attemptCount: question.attemptCount,
     avgScore: Math.round(question.avgScore * 10) / 10,
@@ -80,7 +90,8 @@ async function updateStudentStats(userId: string): Promise<void> {
 }
 
 /** Build the full score response payload (score result + breakdown). */
-function scoreResponse(result: WritingScore, question: IWritingQuestion) {
+function scoreResponse(result: WritingScore, question: IWritingQuestion, config: Record<string, number>) {
+  const c = resolveConstraints(question, config);
   return {
     wordCount: result.wordCount,
     wordCountScore: result.wordCountScore,
@@ -93,8 +104,8 @@ function scoreResponse(result: WritingScore, question: IWritingQuestion) {
       wordCount: {
         score: result.wordCountScore,
         actual: result.wordCount,
-        min: question.wordMin,
-        max: question.wordMax,
+        min: c.wordMin,
+        max: c.wordMax,
       },
       spelling: {
         score: result.spellingScore,
@@ -110,18 +121,21 @@ function scoreResponse(result: WritingScore, question: IWritingQuestion) {
 
 export async function addQuestion(req: AuthRequest, res: Response): Promise<void> {
   // Body is already validated & coerced by createWritingQuestionSchema.
-  const { type, content, timeLimit } = req.body as {
+  const { type, content } = req.body as {
     type: WritingQuestionType;
     content: string;
-    timeLimit?: number;
   };
 
-  const config = TYPE_CONFIG[type];
+  // Timing/word-range is type-level now (QuestionTypeConfig) — the legacy
+  // per-question fields are still required by the Mongoose schema (removed in
+  // a later cleanup phase), so they're populated from the type's config here
+  // purely to satisfy that constraint. Nothing reads them back off the question.
+  const config = await getTypeConfig('writing', type);
 
   const question = await WritingQuestion.create({
     type,
     content,
-    timeLimit: timeLimit ?? config.defaultTimeLimit,
+    timeLimit: config.timeLimit,
     wordMin: config.wordMin,
     wordMax: config.wordMax,
   });
@@ -129,7 +143,7 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
   res.status(201).json({
     success: true,
     message: 'Question created successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -149,11 +163,12 @@ export async function getAllQuestions(req: AuthRequest, res: Response): Promise<
   }
 
   const questions = await WritingQuestion.find(filter).sort({ createdAt: -1 });
+  const configMap = await getTypeConfigsMap('writing');
 
   res.status(200).json({
     success: true,
     message: 'Questions retrieved successfully.',
-    data: { questions: questions.map(adminView), total: questions.length },
+    data: { questions: questions.map((q) => adminView(q, configMap[q.type] ?? {})), total: questions.length },
   });
 }
 
@@ -164,10 +179,12 @@ export async function getOneQuestion(req: AuthRequest, res: Response): Promise<v
     return;
   }
 
+  const config = await getTypeConfig('writing', question.type);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -178,18 +195,20 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
     return;
   }
 
-  const { content, timeLimit } = req.body as { content?: string; timeLimit?: number };
+  const { content } = req.body as { content?: string };
 
-  // type, wordMin and wordMax are immutable — only content and timeLimit change.
+  // type, wordMin, wordMax and timeLimit are immutable at the question level —
+  // only content changes; timing is edited via the type-wide settings instead.
   if (content !== undefined) question.content = content;
-  if (timeLimit !== undefined) question.timeLimit = timeLimit;
 
   await question.save();
+
+  const config = await getTypeConfig('writing', question.type);
 
   res.status(200).json({
     success: true,
     message: 'Question updated successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -216,11 +235,46 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
   question.isActive = req.body.isActive;
   await question.save();
 
+  const config = await getTypeConfig('writing', question.type);
+
   res.status(200).json({
     success: true,
     message: question.isActive ? 'Question activated.' : 'Question deactivated.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
+}
+
+/** Type-level timing config — applies to every existing and future question of this type. */
+export async function updateTypeSettings(req: AuthRequest, res: Response): Promise<void> {
+  const type = normalizeType(String(req.params.type ?? ''));
+  if (!type) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  // Body validated by writingTypeSettingsSchema.
+  const { timeLimit } = req.body as { timeLimit: number };
+
+  const settings = await upsertTypeConfig('writing', type, { timeLimit });
+
+  res.status(200).json({
+    success: true,
+    message: 'Timing updated for all questions of this type.',
+    data: { settings },
+  });
+}
+
+/** Current type-level timing config. */
+export async function getTypeSettings(req: AuthRequest, res: Response): Promise<void> {
+  const type = normalizeType(String(req.params.type ?? ''));
+  if (!type) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const settings = await getTypeConfig('writing', type);
+
+  res.status(200).json({ success: true, data: { settings } });
 }
 
 // ─── Student Controllers ────────────────────────────────────────────────────
@@ -253,11 +307,12 @@ export async function listQuestionsByType(req: AuthRequest, res: Response): Prom
   const questions = await WritingQuestion.find({ type: normalizedType, isActive: true }).sort({
     createdAt: -1,
   });
+  const config = await getTypeConfig('writing', normalizedType);
 
   res.status(200).json({
     success: true,
     message: 'Questions retrieved successfully.',
-    data: { questions: questions.map(listView), total: questions.length },
+    data: { questions: questions.map((q) => listView(q, config)), total: questions.length },
   });
 }
 
@@ -281,10 +336,12 @@ export async function getRandomQuestion(req: AuthRequest, res: Response): Promis
     return;
   }
 
+  const config = await getTypeConfig('writing', normalizedType);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: studentView(question) },
+    data: { question: studentView(question, config) },
   });
 }
 
@@ -306,10 +363,12 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
     return;
   }
 
+  const config = await getTypeConfig('writing', normalizedType);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: studentView(question) },
+    data: { question: studentView(question, config) },
   });
 }
 
@@ -349,10 +408,12 @@ export async function getNextQuestion(req: AuthRequest, res: Response): Promise<
     return;
   }
 
+  const config = await getTypeConfig('writing', normalizedType);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: studentView(next) },
+    data: { question: studentView(next, config) },
   });
 }
 
@@ -381,10 +442,12 @@ async function evaluate(
   await applyAttempt(question, result.finalScore);
   await updateStudentStats(req.user!.userId);
 
+  const config = await getTypeConfig('writing', expectedType);
+
   res.status(200).json({
     success: true,
     message: 'Response evaluated successfully.',
-    data: scoreResponse(result, question),
+    data: scoreResponse(result, question, config),
   });
 }
 

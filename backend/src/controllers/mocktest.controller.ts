@@ -15,6 +15,7 @@ import { calculateReadingScore } from '../scoring/reading.scoring';
 import { calculateListeningScore } from '../scoring/listening.scoring';
 import { scoreWriting } from '../scoring/writing.scoring';
 import { WritingQuestionType, ReadingQuestionType, ListeningQuestionType } from '../types';
+import { getTypeConfigsMap } from '../services/question-type-config.service';
 
 /**
  * Mock Test module.
@@ -91,8 +92,13 @@ function speakingData(q: ISpeakingQuestion): Record<string, unknown> {
   return { content: q.content ?? null, imageUrl: q.imageUrl };
 }
 
-function writingData(q: IWritingQuestion): Record<string, unknown> {
-  return { content: q.content, timeLimit: q.timeLimit, wordMin: q.wordMin, wordMax: q.wordMax };
+function writingData(q: IWritingQuestion, config: Record<string, number>): Record<string, unknown> {
+  return {
+    content: q.content,
+    timeLimit: config.timeLimit ?? q.timeLimit,
+    wordMin: config.wordMin ?? q.wordMin,
+    wordMax: config.wordMax ?? q.wordMax,
+  };
 }
 
 const READING_MCQ: ReadingQuestionType[] = ['mcq_multiple', 'mcq_single'];
@@ -126,10 +132,10 @@ const LISTENING_OPTIONS: ListeningQuestionType[] = [
 ];
 const LISTENING_TRANSCRIPT: ListeningQuestionType[] = ['fill_blanks', 'highlight_incorrect'];
 
-function listeningData(q: IListeningQuestion): Record<string, unknown> {
+function listeningData(q: IListeningQuestion, config: Record<string, number>): Record<string, unknown> {
   const base: Record<string, unknown> = {
     audioUrl: q.audioUrl,
-    playLimit: q.playLimit,
+    playLimit: config.playLimit ?? q.playLimit,
     question: LISTENING_QUESTION_TEXT.includes(q.type) ? q.question ?? null : null,
   };
   if (LISTENING_OPTIONS.includes(q.type)) {
@@ -278,10 +284,13 @@ export async function getTemplateDetail(req: AuthRequest, res: Response): Promis
   });
 }
 
+type TypeConfigMaps = Record<MockTestModule, Record<string, Record<string, number>>>;
+
 /** Build one "start" question entry with correct answers stripped. */
 function buildStartQuestion(
   module: MockTestModule,
-  q: ISpeakingQuestion | IWritingQuestion | IReadingQuestion | IListeningQuestion
+  q: ISpeakingQuestion | IWritingQuestion | IReadingQuestion | IListeningQuestion,
+  configMaps: TypeConfigMaps
 ): Record<string, unknown> {
   let questionData: Record<string, unknown>;
   let speakingTime: number | null = null;
@@ -290,19 +299,20 @@ function buildStartQuestion(
   switch (module) {
     case 'speaking': {
       const sq = q as ISpeakingQuestion;
+      const config = configMaps.speaking[sq.type] ?? {};
       questionData = speakingData(sq);
-      speakingTime = sq.speakingTime;
-      preparationTime = sq.preparationTime;
+      speakingTime = config.speakingTime ?? sq.speakingTime;
+      preparationTime = config.preparationTime ?? sq.preparationTime;
       break;
     }
     case 'writing':
-      questionData = writingData(q as IWritingQuestion);
+      questionData = writingData(q as IWritingQuestion, configMaps.writing[q.type] ?? {});
       break;
     case 'reading':
       questionData = readingData(q as IReadingQuestion);
       break;
     case 'listening':
-      questionData = listeningData(q as IListeningQuestion);
+      questionData = listeningData(q as IListeningQuestion, configMaps.listening[q.type] ?? {});
       break;
   }
 
@@ -352,6 +362,13 @@ export async function startMockTest(req: AuthRequest, res: Response): Promise<vo
     listening: [],
   };
 
+  const configMaps: TypeConfigMaps = {
+    speaking: await getTypeConfigsMap('speaking'),
+    writing: await getTypeConfigsMap('writing'),
+    reading: await getTypeConfigsMap('reading'),
+    listening: await getTypeConfigsMap('listening'),
+  };
+
   for (const rule of template.questionRules) {
     // Fresh query every start guarantees random variety across attempts.
     const pool = await fetchPool(rule.module, rule.type);
@@ -360,7 +377,7 @@ export async function startMockTest(req: AuthRequest, res: Response): Promise<vo
     // count may exceed the pool — selectRandom returns all available in that case.
     const selected = selectRandom(pool, rule.count);
     for (const q of selected) {
-      buckets[rule.module].push(buildStartQuestion(rule.module, q));
+      buckets[rule.module].push(buildStartQuestion(rule.module, q, configMaps));
     }
   }
 

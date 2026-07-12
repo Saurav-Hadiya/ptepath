@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import FormSection from '@/components/admin/FormSection';
 import { Button } from '@/components/ui/button';
@@ -129,7 +129,8 @@ export default function NewStudentContent() {
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={createMutation.isPending}>
+          <Button type="submit" disabled={createMutation.isPending} className="gap-1.5">
+            {createMutation.isPending && <Loader2 className="size-4 animate-spin" />}
             {createMutation.isPending ? 'Creating...' : 'Create Student'}
           </Button>
         </div>

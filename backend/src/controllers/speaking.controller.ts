@@ -4,6 +4,7 @@ import { SpeakingQuestion, ISpeakingQuestion } from '../models/speaking-question
 import { User } from '../models/user.model';
 import { deleteResource } from '../services/cloudinary.service';
 import transcribeAudio, { AudioInput, TranscriptWord } from '../services/stt.adapter';
+import { getTypeConfig, getTypeConfigsMap, upsertTypeConfig } from '../services/question-type-config.service';
 import {
   scoreReadAloud,
   scoreRepeatSentence,
@@ -12,6 +13,19 @@ import {
   scoreAnswerShort,
   SpeakingScore,
 } from '../scoring/speaking.scoring';
+
+/** Timing values for a type — config is the source of truth, question fields are the dual-read fallback. */
+interface SpeakingTiming {
+  speakingTime: number;
+  preparationTime: number;
+}
+
+function resolveTiming(question: ISpeakingQuestion, config: Record<string, number>): SpeakingTiming {
+  return {
+    speakingTime: config.speakingTime ?? question.speakingTime,
+    preparationTime: config.preparationTime ?? question.preparationTime,
+  };
+}
 
 const VALID_TYPES: SpeakingQuestionType[] = [
   'read_aloud',
@@ -28,14 +42,15 @@ function normalizeType(raw: string): SpeakingQuestionType | null {
 }
 
 /** Student-facing single-question view — never exposes acceptedAnswers or imagePublicId. */
-function studentView(question: ISpeakingQuestion) {
+function studentView(question: ISpeakingQuestion, config: Record<string, number>) {
+  const timing = resolveTiming(question, config);
   return {
     id: question._id,
     type: question.type,
     content: question.content,
     imageUrl: question.imageUrl,
-    speakingTime: question.speakingTime,
-    preparationTime: question.preparationTime,
+    speakingTime: timing.speakingTime,
+    preparationTime: timing.preparationTime,
   };
 }
 
@@ -49,30 +64,32 @@ const HIDDEN_PREVIEW_TYPES: SpeakingQuestionType[] = ['repeat_sentence', 'answer
  * listening-based types (repeat_sentence, answer_short) whose prompt must not
  * be shown in advance — the frontend labels those by index/type instead.
  */
-function listView(question: ISpeakingQuestion) {
+function listView(question: ISpeakingQuestion, config: Record<string, number>) {
   const hidePreview = HIDDEN_PREVIEW_TYPES.includes(question.type);
   const preview =
     hidePreview || !question.content ? null : question.content.slice(0, 80);
+  const timing = resolveTiming(question, config);
   return {
     id: question._id,
     type: question.type,
     preview,
     imageUrl: question.imageUrl,
-    speakingTime: question.speakingTime,
-    preparationTime: question.preparationTime,
+    speakingTime: timing.speakingTime,
+    preparationTime: timing.preparationTime,
   };
 }
 
 /** Admin-facing view — full document minus internal Mongoose noise. */
-function adminView(question: ISpeakingQuestion) {
+function adminView(question: ISpeakingQuestion, config: Record<string, number>) {
+  const timing = resolveTiming(question, config);
   return {
     id: question._id,
     type: question.type,
     content: question.content,
     imageUrl: question.imageUrl,
     acceptedAnswers: question.acceptedAnswers,
-    speakingTime: question.speakingTime,
-    preparationTime: question.preparationTime,
+    speakingTime: timing.speakingTime,
+    preparationTime: timing.preparationTime,
     isActive: question.isActive,
     attemptCount: question.attemptCount,
     avgScore: Math.round(question.avgScore * 10) / 10,
@@ -106,11 +123,9 @@ function audioFromRequest(req: AuthRequest): AudioInput | null {
 
 export async function addQuestion(req: AuthRequest, res: Response): Promise<void> {
   // Body is already validated & coerced by createSpeakingQuestionSchema.
-  const { type, content, speakingTime, preparationTime, acceptedAnswers } = req.body as {
+  const { type, content, acceptedAnswers } = req.body as {
     type: SpeakingQuestionType;
     content?: string;
-    speakingTime: number;
-    preparationTime?: number;
     acceptedAnswers?: string[];
   };
 
@@ -127,20 +142,26 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
     return;
   }
 
+  // Timing is type-level now (QuestionTypeConfig) — the legacy per-question
+  // fields are still required by the Mongoose schema (removed in a later
+  // cleanup phase), so they're populated from the type's config here purely
+  // to satisfy that constraint. Nothing reads them back off the question.
+  const config = await getTypeConfig('speaking', type);
+
   const question = await SpeakingQuestion.create({
     type,
     content: content ?? undefined,
     imageUrl,
     imagePublicId,
     acceptedAnswers: type === 'answer_short' ? acceptedAnswers ?? [] : [],
-    speakingTime,
-    preparationTime: preparationTime ?? 0,
+    speakingTime: config.speakingTime,
+    preparationTime: config.preparationTime ?? 0,
   });
 
   res.status(201).json({
     success: true,
     message: 'Question created successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -160,10 +181,11 @@ export async function getAllQuestions(req: AuthRequest, res: Response): Promise<
   }
 
   const questions = await SpeakingQuestion.find(filter).sort({ createdAt: -1 });
+  const configMap = await getTypeConfigsMap('speaking');
 
   res.status(200).json({
     success: true,
-    data: { questions: questions.map(adminView), total: questions.length },
+    data: { questions: questions.map((q) => adminView(q, configMap[q.type] ?? {})), total: questions.length },
   });
 }
 
@@ -174,10 +196,12 @@ export async function getOneQuestion(req: AuthRequest, res: Response): Promise<v
     return;
   }
 
+  const config = await getTypeConfig('speaking', question.type);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -188,16 +212,12 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
     return;
   }
 
-  const { content, speakingTime, preparationTime, acceptedAnswers } = req.body as {
+  const { content, acceptedAnswers } = req.body as {
     content?: string;
-    speakingTime?: number;
-    preparationTime?: number;
     acceptedAnswers?: string[];
   };
 
   if (content !== undefined) question.content = content;
-  if (speakingTime !== undefined) question.speakingTime = speakingTime;
-  if (preparationTime !== undefined) question.preparationTime = preparationTime;
 
   // acceptedAnswers only applies to answer_short — ignore it for other types.
   if (acceptedAnswers !== undefined && question.type === 'answer_short') {
@@ -215,10 +235,12 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
 
   await question.save();
 
+  const config = await getTypeConfig('speaking', question.type);
+
   res.status(200).json({
     success: true,
     message: 'Question updated successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -249,14 +271,16 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
   question.isActive = req.body.isActive;
   await question.save();
 
+  const config = await getTypeConfig('speaking', question.type);
+
   res.status(200).json({
     success: true,
     message: question.isActive ? 'Question activated.' : 'Question deactivated.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
-/** Bulk-update timing for every question of a given speaking type. */
+/** Type-level timing config — applies to every existing and future question of this type. */
 export async function updateTypeSettings(req: AuthRequest, res: Response): Promise<void> {
   const type = normalizeType(String(req.params.type ?? ''));
   if (!type) {
@@ -264,27 +288,36 @@ export async function updateTypeSettings(req: AuthRequest, res: Response): Promi
     return;
   }
 
+  // Body validated by speakingTypeSettingsSchema.
   const { speakingTime, preparationTime } = req.body as {
     speakingTime?: number;
     preparationTime?: number;
   };
 
-  const update: Record<string, unknown> = {};
+  const update: Record<string, number> = {};
   if (speakingTime !== undefined) update.speakingTime = speakingTime;
   if (preparationTime !== undefined) update.preparationTime = preparationTime;
 
-  if (Object.keys(update).length === 0) {
-    res.status(400).json({ success: false, message: 'At least one setting must be provided.' });
-    return;
-  }
-
-  const result = await SpeakingQuestion.updateMany({ type }, { $set: update });
+  const settings = await upsertTypeConfig('speaking', type, update);
 
   res.status(200).json({
     success: true,
-    message: `Updated ${result.modifiedCount} question${result.modifiedCount !== 1 ? 's' : ''}.`,
-    data: { modifiedCount: result.modifiedCount, settings: { speakingTime, preparationTime } },
+    message: 'Timing updated for all questions of this type.',
+    data: { settings },
   });
+}
+
+/** Current type-level timing config. */
+export async function getTypeSettings(req: AuthRequest, res: Response): Promise<void> {
+  const type = normalizeType(String(req.params.type ?? ''));
+  if (!type) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const settings = await getTypeConfig('speaking', type);
+
+  res.status(200).json({ success: true, data: { settings } });
 }
 
 // ─── Student Controllers ────────────────────────────────────────────────────
@@ -320,10 +353,11 @@ export async function listQuestionsByType(req: AuthRequest, res: Response): Prom
   const questions = await SpeakingQuestion.find({ type: normalizedType, isActive: true }).sort({
     createdAt: -1,
   });
+  const config = await getTypeConfig('speaking', normalizedType);
 
   res.status(200).json({
     success: true,
-    data: { questions: questions.map(listView), total: questions.length },
+    data: { questions: questions.map((q) => listView(q, config)), total: questions.length },
   });
 }
 
@@ -345,7 +379,9 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
     return;
   }
 
-  res.status(200).json({ success: true, data: { question: studentView(question) } });
+  const config = await getTypeConfig('speaking', normalizedType);
+
+  res.status(200).json({ success: true, data: { question: studentView(question, config) } });
 }
 
 export async function getRandomQuestion(req: AuthRequest, res: Response): Promise<void> {
@@ -368,7 +404,9 @@ export async function getRandomQuestion(req: AuthRequest, res: Response): Promis
     return;
   }
 
-  res.status(200).json({ success: true, data: { question: studentView(question) } });
+  const config = await getTypeConfig('speaking', normalizedType);
+
+  res.status(200).json({ success: true, data: { question: studentView(question, config) } });
 }
 
 /**
@@ -407,7 +445,9 @@ export async function getNextQuestion(req: AuthRequest, res: Response): Promise<
     return;
   }
 
-  res.status(200).json({ success: true, data: { question: studentView(next) } });
+  const config = await getTypeConfig('speaking', normalizedType);
+
+  res.status(200).json({ success: true, data: { question: studentView(next, config) } });
 }
 
 /** Shared evaluate flow for the two text-reference types (read aloud, repeat). */
@@ -438,8 +478,11 @@ async function evaluateAgainstContent(
     return;
   }
 
+  const config = await getTypeConfig('speaking', expectedType);
+  const timing = resolveTiming(question, config);
+
   const { transcript, words } = await transcribeAudio(audio);
-  const result = score(transcript, words, question.content, question.speakingTime);
+  const result = score(transcript, words, question.content, timing.speakingTime);
 
   await applyAttempt(question, result.finalScore);
   await updateStudentStats(req.user!.userId);
@@ -478,8 +521,10 @@ async function evaluateOpenEnded(
     return;
   }
 
+  const config = await getTypeConfig('speaking', expectedType);
+  const timing = resolveTiming(question, config);
   const duration =
-    req.body.recordingDuration !== undefined ? Number(req.body.recordingDuration) : question.speakingTime;
+    req.body.recordingDuration !== undefined ? Number(req.body.recordingDuration) : timing.speakingTime;
   const { transcript, words } = await transcribeAudio(audio);
   const result = score(transcript, words, duration);
 

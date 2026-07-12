@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Plus, Trash2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import FormSection from '@/components/admin/FormSection';
@@ -378,7 +378,8 @@ export default function ReadingQuestionForm({ mode, type, questionId }: ReadingQ
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSaving} className="bg-action-default text-primary-foreground hover:bg-action-hover">
+          <Button type="submit" disabled={isSaving} className="gap-1.5 bg-action-default text-primary-foreground hover:bg-action-hover">
+            {isSaving && <Loader2 className="size-4 animate-spin" />}
             {isSaving ? 'Saving...' : mode === 'create' ? 'Add Question' : 'Save Changes'}
           </Button>
         </div>

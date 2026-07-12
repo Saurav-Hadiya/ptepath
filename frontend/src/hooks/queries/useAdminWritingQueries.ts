@@ -91,3 +91,26 @@ export function useAdminWritingToggleStatus(type: string) {
     },
   });
 }
+
+export function useAdminWritingTypeSettings(type: string) {
+  return useQuery({
+    queryKey: queryKeys.adminQuestions.typeSettings('writing', type),
+    queryFn: () => adminWritingService.getTypeSettings(type),
+    enabled: !!type,
+  });
+}
+
+export function useAdminWritingUpdateTypeSettings(type: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (settings: { timeLimit: number }) => adminWritingService.updateTypeSettings(type, settings),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminQuestions.all('writing') });
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminQuestions.typeSettings('writing', type) });
+      toast.success('Timing updated for all questions of this type.');
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update settings.');
+    },
+  });
+}

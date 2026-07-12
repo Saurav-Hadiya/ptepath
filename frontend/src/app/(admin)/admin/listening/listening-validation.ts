@@ -10,7 +10,6 @@ const TRANSCRIPT_TYPES: ListeningQuestionType[] = ['fill_blanks', 'highlight_inc
 
 export interface ListeningFormState {
   type: ListeningQuestionType;
-  playLimit: number;
   question: string;
   options: EditableOption[];
   transcript: string;
@@ -18,8 +17,6 @@ export interface ListeningFormState {
   blankAnswers: string[];
   incorrectWordIndices: number[];
   correctSentence: string;
-  /** Minutes shown in the UI; converted to/from seconds at the payload boundary. */
-  timeLimitMinutes: number;
   audioFile: File | null;
   existingAudioUrl: string | null;
 }
@@ -31,12 +28,10 @@ export function detectBlankCount(transcript: string): number {
 /** Converts a fetched question (edit mode) into editable form state. */
 export function toListeningFormState(question: AdminListeningQuestion): ListeningFormState {
   const base = emptyListeningForm(question.type);
-  base.playLimit = question.playLimit;
   base.question = question.question ?? '';
   base.transcript = question.transcript ?? '';
   base.correctSentence = question.correctSentence ?? '';
   base.existingAudioUrl = question.audioUrl;
-  base.timeLimitMinutes = question.timeLimit ? Math.round(question.timeLimit / 60) : 10;
 
   if (question.options.length) {
     base.options = question.options.map((o) => ({ label: o.label, text: o.text, isCorrect: o.isCorrect }));
@@ -54,7 +49,6 @@ export function toListeningFormState(question: AdminListeningQuestion): Listenin
 export function emptyListeningForm(type: ListeningQuestionType): ListeningFormState {
   return {
     type,
-    playLimit: 1,
     question: '',
     options: [
       { label: 'A', text: '', isCorrect: false },
@@ -64,7 +58,6 @@ export function emptyListeningForm(type: ListeningQuestionType): ListeningFormSt
     blankAnswers: [],
     incorrectWordIndices: [],
     correctSentence: '',
-    timeLimitMinutes: 10,
     audioFile: null,
     existingAudioUrl: null,
   };
@@ -159,7 +152,6 @@ export function validateListeningForm(state: ListeningFormState): Record<string,
 export function buildListeningPayload(state: ListeningFormState): AdminListeningFormInput {
   const base: AdminListeningFormInput = {
     type: state.type,
-    playLimit: state.playLimit,
     audioFile: state.audioFile,
   };
 
@@ -177,7 +169,6 @@ export function buildListeningPayload(state: ListeningFormState): AdminListening
   }
   if (state.type === 'highlight_incorrect') base.incorrectWordIndices = state.incorrectWordIndices;
   if (state.type === 'write_dictation') base.correctSentence = state.correctSentence.trim();
-  if (state.type === 'summarise_spoken') base.timeLimit = Math.round(state.timeLimitMinutes * 60);
 
   return base;
 }

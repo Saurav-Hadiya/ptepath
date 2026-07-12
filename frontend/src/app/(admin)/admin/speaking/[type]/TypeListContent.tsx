@@ -3,7 +3,7 @@
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { AlertCircle, ArrowLeft, Clock, Mic, Pencil, Plus, Search, X } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Clock, Mic, Plus, Search } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/shared/EmptyState';
 import ConfirmModal from '@/components/shared/ConfirmModal';
@@ -16,22 +16,25 @@ import QuestionPreview from '@/components/admin/QuestionPreview';
 import StatusToggle from '@/components/admin/StatusToggle';
 import QuestionActionButtons from '@/components/admin/QuestionActionButtons';
 import QuestionSearchInput from '@/components/admin/QuestionSearchInput';
+import AdminTypeSettingsCard from '@/components/admin/TypeSettingsCard';
 import {
   useAdminSpeakingList,
   useAdminSpeakingDelete,
   useAdminSpeakingToggleStatus,
+  useAdminSpeakingTypeSettings,
   useAdminSpeakingUpdateTypeSettings,
 } from '@/hooks/queries/useAdminSpeakingQueries';
 import { ROUTES } from '@/config/routes';
 import { getSpeakingTypeConfig, SPEAKING_TIME_BOUNDS, PREPARATION_TIME_BOUNDS } from '../speaking-types';
 import type { AdminSpeakingQuestion } from '@/types';
 
-function TypeSettingsCard({ type, questions }: { type: string; questions: AdminSpeakingQuestion[] }) {
+function SpeakingTypeSettingsCard({ type }: { type: string }) {
   const config = getSpeakingTypeConfig(type);
+  const settingsQuery = useAdminSpeakingTypeSettings(type);
   const updateMutation = useAdminSpeakingUpdateTypeSettings(type);
 
-  const currentSpeakingTime = questions[0]?.speakingTime ?? config?.defaultSpeakingTime ?? 30;
-  const currentPrepTime = questions[0]?.preparationTime ?? config?.defaultPreparationTime ?? 0;
+  const currentSpeakingTime = settingsQuery.data?.speakingTime ?? 0;
+  const currentPrepTime = settingsQuery.data?.preparationTime ?? 0;
 
   const [editing, setEditing] = useState(false);
   const [speakingTime, setSpeakingTime] = useState(currentSpeakingTime);
@@ -51,22 +54,18 @@ function TypeSettingsCard({ type, questions }: { type: string; questions: AdminS
   }
 
   return (
-    <div className="mb-4 rounded-card border border-border-default bg-bg-card p-4 shadow-card">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Clock className="size-4 text-module-speaking" />
-          <span className="text-label-md font-semibold text-text-primary">Type-wide Timing Settings</span>
-        </div>
-        {!editing && (
-          <Button variant="outline" size="sm" onClick={openEdit} className="gap-1.5">
-            <Pencil className="size-3.5" />
-            Edit
-          </Button>
-        )}
-      </div>
-
-      {!editing ? (
-        <div className="mt-3 flex flex-wrap gap-2">
+    <AdminTypeSettingsCard
+      icon={Clock}
+      iconColorClass="text-module-speaking"
+      title="Type-wide Timing Settings"
+      isLoading={settingsQuery.isLoading}
+      isSaving={updateMutation.isPending}
+      editing={editing}
+      onEdit={openEdit}
+      onSave={handleSave}
+      onCancel={() => setEditing(false)}
+      summary={
+        <>
           <Badge variant="outline" className="text-label-sm">
             Speaking Time: {currentSpeakingTime}s
           </Badge>
@@ -75,58 +74,41 @@ function TypeSettingsCard({ type, questions }: { type: string; questions: AdminS
               Preparation Time: {currentPrepTime}s
             </Badge>
           )}
-          <span className="text-label-sm text-text-muted">Applied to all questions of this type.</span>
-        </div>
-      ) : (
-        <div className="mt-3 space-y-3">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        </>
+      }
+      form={
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <Label className="text-label-md">Speaking Time (seconds)</Label>
+            <Input
+              type="number"
+              min={SPEAKING_TIME_BOUNDS.min}
+              max={SPEAKING_TIME_BOUNDS.max}
+              value={speakingTime}
+              onChange={(e) => setSpeakingTime(Number(e.target.value))}
+            />
+            <p className="text-label-sm text-text-muted">
+              {SPEAKING_TIME_BOUNDS.min}–{SPEAKING_TIME_BOUNDS.max}s
+            </p>
+          </div>
+          {config?.hasPreparationTime && (
             <div className="space-y-1.5">
-              <Label className="text-label-md">Speaking Time (seconds)</Label>
+              <Label className="text-label-md">Preparation Time (seconds)</Label>
               <Input
                 type="number"
-                min={SPEAKING_TIME_BOUNDS.min}
-                max={SPEAKING_TIME_BOUNDS.max}
-                value={speakingTime}
-                onChange={(e) => setSpeakingTime(Number(e.target.value))}
+                min={PREPARATION_TIME_BOUNDS.min}
+                max={PREPARATION_TIME_BOUNDS.max}
+                value={prepTime}
+                onChange={(e) => setPrepTime(Number(e.target.value))}
               />
               <p className="text-label-sm text-text-muted">
-                {SPEAKING_TIME_BOUNDS.min}–{SPEAKING_TIME_BOUNDS.max}s
+                {PREPARATION_TIME_BOUNDS.min}–{PREPARATION_TIME_BOUNDS.max}s
               </p>
             </div>
-            {config?.hasPreparationTime && (
-              <div className="space-y-1.5">
-                <Label className="text-label-md">Preparation Time (seconds)</Label>
-                <Input
-                  type="number"
-                  min={PREPARATION_TIME_BOUNDS.min}
-                  max={PREPARATION_TIME_BOUNDS.max}
-                  value={prepTime}
-                  onChange={(e) => setPrepTime(Number(e.target.value))}
-                />
-                <p className="text-label-sm text-text-muted">
-                  {PREPARATION_TIME_BOUNDS.min}–{PREPARATION_TIME_BOUNDS.max}s
-                </p>
-              </div>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <Button size="sm" onClick={handleSave} disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? 'Saving...' : 'Apply to All Questions'}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setEditing(false)}
-              disabled={updateMutation.isPending}
-              className="gap-1"
-            >
-              <X className="size-3.5" />
-              Cancel
-            </Button>
-          </div>
+          )}
         </div>
-      )}
-    </div>
+      }
+    />
   );
 }
 
@@ -237,7 +219,7 @@ function TypeListInner({ type }: { type: string }) {
         }
       />
 
-      <TypeSettingsCard type={type} questions={questions} />
+      <SpeakingTypeSettingsCard type={type} />
 
       <div className="mb-4">
         <QuestionSearchInput placeholder="Search by question content..." />

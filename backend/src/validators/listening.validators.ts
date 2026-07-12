@@ -253,14 +253,12 @@ export function listeningTypeError(
 export const createListeningQuestionSchema = z
   .object({
     type: listeningType,
-    playLimit: playLimitOptional,
     question: questionOptional,
     options: optionsOptional,
     transcript: transcriptOptional,
     blanks: blanksOptional,
     incorrectWordIndices: incorrectWordIndicesOptional,
     correctSentence: correctSentenceOptional,
-    timeLimit: timeLimitOptional,
   })
   .superRefine((data, ctx) => {
     const message = listeningTypeError(data.type, data);
@@ -271,14 +269,12 @@ export const createListeningQuestionSchema = z
 // fields) is valid. Per-type invariants are re-checked in the controller
 // against the merged candidate.
 export const updateListeningQuestionSchema = z.object({
-  playLimit: playLimitOptional,
   question: questionOptional,
   options: optionsOptional,
   transcript: transcriptOptional,
   blanks: blanksOptional,
   incorrectWordIndices: incorrectWordIndicesOptional,
   correctSentence: correctSentenceOptional,
-  timeLimit: timeLimitOptional,
 });
 
 export const toggleListeningStatusSchema = z.object({
@@ -287,6 +283,15 @@ export const toggleListeningStatusSchema = z.object({
     z.boolean({ error: 'isActive must be a boolean (true or false).' })
   ),
 });
+
+export const listeningTypeSettingsSchema = z
+  .object({
+    playLimit: playLimitOptional,
+    timeLimit: timeLimitOptional,
+  })
+  .refine((data) => data.playLimit !== undefined || data.timeLimit !== undefined, {
+    message: 'At least one setting must be provided.',
+  });
 
 // ─── Student: evaluate ───────────────────────────────────────────────────────
 

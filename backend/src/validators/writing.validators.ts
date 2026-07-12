@@ -78,20 +78,22 @@ const objectId = z
 export const createWritingQuestionSchema = z.object({
   type: writingType,
   content: contentRequired,
-  timeLimit: z.preprocess(toNumber, timeLimitSchema.optional()),
 });
 
 export const updateWritingQuestionSchema = z
   .object({
     content: contentOptional,
-    timeLimit: z.preprocess(toNumber, timeLimitSchema.optional()),
   })
-  .refine((data) => data.content !== undefined || data.timeLimit !== undefined, {
-    message: 'At least one field (content or timeLimit) must be provided to update.',
+  .refine((data) => data.content !== undefined, {
+    message: 'At least one field (content) must be provided to update.',
   });
 
 export const toggleWritingStatusSchema = z.object({
   isActive: z.boolean({ error: 'isActive must be a boolean (true or false).' }),
+});
+
+export const writingTypeSettingsSchema = z.object({
+  timeLimit: z.preprocess(toNumber, timeLimitSchema),
 });
 
 // ─── Student: evaluate ───────────────────────────────────────────────────────

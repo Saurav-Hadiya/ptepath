@@ -9,6 +9,7 @@ import {
   createSpeakingQuestionSchema,
   updateSpeakingQuestionSchema,
   toggleSpeakingStatusSchema,
+  speakingTypeSettingsSchema,
   evaluateSchema,
   evaluateWithDurationSchema,
 } from '../validators/speaking.validators';
@@ -51,8 +52,13 @@ adminSpeakingRouter.patch(
   validateBody(toggleSpeakingStatusSchema),
   asyncHandler(speakingController.toggleStatus)
 );
+adminSpeakingRouter.get(
+  '/type-settings/:type',
+  asyncHandler(speakingController.getTypeSettings)
+);
 adminSpeakingRouter.patch(
   '/type-settings/:type',
+  validateBody(speakingTypeSettingsSchema),
   asyncHandler(speakingController.updateTypeSettings)
 );
 

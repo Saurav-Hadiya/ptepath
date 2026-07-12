@@ -25,6 +25,7 @@ import {
   BookOpen,
   Headphones,
   Target,
+  FolderOpen,
   Settings,
   LogOut,
   ShieldCheck,
@@ -62,6 +63,12 @@ const navSections: NavSection[] = [
     label: 'Tests',
     items: [
       { label: 'Mock Tests', href: ROUTES.student.mockTests.home, icon: Target },
+    ],
+  },
+  {
+    label: 'Library',
+    items: [
+      { label: 'Resources', href: ROUTES.student.resources.home, icon: FolderOpen },
     ],
   },
   {

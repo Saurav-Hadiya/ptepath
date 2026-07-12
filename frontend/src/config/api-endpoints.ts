@@ -41,6 +41,7 @@ export const API_ENDPOINTS = {
       update: (id: string) => `/admin/writing/questions/${id}`,
       delete: (id: string) => `/admin/writing/questions/${id}`,
       status: (id: string) => `/admin/writing/questions/${id}/status`,
+      typeSettings: (type: string) => `/admin/writing/type-settings/${type}`,
     },
     reading: {
       list: '/admin/reading/questions',

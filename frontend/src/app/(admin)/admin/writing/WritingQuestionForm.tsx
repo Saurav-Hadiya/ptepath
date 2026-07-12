@@ -3,19 +3,20 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import FormSection from '@/components/admin/FormSection';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
   useAdminWritingCreate,
   useAdminWritingUpdate,
+  useAdminWritingTypeSettings,
 } from '@/hooks/queries/useAdminWritingQueries';
 import { adminWritingFormSchema } from '@/lib/validations/admin';
 import { ROUTES } from '@/config/routes';
-import { getWritingTypeConfig, TIME_LIMIT_MINUTES_BOUNDS } from './writing-types';
+import { getWritingTypeConfig } from './writing-types';
 import type { AdminWritingQuestion } from '@/types';
 
 interface WritingQuestionFormProps {
@@ -26,7 +27,6 @@ interface WritingQuestionFormProps {
 
 interface FormState {
   content: string;
-  timeLimitMinutes: number;
 }
 
 export default function WritingQuestionForm({ type, mode, existingQuestion }: WritingQuestionFormProps) {
@@ -35,12 +35,10 @@ export default function WritingQuestionForm({ type, mode, existingQuestion }: Wr
 
   const createMutation = useAdminWritingCreate(type);
   const updateMutation = useAdminWritingUpdate(type);
+  const typeSettingsQuery = useAdminWritingTypeSettings(type);
 
   const [form, setForm] = useState<FormState>(() => ({
     content: existingQuestion?.content ?? '',
-    timeLimitMinutes: existingQuestion
-      ? Math.round(existingQuestion.timeLimit / 60)
-      : Math.round((config?.defaultTimeLimitSeconds ?? 600) / 60),
   }));
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -48,6 +46,7 @@ export default function WritingQuestionForm({ type, mode, existingQuestion }: Wr
 
   const wordMin = existingQuestion?.wordMin ?? config.wordMin;
   const wordMax = existingQuestion?.wordMax ?? config.wordMax;
+  const timeLimitSeconds = existingQuestion?.timeLimit ?? typeSettingsQuery.data?.timeLimit;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,7 +54,6 @@ export default function WritingQuestionForm({ type, mode, existingQuestion }: Wr
     const parsed = adminWritingFormSchema.safeParse({
       type,
       content: form.content,
-      timeLimitMinutes: form.timeLimitMinutes,
     });
 
     if (!parsed.success) {
@@ -68,15 +66,13 @@ export default function WritingQuestionForm({ type, mode, existingQuestion }: Wr
     }
     setErrors({});
 
-    const timeLimit = Math.round(form.timeLimitMinutes * 60);
-
     if (mode === 'edit' && existingQuestion) {
       await updateMutation.mutateAsync({
         id: existingQuestion.id,
-        input: { content: form.content.trim(), timeLimit },
+        input: { content: form.content.trim() },
       });
     } else {
-      await createMutation.mutateAsync({ type, content: form.content.trim(), timeLimit });
+      await createMutation.mutateAsync({ type, content: form.content.trim() });
     }
     router.push(ROUTES.admin.writing.type(type));
   }
@@ -105,20 +101,14 @@ export default function WritingQuestionForm({ type, mode, existingQuestion }: Wr
 
         <FormSection title="Timing & Response Limits">
           <div className="flex flex-col gap-1.5">
-            <Label>Time Limit (minutes)</Label>
-            <Input
-              type="number"
-              min={TIME_LIMIT_MINUTES_BOUNDS.min}
-              max={TIME_LIMIT_MINUTES_BOUNDS.max}
-              value={form.timeLimitMinutes}
-              onChange={(e) => setForm((prev) => ({ ...prev, timeLimitMinutes: Number(e.target.value) }))}
-            />
+            <Label>Time Limit</Label>
             <p className="text-label-sm text-text-muted">
-              Between {TIME_LIMIT_MINUTES_BOUNDS.min} and {TIME_LIMIT_MINUTES_BOUNDS.max} minutes.
+              {timeLimitSeconds
+                ? `${Math.round(timeLimitSeconds / 60)} minutes for every question of this type.`
+                : 'Loading current setting...'}{' '}
+              Managed at the question type level — go back to the question list and use the &quot;Type-wide
+              Settings&quot; card to change it.
             </p>
-            {errors.timeLimitMinutes && (
-              <p className="text-label-sm text-feedback-error">{errors.timeLimitMinutes}</p>
-            )}
           </div>
 
           <p className="mt-3 rounded-input border border-border-default bg-bg-page px-3 py-2.5 text-label-sm text-text-muted">
@@ -136,7 +126,8 @@ export default function WritingQuestionForm({ type, mode, existingQuestion }: Wr
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSaving}>
+          <Button type="submit" disabled={isSaving} className="gap-1.5">
+            {isSaving && <Loader2 className="size-4 animate-spin" />}
             {isSaving ? 'Saving...' : 'Save Question'}
           </Button>
         </div>

@@ -25,6 +25,7 @@ import {
   BookOpen,
   Headphones,
   Target,
+  FolderOpen,
   Settings,
   LogOut,
   GraduationCap,
@@ -56,6 +57,12 @@ const navSections = [
     label: 'Tests',
     items: [
       { label: 'Mock Tests', href: ROUTES.admin.mockTests.home, icon: Target },
+    ],
+  },
+  {
+    label: 'Library',
+    items: [
+      { label: 'Resources', href: ROUTES.admin.resources.home, icon: FolderOpen },
     ],
   },
   {
