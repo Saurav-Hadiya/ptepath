@@ -30,3 +30,26 @@ export function getInitials(name: string): string {
   if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase()
 }
+
+/**
+ * Cloudinary "raw" resource URLs (PDF/DOCX) are stored without a file extension,
+ * so a plain <a href> download saves an extensionless file the OS can't open
+ * (Cloudinary's `fl_attachment:<filename>` transformation can't help either —
+ * it rejects any dot in the filename value). Fetching the file as a blob and
+ * triggering a client-side save lets us force the correct filename/extension
+ * regardless of what Cloudinary reports. Cloudinary serves `Access-Control-
+ * Allow-Origin: *`, so the cross-origin fetch is not blocked by CORS.
+ */
+export async function downloadResourceFile(fileUrl: string, fileName: string): Promise<void> {
+  const response = await fetch(fileUrl)
+  if (!response.ok) throw new Error("Failed to download file.")
+  const blob = await response.blob()
+  const objectUrl = URL.createObjectURL(blob)
+  const link = document.createElement("a")
+  link.href = objectUrl
+  link.download = fileName
+  document.body.appendChild(link)
+  link.click()
+  link.remove()
+  URL.revokeObjectURL(objectUrl)
+}

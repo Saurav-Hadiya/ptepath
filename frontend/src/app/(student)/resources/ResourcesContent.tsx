@@ -1,13 +1,16 @@
 'use client';
 
-import { AlertTriangle, Download, FileImage, FileText, File as FileIcon, FolderOpen } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { AlertTriangle, Download, FileImage, FileText, File as FileIcon, FolderOpen, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/shared/EmptyState';
 import { useResourceList } from '@/hooks/queries/useResourceQueries';
-import type { ResourceFileType } from '@/types';
+import { downloadResourceFile } from '@/lib/utils';
+import type { Resource, ResourceFileType } from '@/types';
 
 const FILE_TYPE_ICON: Record<ResourceFileType, typeof FileText> = {
   pdf: FileText,
@@ -22,6 +25,18 @@ function formatSize(bytes: number): string {
 
 export default function ResourcesContent() {
   const { data: resources, isLoading, isError, refetch } = useResourceList();
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  async function handleDownload(resource: Resource) {
+    setDownloadingId(resource.id);
+    try {
+      await downloadResourceFile(resource.fileUrl, resource.fileName);
+    } catch {
+      toast.error('Failed to download file. Please try again.');
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   if (isLoading) {
     return (
@@ -68,6 +83,7 @@ export default function ResourcesContent() {
         <div className="flex flex-col gap-3">
           {list.map((resource) => {
             const Icon = FILE_TYPE_ICON[resource.fileType] ?? FileIcon;
+            const isDownloading = downloadingId === resource.id;
             return (
               <div
                 key={resource.id}
@@ -92,13 +108,14 @@ export default function ResourcesContent() {
                 </div>
 
                 <Button
-                  nativeButton={false}
-                  render={<a href={resource.fileUrl} target="_blank" rel="noopener noreferrer" />}
+                  type="button"
                   variant="outline"
+                  disabled={isDownloading}
+                  onClick={() => handleDownload(resource)}
                   className="shrink-0 gap-1.5 sm:self-center"
                 >
-                  <Download className="size-4" />
-                  Download
+                  {isDownloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+                  {isDownloading ? 'Downloading...' : 'Download'}
                 </Button>
               </div>
             );
