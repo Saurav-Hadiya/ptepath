@@ -6,19 +6,18 @@ import type {
   AdminListeningQuestion,
   AdminListeningOption,
   AdminListeningBlank,
+  AdminListeningTypeSettings,
   ListeningQuestionType,
 } from '@/types';
 
 export interface AdminListeningFormInput {
   type: ListeningQuestionType;
-  playLimit: number;
   question?: string;
   options?: AdminListeningOption[];
   transcript?: string;
   blanks?: AdminListeningBlank[];
   incorrectWordIndices?: number[];
   correctSentence?: string;
-  timeLimit?: number;
   audioFile?: File | null;
 }
 
@@ -31,7 +30,6 @@ export interface AdminListeningQuestionsResponse {
 function buildFormData(input: AdminListeningFormInput, includeType: boolean): FormData {
   const formData = new FormData();
   if (includeType) formData.append('type', input.type);
-  formData.append('playLimit', String(input.playLimit));
   if (input.question !== undefined) formData.append('question', input.question);
   if (input.options !== undefined) formData.append('options', JSON.stringify(input.options));
   if (input.transcript !== undefined) formData.append('transcript', input.transcript);
@@ -40,7 +38,6 @@ function buildFormData(input: AdminListeningFormInput, includeType: boolean): Fo
     formData.append('incorrectWordIndices', JSON.stringify(input.incorrectWordIndices));
   }
   if (input.correctSentence !== undefined) formData.append('correctSentence', input.correctSentence);
-  if (input.timeLimit !== undefined) formData.append('timeLimit', String(input.timeLimit));
   if (input.audioFile) formData.append('audio', input.audioFile);
   return formData;
 }
@@ -116,9 +113,27 @@ export const adminListeningService = {
     }
   },
 
-  async updateTypeSettings(type: string, settings: { playLimit: number }): Promise<void> {
+  async getTypeSettings(type: string): Promise<AdminListeningTypeSettings> {
     try {
-      await api.patch(API_ENDPOINTS.admin.listening.typeSettings(type), settings);
+      const { data } = await api.get<ApiResponse<{ settings: AdminListeningTypeSettings }>>(
+        API_ENDPOINTS.admin.listening.typeSettings(type)
+      );
+      return (data.data as { settings: AdminListeningTypeSettings }).settings;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
+  async updateTypeSettings(
+    type: string,
+    settings: { playLimit?: number; timeLimit?: number }
+  ): Promise<AdminListeningTypeSettings> {
+    try {
+      const { data } = await api.patch<ApiResponse<{ settings: AdminListeningTypeSettings }>>(
+        API_ENDPOINTS.admin.listening.typeSettings(type),
+        settings
+      );
+      return (data.data as { settings: AdminListeningTypeSettings }).settings;
     } catch (error) {
       throw normalizeError(error);
     }

@@ -4,10 +4,10 @@ const WRITING_TYPE_VALUES: WritingQuestionType[] = ['summarise_written_text', 'w
 
 /**
  * Per-type configuration for the admin Writing question bank.
- * wordMin/wordMax and default time limits mirror
- * backend/src/controllers/writing.controller.ts TYPE_CONFIG exactly — these are
- * server-derived and never editable by the admin, shown here as informational text only.
- * timeLimit bounds mirror backend/src/validators/writing.validators.ts (1-3600 seconds).
+ * wordMin/wordMax are immutable per type and shown here as informational text
+ * only (also returned by the backend on every question, sourced from the same
+ * place). Time limit values live in QuestionTypeConfig (backend) — fetched via
+ * useAdminWritingTypeSettings, not duplicated here.
  */
 export interface WritingTypeConfig {
   type: WritingQuestionType;
@@ -16,7 +16,6 @@ export interface WritingTypeConfig {
   contentLabel: string;
   wordMin: number;
   wordMax: number;
-  defaultTimeLimitSeconds: number;
 }
 
 export const WRITING_TYPES: WritingTypeConfig[] = [
@@ -27,7 +26,6 @@ export const WRITING_TYPES: WritingTypeConfig[] = [
     contentLabel: 'Passage Text',
     wordMin: 5,
     wordMax: 75,
-    defaultTimeLimitSeconds: 600,
   },
   {
     type: 'write_essay',
@@ -36,7 +34,6 @@ export const WRITING_TYPES: WritingTypeConfig[] = [
     contentLabel: 'Essay Prompt',
     wordMin: 200,
     wordMax: 300,
-    defaultTimeLimitSeconds: 1200,
   },
 ];
 

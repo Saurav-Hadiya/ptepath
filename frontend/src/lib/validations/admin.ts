@@ -47,17 +47,6 @@ export const adminSpeakingFormSchema = z
   .object({
     type: z.enum(['read_aloud', 'repeat_sentence', 'describe_image', 'respond_situation', 'answer_short']),
     content: z.string().trim().optional(),
-    speakingTime: z.coerce
-      .number()
-      .int('Must be a whole number')
-      .min(1, 'Must be 1 or greater')
-      .max(3600, 'Must be 3600 seconds or fewer'),
-    preparationTime: z.coerce
-      .number()
-      .int('Must be a whole number')
-      .min(0, 'Must be 0 or greater')
-      .max(3600, 'Must be 3600 seconds or fewer')
-      .optional(),
     acceptedAnswers: z.array(z.string().trim().min(1, 'Answer cannot be empty')).optional(),
     imageFile: z.instanceof(File).nullable().optional(),
     existingImageUrl: z.string().nullable().optional(),
@@ -85,14 +74,9 @@ export type AdminSpeakingFormValues = z.infer<typeof adminSpeakingFormSchema>;
 
 // ─── Writing Questions ───────────────────────────────────────────────────────
 
-// Backend bounds timeLimit to 1-3600 seconds; expressed here in minutes (1-60).
 export const adminWritingFormSchema = z.object({
   type: z.enum(['summarise_written_text', 'write_essay']),
   content: z.string().trim().min(1, 'Content is required'),
-  timeLimitMinutes: z.coerce
-    .number()
-    .min(1, 'Must be 1 minute or greater')
-    .max(60, 'Must be 60 minutes or fewer'),
 });
 
 export type AdminWritingFormValues = z.infer<typeof adminWritingFormSchema>;

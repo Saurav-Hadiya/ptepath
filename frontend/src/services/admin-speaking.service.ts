@@ -1,7 +1,7 @@
 import api from '@/lib/api';
 import { normalizeError } from '@/lib/api-error';
 import { API_ENDPOINTS } from '@/config/api-endpoints';
-import type { ApiResponse, AdminSpeakingQuestion } from '@/types';
+import type { ApiResponse, AdminSpeakingQuestion, AdminSpeakingTypeSettings } from '@/types';
 
 export interface AdminSpeakingQuestionsResponse {
   questions: AdminSpeakingQuestion[];
@@ -11,8 +11,6 @@ export interface AdminSpeakingQuestionsResponse {
 export interface AdminSpeakingFormInput {
   type: string;
   content?: string;
-  speakingTime: number;
-  preparationTime?: number;
   acceptedAnswers?: string[];
   imageFile?: File | null;
 }
@@ -22,10 +20,6 @@ function buildFormData(input: AdminSpeakingFormInput, includeType: boolean): For
   const formData = new FormData();
   if (includeType) formData.append('type', input.type);
   if (input.content !== undefined) formData.append('content', input.content);
-  formData.append('speakingTime', String(input.speakingTime));
-  if (input.preparationTime !== undefined) {
-    formData.append('preparationTime', String(input.preparationTime));
-  }
   if (input.acceptedAnswers !== undefined) {
     formData.append('acceptedAnswers', JSON.stringify(input.acceptedAnswers));
   }
@@ -106,12 +100,27 @@ export const adminSpeakingService = {
     }
   },
 
+  async getTypeSettings(type: string): Promise<AdminSpeakingTypeSettings> {
+    try {
+      const { data } = await api.get<ApiResponse<{ settings: AdminSpeakingTypeSettings }>>(
+        API_ENDPOINTS.admin.speaking.typeSettings(type)
+      );
+      return (data.data as { settings: AdminSpeakingTypeSettings }).settings;
+    } catch (error) {
+      throw normalizeError(error);
+    }
+  },
+
   async updateTypeSettings(
     type: string,
-    settings: { speakingTime: number; preparationTime?: number }
-  ): Promise<void> {
+    settings: { speakingTime?: number; preparationTime?: number }
+  ): Promise<AdminSpeakingTypeSettings> {
     try {
-      await api.patch(API_ENDPOINTS.admin.speaking.typeSettings(type), settings);
+      const { data } = await api.patch<ApiResponse<{ settings: AdminSpeakingTypeSettings }>>(
+        API_ENDPOINTS.admin.speaking.typeSettings(type),
+        settings
+      );
+      return (data.data as { settings: AdminSpeakingTypeSettings }).settings;
     } catch (error) {
       throw normalizeError(error);
     }

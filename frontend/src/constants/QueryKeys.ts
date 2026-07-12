@@ -23,6 +23,7 @@ export const queryKeys = {
       ['admin', module, 'questions', type, search ?? ''] as const,
     all: (module: string) => ['admin', module, 'questions'] as const,
     detail: (module: string, id: string) => ['admin', module, 'question', id] as const,
+    typeSettings: (module: string, type: string) => ['admin', module, 'type-settings', type] as const,
   },
   adminMockTests: {
     list: (search?: string) => ['admin', 'mock-tests', search ?? ''] as const,
@@ -56,5 +57,9 @@ export const queryKeys = {
   resources: {
     all: () => ['resources'] as const,
     detail: (id: string) => ['resources', id] as const,
+  },
+  adminResources: {
+    all: () => ['admin', 'resources'] as const,
+    detail: (id: string) => ['admin', 'resources', id] as const,
   },
 } as const;

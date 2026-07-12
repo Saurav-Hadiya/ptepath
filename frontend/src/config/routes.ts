@@ -36,6 +36,9 @@ export const ROUTES = {
       attempt: '/mock-tests/attempt',
       result: '/mock-tests/result',
     },
+    resources: {
+      home: '/resources',
+    },
   },
 
   admin: {
@@ -74,6 +77,11 @@ export const ROUTES = {
       home: '/admin/mock-tests',
       new: '/admin/mock-tests/new',
       edit: (id: string) => `/admin/mock-tests/${id}/edit`,
+    },
+    resources: {
+      home: '/admin/resources',
+      new: '/admin/resources/new',
+      edit: (id: string) => `/admin/resources/${id}/edit`,
     },
   },
 } as const;

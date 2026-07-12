@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import FormSection from '@/components/admin/FormSection';
 import ImageUpload from '@/components/admin/ImageUpload';
@@ -14,6 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import {
   useAdminSpeakingCreate,
   useAdminSpeakingUpdate,
+  useAdminSpeakingTypeSettings,
 } from '@/hooks/queries/useAdminSpeakingQueries';
 import { adminSpeakingFormSchema } from '@/lib/validations/admin';
 import { ROUTES } from '@/config/routes';
@@ -28,8 +29,6 @@ interface SpeakingQuestionFormProps {
 
 interface FormState {
   content: string;
-  speakingTime: number;
-  preparationTime: number;
   acceptedAnswers: string[];
   imageFile: File | null;
   existingImageUrl: string | null;
@@ -41,11 +40,10 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
 
   const createMutation = useAdminSpeakingCreate(type);
   const updateMutation = useAdminSpeakingUpdate(type);
+  const typeSettingsQuery = useAdminSpeakingTypeSettings(type);
 
   const [form, setForm] = useState<FormState>(() => ({
     content: existingQuestion?.content ?? '',
-    speakingTime: existingQuestion?.speakingTime ?? config?.defaultSpeakingTime ?? 30,
-    preparationTime: existingQuestion?.preparationTime ?? config?.defaultPreparationTime ?? 0,
     acceptedAnswers: existingQuestion?.acceptedAnswers?.length ? existingQuestion.acceptedAnswers : [''],
     imageFile: null,
     existingImageUrl: existingQuestion?.imageUrl ?? null,
@@ -53,6 +51,9 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   if (!config) return null;
+
+  const speakingTime = existingQuestion?.speakingTime ?? typeSettingsQuery.data?.speakingTime;
+  const preparationTime = existingQuestion?.preparationTime ?? typeSettingsQuery.data?.preparationTime;
 
   function handleAnswerChange(index: number, value: string) {
     setForm((prev) => {
@@ -76,12 +77,15 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
+    // acceptedAnswers is only meaningful for answer_short — the form always
+    // initializes it to [''], so validating it unconditionally rejected every
+    // other question type on that placeholder empty string.
+    const acceptedAnswersForValidation = type === 'answer_short' ? form.acceptedAnswers : undefined;
+
     const parsed = adminSpeakingFormSchema.safeParse({
       type,
       content: form.content,
-      speakingTime: form.speakingTime,
-      preparationTime: form.preparationTime,
-      acceptedAnswers: form.acceptedAnswers,
+      acceptedAnswers: acceptedAnswersForValidation,
       imageFile: form.imageFile,
       existingImageUrl: form.existingImageUrl,
     });
@@ -104,8 +108,6 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
     const input = {
       type,
       content: type === 'describe_image' ? undefined : form.content.trim(),
-      speakingTime: form.speakingTime,
-      preparationTime: form.preparationTime,
       acceptedAnswers,
       imageFile: form.imageFile,
     };
@@ -162,11 +164,11 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
         <FormSection title="Timing">
           <div className="flex flex-wrap gap-2">
             <span className="inline-flex items-center rounded-full border border-border-default px-3 py-1 text-label-sm text-text-secondary">
-              Speaking Time: {form.speakingTime}s
+              Speaking Time: {speakingTime !== undefined ? `${speakingTime}s` : 'Loading...'}
             </span>
-            {config.hasPreparationTime && form.preparationTime > 0 && (
+            {config.hasPreparationTime && !!preparationTime && (
               <span className="inline-flex items-center rounded-full border border-border-default px-3 py-1 text-label-sm text-text-secondary">
-                Preparation Time: {form.preparationTime}s
+                Preparation Time: {preparationTime}s
               </span>
             )}
           </div>
@@ -216,7 +218,8 @@ export default function SpeakingQuestionForm({ type, mode, existingQuestion }: S
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isSaving}>
+          <Button type="submit" disabled={isSaving} className="gap-1.5">
+            {isSaving && <Loader2 className="size-4 animate-spin" />}
             {isSaving ? 'Saving...' : 'Save Question'}
           </Button>
         </div>

@@ -65,7 +65,6 @@ const secondsSchema = (label: string, min: number) =>
     .min(min, `${label} must be ${min} or greater.`)
     .max(3600, `${label} must be 3600 seconds or fewer.`);
 
-const requiredSeconds = (label: string, min: number) => z.preprocess(toNumber, secondsSchema(label, min));
 const optionalSeconds = (label: string, min: number) =>
   z.preprocess(toNumber, secondsSchema(label, min).optional());
 
@@ -94,8 +93,6 @@ export const createSpeakingQuestionSchema = z
   .object({
     type: speakingType,
     content: contentOptional,
-    speakingTime: requiredSeconds('speakingTime', 1),
-    preparationTime: optionalSeconds('preparationTime', 0),
     acceptedAnswers: acceptedAnswersOptional,
   })
   .superRefine((data, ctx) => {
@@ -110,22 +107,24 @@ export const createSpeakingQuestionSchema = z
 export const updateSpeakingQuestionSchema = z
   .object({
     content: contentOptional,
-    speakingTime: optionalSeconds('speakingTime', 1),
-    preparationTime: optionalSeconds('preparationTime', 0),
     acceptedAnswers: acceptedAnswersOptional,
   })
-  .refine(
-    (data) =>
-      data.content !== undefined ||
-      data.speakingTime !== undefined ||
-      data.preparationTime !== undefined ||
-      data.acceptedAnswers !== undefined,
-    { message: 'At least one field must be provided to update.' }
-  );
+  .refine((data) => data.content !== undefined || data.acceptedAnswers !== undefined, {
+    message: 'At least one field must be provided to update.',
+  });
 
 export const toggleSpeakingStatusSchema = z.object({
   isActive: z.boolean({ error: 'isActive must be a boolean (true or false).' }),
 });
+
+export const speakingTypeSettingsSchema = z
+  .object({
+    speakingTime: optionalSeconds('speakingTime', 1),
+    preparationTime: optionalSeconds('preparationTime', 0),
+  })
+  .refine((data) => data.speakingTime !== undefined || data.preparationTime !== undefined, {
+    message: 'At least one setting must be provided.',
+  });
 
 // ─── Student: evaluate ───────────────────────────────────────────────────────
 

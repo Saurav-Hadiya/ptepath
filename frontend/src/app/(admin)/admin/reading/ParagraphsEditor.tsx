@@ -43,7 +43,7 @@ function SortableParagraphItem({ id, paragraph, onChange, onRemove, canRemove }:
         type="button"
         {...listeners}
         {...attributes}
-        className="mt-1.5 shrink-0 cursor-grab text-text-muted active:cursor-grabbing"
+        className="mt-1.5 shrink-0 touch-none select-none cursor-grab text-text-muted active:cursor-grabbing"
         aria-label="Drag to reorder"
       >
         <GripVertical className="size-4" />

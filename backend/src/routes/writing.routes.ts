@@ -8,6 +8,7 @@ import {
   createWritingQuestionSchema,
   updateWritingQuestionSchema,
   toggleWritingStatusSchema,
+  writingTypeSettingsSchema,
   evaluateWritingSchema,
 } from '../validators/writing.validators';
 
@@ -46,6 +47,15 @@ adminWritingRouter.patch(
   validateObjectId(),
   validateBody(toggleWritingStatusSchema),
   asyncHandler(writingController.toggleStatus)
+);
+adminWritingRouter.get(
+  '/type-settings/:type',
+  asyncHandler(writingController.getTypeSettings)
+);
+adminWritingRouter.patch(
+  '/type-settings/:type',
+  validateBody(writingTypeSettingsSchema),
+  asyncHandler(writingController.updateTypeSettings)
 );
 
 /**

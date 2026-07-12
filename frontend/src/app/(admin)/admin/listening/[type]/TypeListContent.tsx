@@ -3,94 +3,118 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, Headphones, Pencil, Plus, SearchX, Volume2, X } from 'lucide-react';
+import { ArrowLeft, Headphones, Plus, SearchX, Volume2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/shared/EmptyState';
 import ConfirmModal from '@/components/shared/ConfirmModal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import QuestionPreview from '@/components/admin/QuestionPreview';
 import QuestionSearchInput from '@/components/admin/QuestionSearchInput';
 import QuestionActionButtons from '@/components/admin/QuestionActionButtons';
 import StatusToggle from '@/components/admin/StatusToggle';
+import AdminTypeSettingsCard from '@/components/admin/TypeSettingsCard';
 import {
   useAdminListeningList,
   useAdminListeningDelete,
   useAdminListeningToggleStatus,
+  useAdminListeningTypeSettings,
   useAdminListeningUpdateTypeSettings,
 } from '@/hooks/queries/useAdminListeningQueries';
 import { ROUTES } from '@/config/routes';
 import { getListeningTypeConfig } from '../listening-types';
 import type { AdminListeningQuestion } from '@/types';
 
-function PlayLimitSettingsCard({ type, questions }: { type: string; questions: AdminListeningQuestion[] }) {
+/** Mirrors backend/src/validators/listening.validators.ts timeLimitOptional bounds exactly. */
+const TIME_LIMIT_MINUTES_BOUNDS = { min: 1, max: 30 };
+
+function ListeningTypeSettingsCard({ type }: { type: string }) {
+  const isTimed = type === 'summarise_spoken';
+  const settingsQuery = useAdminListeningTypeSettings(type);
   const updateMutation = useAdminListeningUpdateTypeSettings(type);
-  const currentPlayLimit = questions[0]?.playLimit ?? 1;
+
+  const currentPlayLimit = settingsQuery.data?.playLimit ?? 1;
+  const currentTimeLimit = settingsQuery.data?.timeLimit;
+
   const [editing, setEditing] = useState(false);
   const [playLimit, setPlayLimit] = useState(currentPlayLimit);
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState(() =>
+    currentTimeLimit ? Math.round(currentTimeLimit / 60) : 10
+  );
 
   function openEdit() {
     setPlayLimit(currentPlayLimit);
+    setTimeLimitMinutes(currentTimeLimit ? Math.round(currentTimeLimit / 60) : 10);
     setEditing(true);
   }
 
   function handleSave() {
-    updateMutation.mutate({ playLimit }, { onSuccess: () => setEditing(false) });
+    updateMutation.mutate(
+      { playLimit, ...(isTimed ? { timeLimit: Math.round(timeLimitMinutes * 60) } : {}) },
+      { onSuccess: () => setEditing(false) }
+    );
   }
 
   return (
-    <div className="mb-4 rounded-card border border-border-default bg-bg-card p-4 shadow-card">
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
-          <Volume2 className="size-4 text-module-listening" />
-          <span className="text-label-md font-semibold text-text-primary">Type-wide Audio Play Limit</span>
-        </div>
-        {!editing && (
-          <Button variant="outline" size="sm" onClick={openEdit} className="gap-1.5">
-            <Pencil className="size-3.5" />
-            Edit
-          </Button>
-        )}
-      </div>
-
-      {!editing ? (
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+    <AdminTypeSettingsCard
+      icon={Volume2}
+      iconColorClass="text-module-listening"
+      title="Type-wide Settings"
+      isLoading={settingsQuery.isLoading}
+      isSaving={updateMutation.isPending}
+      editing={editing}
+      onEdit={openEdit}
+      onSave={handleSave}
+      onCancel={() => setEditing(false)}
+      summary={
+        <>
           <Badge variant="outline" className="text-label-sm">
             {currentPlayLimit === 0 ? 'Unlimited replays' : 'Play once'}
           </Badge>
-          <span className="text-label-sm text-text-muted">Applied to all questions of this type.</span>
-        </div>
-      ) : (
-        <div className="mt-3 space-y-3">
-          <Select value={String(playLimit)} onValueChange={(v) => setPlayLimit(Number(v))}>
-            <SelectTrigger className="w-full max-w-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="1">Play once (recommended — matches the real exam)</SelectItem>
-              <SelectItem value="0">Unlimited replays</SelectItem>
-            </SelectContent>
-          </Select>
-          <div className="flex gap-2">
-            <Button size="sm" onClick={handleSave} disabled={updateMutation.isPending}>
-              {updateMutation.isPending ? 'Saving...' : 'Apply to All Questions'}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setEditing(false)}
-              disabled={updateMutation.isPending}
-              className="gap-1"
-            >
-              <X className="size-3.5" />
-              Cancel
-            </Button>
+          {isTimed && currentTimeLimit && (
+            <Badge variant="outline" className="text-label-sm">
+              Time Limit: {Math.round(currentTimeLimit / 60)} min
+            </Badge>
+          )}
+        </>
+      }
+      form={
+        <div className="space-y-3">
+          <div className="space-y-1.5">
+            <Label className="text-label-md">Audio Play Limit</Label>
+            <Select value={String(playLimit)} onValueChange={(v) => setPlayLimit(Number(v))}>
+              <SelectTrigger className="w-full max-w-sm">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">Play once (recommended — matches the real exam)</SelectItem>
+                <SelectItem value="0">Unlimited replays</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+          {isTimed && (
+            <div className="space-y-1.5">
+              <Label className="text-label-md">Response Time Limit (minutes)</Label>
+              <Input
+                type="number"
+                min={TIME_LIMIT_MINUTES_BOUNDS.min}
+                max={TIME_LIMIT_MINUTES_BOUNDS.max}
+                value={timeLimitMinutes}
+                onChange={(e) => setTimeLimitMinutes(Number(e.target.value))}
+                className="max-w-sm"
+              />
+              <p className="text-label-sm text-text-muted">
+                {TIME_LIMIT_MINUTES_BOUNDS.min}–{TIME_LIMIT_MINUTES_BOUNDS.max} minutes.
+              </p>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      }
+    />
   );
 }
 
@@ -158,7 +182,7 @@ export default function TypeListContent({ type }: TypeListContentProps) {
         }
       />
 
-      <PlayLimitSettingsCard type={type} questions={questions} />
+      <ListeningTypeSettingsCard type={type} />
 
       <div className="mb-4">
         <QuestionSearchInput placeholder="Search by question, transcript, or sentence..." />

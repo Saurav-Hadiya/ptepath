@@ -177,6 +177,21 @@ export interface AdminListeningQuestion extends BaseQuestion {
   timeLimit: number | null;
 }
 
+/** Type-level constraint config — one per (module, question type), applies to every question of that type. */
+export interface AdminSpeakingTypeSettings {
+  speakingTime: number;
+  preparationTime: number;
+}
+
+export interface AdminWritingTypeSettings {
+  timeLimit: number;
+}
+
+export interface AdminListeningTypeSettings {
+  playLimit: number;
+  timeLimit?: number;
+}
+
 export interface SpeakingCounts {
   read_aloud: number;
   repeat_sentence: number;
@@ -609,4 +624,25 @@ export interface MockTestResult {
   timeTaken: number;
   questionsAnswered: number;
   modules: Record<ModuleType, MockTestModuleResult>;
+}
+
+// ─── Resources (shared file library — not tied to any module/question type) ──
+
+export type ResourceFileType = 'pdf' | 'docx' | 'image';
+
+/** Student-facing view — no isActive field. */
+export interface Resource {
+  id: string;
+  title: string;
+  description: string;
+  fileUrl: string;
+  fileType: ResourceFileType;
+  fileName: string;
+  fileSize: number;
+  createdAt: string;
+}
+
+/** Admin-facing view — includes isActive. */
+export interface AdminResource extends Resource {
+  isActive: boolean;
 }

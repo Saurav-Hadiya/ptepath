@@ -13,6 +13,7 @@ import {
   Trash2,
   X,
   Check,
+  Loader2,
 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/shared/EmptyState';
@@ -236,7 +237,11 @@ export default function StudentDetailContent({ id }: { id: string }) {
             </div>
             <div className="flex gap-2">
               <Button type="submit" size="sm" disabled={updateMutation.isPending} className="gap-1.5">
-                <Check className="size-3.5" />
+                {updateMutation.isPending ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <Check className="size-3.5" />
+                )}
                 {updateMutation.isPending ? 'Saving...' : 'Save Changes'}
               </Button>
               <Button type="button" variant="outline" size="sm" onClick={handleEditCancel} className="gap-1.5">
@@ -303,7 +308,11 @@ export default function StudentDetailContent({ id }: { id: string }) {
                 disabled={resetPasswordMutation.isPending}
                 className="gap-1.5"
               >
-                <KeyRound className="size-3.5" />
+                {resetPasswordMutation.isPending ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <KeyRound className="size-3.5" />
+                )}
                 {resetPasswordMutation.isPending ? 'Resetting...' : 'Reset Password'}
               </Button>
             </div>
@@ -337,7 +346,9 @@ export default function StudentDetailContent({ id }: { id: string }) {
                       : 'text-feedback-success hover:bg-feedback-success-bg'
                   }`}
                 >
-                  {student.isActive ? (
+                  {toggleStatusMutation.isPending ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : student.isActive ? (
                     <Ban className="size-3.5" />
                   ) : (
                     <CheckCircle className="size-3.5" />

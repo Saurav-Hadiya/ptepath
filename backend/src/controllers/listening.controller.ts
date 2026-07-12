@@ -5,6 +5,7 @@ import { User } from '../models/user.model';
 import { deleteResource } from '../services/cloudinary.service';
 import { calculateListeningScore } from '../scoring/listening.scoring';
 import { listeningTypeError, ListeningPayload } from '../validators/listening.validators';
+import { getTypeConfig, getTypeConfigsMap, upsertTypeConfig } from '../services/question-type-config.service';
 
 const LISTENING_TYPES: ListeningQuestionType[] = [
   'summarise_spoken',
@@ -29,13 +30,19 @@ const OPTION_TYPES: ListeningQuestionType[] = [
 // Types that show a transcript to the student.
 const TRANSCRIPT_TYPES: ListeningQuestionType[] = ['fill_blanks', 'highlight_incorrect'];
 
-// Only summarise_spoken is timed. Default applied on create when not supplied.
-const DEFAULT_SUMMARISE_SPOKEN_TIME_LIMIT = 600;
-
 /** Map canonical / hyphenated URL forms to the DB enum. */
 function normalizeType(raw: string): ListeningQuestionType | null {
   const v = raw.trim().toLowerCase().replace(/-/g, '_') as ListeningQuestionType;
   return LISTENING_TYPES.includes(v) ? v : null;
+}
+
+/** playLimit/timeLimit — config is the source of truth, question fields are the dual-read fallback. */
+function resolvePlayLimit(question: IListeningQuestion, config: Record<string, number>): number {
+  return config.playLimit ?? question.playLimit;
+}
+
+function resolveTimeLimit(question: IListeningQuestion, config: Record<string, number>): number | null {
+  return config.timeLimit ?? question.timeLimit;
 }
 
 /**
@@ -46,12 +53,12 @@ function normalizeType(raw: string): ListeningQuestionType | null {
  *  - correctSentence:       never sent
  * Always includes audioUrl + playLimit so the player can run.
  */
-function studentView(question: IListeningQuestion): Record<string, unknown> {
+function studentView(question: IListeningQuestion, config: Record<string, number>): Record<string, unknown> {
   const base: Record<string, unknown> = {
     id: question._id,
     type: question.type,
     audioUrl: question.audioUrl,
-    playLimit: question.playLimit,
+    playLimit: resolvePlayLimit(question, config),
     question: QUESTION_TYPES.includes(question.type) ? question.question ?? null : null,
   };
 
@@ -65,14 +72,14 @@ function studentView(question: IListeningQuestion): Record<string, unknown> {
     base.blanks = question.blanks.map((b) => ({ position: b.position }));
   }
   if (question.type === 'summarise_spoken') {
-    base.timeLimit = question.timeLimit ?? DEFAULT_SUMMARISE_SPOKEN_TIME_LIMIT;
+    base.timeLimit = resolveTimeLimit(question, config);
   }
 
   return base;
 }
 
 /** Lightweight list item for the student question-picker — no answers leaked. */
-function listView(question: IListeningQuestion) {
+function listView(question: IListeningQuestion, config: Record<string, number>) {
   const preview = QUESTION_TYPES.includes(question.type) && question.question
     ? question.question.slice(0, 120)
     : null;
@@ -80,25 +87,25 @@ function listView(question: IListeningQuestion) {
     id: question._id,
     type: question.type,
     audioUrl: question.audioUrl,
-    playLimit: question.playLimit,
+    playLimit: resolvePlayLimit(question, config),
     preview,
   };
 }
 
 /** Admin-facing view — full document including correct answers (audioPublicId stays internal). */
-function adminView(question: IListeningQuestion) {
+function adminView(question: IListeningQuestion, config: Record<string, number>) {
   return {
     id: question._id,
     type: question.type,
     audioUrl: question.audioUrl,
-    playLimit: question.playLimit,
+    playLimit: resolvePlayLimit(question, config),
     question: question.question ?? null,
     options: question.options,
     transcript: question.transcript ?? null,
     blanks: question.blanks,
     incorrectWordIndices: question.incorrectWordIndices,
     correctSentence: question.correctSentence ?? null,
-    timeLimit: question.timeLimit,
+    timeLimit: resolveTimeLimit(question, config),
     isActive: question.isActive,
     attemptCount: question.attemptCount,
     avgScore: Math.round(question.avgScore * 10) / 10,
@@ -126,26 +133,14 @@ async function updateStudentStats(userId: string): Promise<void> {
 
 export async function addQuestion(req: AuthRequest, res: Response): Promise<void> {
   // Body validated & coerced (incl. per-type rules) by createListeningQuestionSchema.
-  const {
-    type,
-    playLimit,
-    question,
-    options,
-    transcript,
-    blanks,
-    incorrectWordIndices,
-    correctSentence,
-    timeLimit,
-  } = req.body as {
+  const { type, question, options, transcript, blanks, incorrectWordIndices, correctSentence } = req.body as {
     type: ListeningQuestionType;
-    playLimit?: number;
     question?: string;
     options?: IListeningQuestion['options'];
     transcript?: string;
     blanks?: IListeningQuestion['blanks'];
     incorrectWordIndices?: number[];
     correctSentence?: string;
-    timeLimit?: number;
   };
 
   // Audio file is mandatory for every type.
@@ -154,24 +149,29 @@ export async function addQuestion(req: AuthRequest, res: Response): Promise<void
     return;
   }
 
+  // playLimit/timeLimit are type-level now (QuestionTypeConfig) — populated onto
+  // the legacy per-question fields here too so nothing reads a stale value
+  // before the type's config is set; removed in a later cleanup phase.
+  const config = await getTypeConfig('listening', type);
+
   const created = await ListeningQuestion.create({
     type,
     audioUrl: req.file.path,
     audioPublicId: req.file.filename,
-    playLimit: playLimit ?? 1,
+    playLimit: config.playLimit ?? 1,
     question: QUESTION_TYPES.includes(type) ? question ?? null : null,
     options: OPTION_TYPES.includes(type) ? options ?? [] : [],
     transcript: TRANSCRIPT_TYPES.includes(type) ? transcript ?? null : null,
     blanks: type === 'fill_blanks' ? blanks ?? [] : [],
     incorrectWordIndices: type === 'highlight_incorrect' ? incorrectWordIndices ?? [] : [],
     correctSentence: type === 'write_dictation' ? correctSentence ?? null : null,
-    timeLimit: type === 'summarise_spoken' ? timeLimit ?? DEFAULT_SUMMARISE_SPOKEN_TIME_LIMIT : null,
+    timeLimit: type === 'summarise_spoken' ? config.timeLimit ?? null : null,
   });
 
   res.status(201).json({
     success: true,
     message: 'Question created successfully.',
-    data: { question: adminView(created) },
+    data: { question: adminView(created, config) },
   });
 }
 
@@ -192,11 +192,12 @@ export async function getAllQuestions(req: AuthRequest, res: Response): Promise<
   }
 
   const questions = await ListeningQuestion.find(filter).sort({ createdAt: -1 });
+  const configMap = await getTypeConfigsMap('listening');
 
   res.status(200).json({
     success: true,
     message: 'Questions retrieved successfully.',
-    data: { questions: questions.map(adminView), total: questions.length },
+    data: { questions: questions.map((q) => adminView(q, configMap[q.type] ?? {})), total: questions.length },
   });
 }
 
@@ -207,10 +208,12 @@ export async function getOneQuestion(req: AuthRequest, res: Response): Promise<v
     return;
   }
 
+  const config = await getTypeConfig('listening', question.type);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -223,23 +226,19 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
 
   // type is immutable. Structural shape already validated by updateListeningQuestionSchema.
   const {
-    playLimit,
     question: questionText,
     options,
     transcript,
     blanks,
     incorrectWordIndices,
     correctSentence,
-    timeLimit,
   } = req.body as {
-    playLimit?: number;
     question?: string;
     options?: IListeningQuestion['options'];
     transcript?: string;
     blanks?: IListeningQuestion['blanks'];
     incorrectWordIndices?: number[];
     correctSentence?: string;
-    timeLimit?: number;
   };
 
   // Build the candidate (existing values overlaid with updates) and re-validate
@@ -270,7 +269,7 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
   }
 
   // Apply only fields relevant to this type so stale data never leaks across types.
-  if (playLimit !== undefined) question.playLimit = playLimit;
+  // playLimit/timeLimit are edited via the type-wide settings instead.
   if (QUESTION_TYPES.includes(question.type) && questionText !== undefined) {
     question.question = questionText;
   }
@@ -285,16 +284,15 @@ export async function updateQuestion(req: AuthRequest, res: Response): Promise<v
   if (question.type === 'write_dictation' && correctSentence !== undefined) {
     question.correctSentence = correctSentence;
   }
-  if (question.type === 'summarise_spoken' && timeLimit !== undefined) {
-    question.timeLimit = timeLimit;
-  }
 
   await question.save();
+
+  const config = await getTypeConfig('listening', question.type);
 
   res.status(200).json({
     success: true,
     message: 'Question updated successfully.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
@@ -323,14 +321,16 @@ export async function toggleStatus(req: AuthRequest, res: Response): Promise<voi
   question.isActive = req.body.isActive;
   await question.save();
 
+  const config = await getTypeConfig('listening', question.type);
+
   res.status(200).json({
     success: true,
     message: question.isActive ? 'Question activated.' : 'Question deactivated.',
-    data: { question: adminView(question) },
+    data: { question: adminView(question, config) },
   });
 }
 
-/** Bulk-update play limit for every question of a given listening type. */
+/** Type-level playLimit/timeLimit config — applies to every existing and future question of this type. */
 export async function updateTypeSettings(req: AuthRequest, res: Response): Promise<void> {
   const type = normalizeType(String(req.params.type ?? ''));
   if (!type) {
@@ -338,23 +338,33 @@ export async function updateTypeSettings(req: AuthRequest, res: Response): Promi
     return;
   }
 
-  const { playLimit } = req.body as { playLimit?: number };
-  if (playLimit === undefined) {
-    res.status(400).json({ success: false, message: 'playLimit is required.' });
-    return;
-  }
-  if (playLimit !== 0 && playLimit !== 1) {
-    res.status(400).json({ success: false, message: 'playLimit must be 0 (unlimited) or 1 (once).' });
-    return;
-  }
+  // Body validated by listeningTypeSettingsSchema.
+  const { playLimit, timeLimit } = req.body as { playLimit?: number; timeLimit?: number };
 
-  const result = await ListeningQuestion.updateMany({ type }, { $set: { playLimit } });
+  const update: Record<string, number> = {};
+  if (playLimit !== undefined) update.playLimit = playLimit;
+  if (timeLimit !== undefined) update.timeLimit = timeLimit;
+
+  const settings = await upsertTypeConfig('listening', type, update);
 
   res.status(200).json({
     success: true,
-    message: `Updated ${result.modifiedCount} question${result.modifiedCount !== 1 ? 's' : ''}.`,
-    data: { modifiedCount: result.modifiedCount, settings: { playLimit } },
+    message: 'Settings updated for all questions of this type.',
+    data: { settings },
   });
+}
+
+/** Current type-level playLimit/timeLimit config. */
+export async function getTypeSettings(req: AuthRequest, res: Response): Promise<void> {
+  const type = normalizeType(String(req.params.type ?? ''));
+  if (!type) {
+    res.status(400).json({ success: false, message: 'Invalid question type.' });
+    return;
+  }
+
+  const settings = await getTypeConfig('listening', type);
+
+  res.status(200).json({ success: true, data: { settings } });
 }
 
 // ─── Student Controllers ────────────────────────────────────────────────────
@@ -393,11 +403,12 @@ export async function listQuestionsByType(req: AuthRequest, res: Response): Prom
   const questions = await ListeningQuestion.find({ type: normalizedType, isActive: true }).sort({
     createdAt: -1,
   });
+  const config = await getTypeConfig('listening', normalizedType);
 
   res.status(200).json({
     success: true,
     message: 'Questions retrieved successfully.',
-    data: { questions: questions.map(listView), total: questions.length },
+    data: { questions: questions.map((q) => listView(q, config)), total: questions.length },
   });
 }
 
@@ -424,10 +435,12 @@ export async function getRandomQuestion(req: AuthRequest, res: Response): Promis
     return;
   }
 
+  const config = await getTypeConfig('listening', normalizedType);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: studentView(question) },
+    data: { question: studentView(question, config) },
   });
 }
 
@@ -448,10 +461,12 @@ export async function getQuestion(req: AuthRequest, res: Response): Promise<void
     return;
   }
 
+  const config = await getTypeConfig('listening', normalizedType);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: studentView(question) },
+    data: { question: studentView(question, config) },
   });
 }
 
@@ -491,10 +506,12 @@ export async function getNextQuestion(req: AuthRequest, res: Response): Promise<
     return;
   }
 
+  const config = await getTypeConfig('listening', normalizedType);
+
   res.status(200).json({
     success: true,
     message: 'Question retrieved successfully.',
-    data: { question: studentView(next) },
+    data: { question: studentView(next, config) },
   });
 }
 

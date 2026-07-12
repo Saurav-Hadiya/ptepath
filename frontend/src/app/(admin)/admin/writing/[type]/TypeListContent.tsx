@@ -3,25 +3,86 @@
 import { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { AlertCircle, ArrowLeft, PenLine, Plus, Search } from 'lucide-react';
+import { AlertCircle, ArrowLeft, Clock, PenLine, Plus, Search } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import EmptyState from '@/components/shared/EmptyState';
 import ConfirmModal from '@/components/shared/ConfirmModal';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import QuestionPreview from '@/components/admin/QuestionPreview';
 import StatusToggle from '@/components/admin/StatusToggle';
 import QuestionActionButtons from '@/components/admin/QuestionActionButtons';
 import QuestionSearchInput from '@/components/admin/QuestionSearchInput';
+import AdminTypeSettingsCard from '@/components/admin/TypeSettingsCard';
 import {
   useAdminWritingList,
   useAdminWritingDelete,
   useAdminWritingToggleStatus,
+  useAdminWritingTypeSettings,
+  useAdminWritingUpdateTypeSettings,
 } from '@/hooks/queries/useAdminWritingQueries';
 import { ROUTES } from '@/config/routes';
-import { getWritingTypeConfig } from '../writing-types';
+import { getWritingTypeConfig, TIME_LIMIT_MINUTES_BOUNDS } from '../writing-types';
 import type { AdminWritingQuestion } from '@/types';
+
+function WritingTypeSettingsCard({ type }: { type: string }) {
+  const settingsQuery = useAdminWritingTypeSettings(type);
+  const updateMutation = useAdminWritingUpdateTypeSettings(type);
+
+  const currentTimeLimit = settingsQuery.data?.timeLimit ?? 0;
+  const [editing, setEditing] = useState(false);
+  const [timeLimitMinutes, setTimeLimitMinutes] = useState(() => Math.round(currentTimeLimit / 60));
+
+  function openEdit() {
+    setTimeLimitMinutes(Math.round(currentTimeLimit / 60));
+    setEditing(true);
+  }
+
+  function handleSave() {
+    updateMutation.mutate(
+      { timeLimit: Math.round(timeLimitMinutes * 60) },
+      { onSuccess: () => setEditing(false) }
+    );
+  }
+
+  return (
+    <AdminTypeSettingsCard
+      icon={Clock}
+      iconColorClass="text-module-writing"
+      title="Type-wide Timing Settings"
+      isLoading={settingsQuery.isLoading}
+      isSaving={updateMutation.isPending}
+      editing={editing}
+      onEdit={openEdit}
+      onSave={handleSave}
+      onCancel={() => setEditing(false)}
+      summary={
+        <Badge variant="outline" className="text-label-sm">
+          Time Limit: {Math.round(currentTimeLimit / 60)} min
+        </Badge>
+      }
+      form={
+        <div className="space-y-1.5">
+          <Label className="text-label-md">Time Limit (minutes)</Label>
+          <Input
+            type="number"
+            min={TIME_LIMIT_MINUTES_BOUNDS.min}
+            max={TIME_LIMIT_MINUTES_BOUNDS.max}
+            value={timeLimitMinutes}
+            onChange={(e) => setTimeLimitMinutes(Number(e.target.value))}
+            className="max-w-sm"
+          />
+          <p className="text-label-sm text-text-muted">
+            Between {TIME_LIMIT_MINUTES_BOUNDS.min} and {TIME_LIMIT_MINUTES_BOUNDS.max} minutes.
+          </p>
+        </div>
+      }
+    />
+  );
+}
 
 function scoreColorClass(score: number): string {
   if (score >= 80) return 'text-feedback-success';
@@ -125,6 +186,8 @@ function TypeListInner({ type }: { type: string }) {
           </Button>
         }
       />
+
+      <WritingTypeSettingsCard type={type} />
 
       <div className="mb-4">
         <QuestionSearchInput placeholder="Search by question content..." />

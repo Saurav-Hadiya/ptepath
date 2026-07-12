@@ -15,8 +15,8 @@ No Claude Code needed for this step.
 ---
 
 ## Prerequisites
-- Frontend deployed on Vercel (26-frontend-deploy-vercel.md)
-- Backend deployed on Render (14-backend-deploy-render.md)
+- Frontend deployed on Vercel (27-frontend-deploy-vercel.md)
+- Backend deployed on Render (15-backend-deploy-render.md)
 - Your Vercel URL and Render URL noted
 
 ---

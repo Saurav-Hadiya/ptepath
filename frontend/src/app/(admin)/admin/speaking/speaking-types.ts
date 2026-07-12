@@ -12,6 +12,8 @@ const SPEAKING_TYPE_VALUES: SpeakingQuestionType[] = [
  * Per-type configuration for the admin Speaking question bank.
  * Numeric bounds mirror backend/src/validators/speaking.validators.ts exactly:
  * speakingTime: int, min 1, max 3600. preparationTime: int, min 0, max 3600.
+ * Actual timing values live in QuestionTypeConfig (backend) — fetched via
+ * useAdminSpeakingTypeSettings, not duplicated here.
  */
 export interface SpeakingTypeConfig {
   type: SpeakingQuestionType;
@@ -19,8 +21,6 @@ export interface SpeakingTypeConfig {
   description: string;
   contentLabel: string;
   hasPreparationTime: boolean;
-  defaultSpeakingTime: number;
-  defaultPreparationTime: number;
   hint?: string;
 }
 
@@ -31,8 +31,6 @@ export const SPEAKING_TYPES: SpeakingTypeConfig[] = [
     description: 'Student reads a passage aloud within a time limit.',
     contentLabel: 'Passage Text',
     hasPreparationTime: true,
-    defaultSpeakingTime: 40,
-    defaultPreparationTime: 30,
   },
   {
     type: 'repeat_sentence',
@@ -40,8 +38,6 @@ export const SPEAKING_TYPES: SpeakingTypeConfig[] = [
     description: 'Student repeats a sentence spoken by the browser.',
     contentLabel: 'Sentence to Read Aloud',
     hasPreparationTime: false,
-    defaultSpeakingTime: 15,
-    defaultPreparationTime: 0,
     hint: "This will be read aloud to the student by the browser's text-to-speech.",
   },
   {
@@ -50,8 +46,6 @@ export const SPEAKING_TYPES: SpeakingTypeConfig[] = [
     description: 'Student describes an image shown on screen.',
     contentLabel: 'Image',
     hasPreparationTime: true,
-    defaultSpeakingTime: 40,
-    defaultPreparationTime: 25,
   },
   {
     type: 'respond_situation',
@@ -59,8 +53,6 @@ export const SPEAKING_TYPES: SpeakingTypeConfig[] = [
     description: 'Student responds verbally to a described situation.',
     contentLabel: 'Situation Description',
     hasPreparationTime: true,
-    defaultSpeakingTime: 40,
-    defaultPreparationTime: 30,
   },
   {
     type: 'answer_short',
@@ -68,8 +60,6 @@ export const SPEAKING_TYPES: SpeakingTypeConfig[] = [
     description: 'Student answers a short spoken question in a word or two.',
     contentLabel: 'Question Text (read aloud to the student)',
     hasPreparationTime: false,
-    defaultSpeakingTime: 10,
-    defaultPreparationTime: 0,
   },
 ];
 

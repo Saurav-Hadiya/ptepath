@@ -1,3 +1,3 @@
 export const env = {
-  apiUrl: (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api').replace(/\/+$/, ''),
+  apiUrl: (process.env.NEXT_PUBLIC_API_URL ?? '/api').replace(/\/+$/, ''),
 } as const;

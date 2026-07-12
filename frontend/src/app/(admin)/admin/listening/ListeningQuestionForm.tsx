@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import LoadingSpinner from '@/components/shared/LoadingSpinner';
 import FormSection from '@/components/admin/FormSection';
@@ -19,6 +19,7 @@ import {
   useAdminListeningDetail,
   useAdminListeningCreate,
   useAdminListeningUpdate,
+  useAdminListeningTypeSettings,
 } from '@/hooks/queries/useAdminListeningQueries';
 import {
   emptyListeningForm,
@@ -32,9 +33,6 @@ import { getListeningTypeConfig } from './listening-types';
 import { ROUTES } from '@/config/routes';
 import type { ListeningQuestionType } from '@/types';
 
-/** Mirrors backend/src/validators/listening.validators.ts timeLimitOptional bounds exactly. */
-const TIME_LIMIT_SECONDS = { min: 60, max: 1800 };
-
 interface ListeningQuestionFormProps {
   mode: 'create' | 'edit';
   type: ListeningQuestionType;
@@ -47,6 +45,7 @@ export default function ListeningQuestionForm({ mode, type, questionId }: Listen
   const detailQuery = useAdminListeningDetail(mode === 'edit' ? (questionId ?? '') : '');
   const createMutation = useAdminListeningCreate(type);
   const updateMutation = useAdminListeningUpdate(type);
+  const typeSettingsQuery = useAdminListeningTypeSettings(type);
 
   const [form, setForm] = useState<ListeningFormState>(() => emptyListeningForm(type));
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -126,28 +125,21 @@ export default function ListeningQuestionForm({ mode, type, questionId }: Listen
 
           <div className="mt-4 rounded-lg border border-border-default bg-bg-accent p-3">
             <p className="text-label-sm text-text-secondary">
-              <strong>Play limit</strong> is managed at the question type level. Go back to the question list and
-              use the &quot;Type-wide Audio Play Limit&quot; card to change it for all questions of this type.
+              <strong>Play limit</strong>
+              {form.type === 'summarise_spoken' && <> and <strong>response time limit</strong></>} are managed at
+              the question type level. Go back to the question list and use the &quot;Type-wide Settings&quot;
+              card to change {form.type === 'summarise_spoken' ? 'them' : 'it'} for all questions of this type.
             </p>
           </div>
 
           {form.type === 'summarise_spoken' && (
             <div className="mt-4 space-y-1.5">
-              <Label htmlFor="listening-time-limit" className="text-label-md text-text-primary">
-                Response Time Limit (minutes)
-              </Label>
+              <Label className="text-label-md text-text-primary">Response Time Limit</Label>
               <p className="text-label-sm text-text-muted">
-                How long students get to write their summary — between {TIME_LIMIT_SECONDS.min / 60} and{' '}
-                {TIME_LIMIT_SECONDS.max / 60} minutes.
+                {typeSettingsQuery.data?.timeLimit
+                  ? `Currently ${Math.round(typeSettingsQuery.data.timeLimit / 60)} minutes for every question of this type.`
+                  : 'Loading current setting...'}
               </p>
-              <Input
-                id="listening-time-limit"
-                type="number"
-                min={TIME_LIMIT_SECONDS.min / 60}
-                max={TIME_LIMIT_SECONDS.max / 60}
-                value={form.timeLimitMinutes}
-                onChange={(e) => setForm((prev) => ({ ...prev, timeLimitMinutes: Number(e.target.value) }))}
-              />
             </div>
           )}
         </FormSection>
@@ -293,7 +285,8 @@ export default function ListeningQuestionForm({ mode, type, questionId }: Listen
           <Button type="button" variant="outline" onClick={() => router.push(backHref)} disabled={isSaving}>
             Cancel
           </Button>
-          <Button type="submit" disabled={isSaving} className="bg-action-default text-primary-foreground hover:bg-action-hover">
+          <Button type="submit" disabled={isSaving} className="gap-1.5 bg-action-default text-primary-foreground hover:bg-action-hover">
+            {isSaving && <Loader2 className="size-4 animate-spin" />}
             {isSaving ? 'Saving...' : mode === 'create' ? 'Add Question' : 'Save Changes'}
           </Button>
         </div>

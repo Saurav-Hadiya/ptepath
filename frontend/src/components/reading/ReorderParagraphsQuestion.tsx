@@ -171,29 +171,39 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
   // item", which is what silently broke cross-container drops before.
   const collisionDetectionStrategy: CollisionDetection = useCallback(
     (args) => {
-      const pointerIntersections = pointerWithin(args);
-      const intersections = pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
-      let overId = intersections[0]?.id ?? null;
+      // Runs on every pointer move during a drag, including extreme positions far
+      // outside any panel (e.g. dragged near the top/bottom edge of the screen on
+      // mobile). Any unexpected throw here would crash the whole page, so this is
+      // guarded defensively — worst case is a missed collision this frame, not a
+      // broken attempt.
+      try {
+        const pointerIntersections = pointerWithin(args);
+        const intersections = pointerIntersections.length > 0 ? pointerIntersections : rectIntersection(args);
+        let overId = intersections[0]?.id ?? null;
 
-      if (overId != null) {
-        const overIdStr = String(overId);
-        const containerItems = isContainerId(overIdStr) ? containers[overIdStr] : null;
+        if (overId != null) {
+          const overIdStr = String(overId);
+          const containerItems = isContainerId(overIdStr) ? containers[overIdStr] : null;
 
-        if (containerItems && containerItems.length > 0) {
-          const closest = closestCenter({
-            ...args,
-            droppableContainers: args.droppableContainers.filter((c) => containerItems.includes(String(c.id))),
-          });
-          if (closest.length > 0) {
-            overId = closest[0].id;
+          if (containerItems && containerItems.length > 0) {
+            const closest = closestCenter({
+              ...args,
+              droppableContainers: args.droppableContainers.filter((c) => containerItems.includes(String(c.id))),
+            });
+            if (closest.length > 0) {
+              overId = closest[0].id;
+            }
           }
+
+          lastOverIdRef.current = overId;
+          return [{ id: overId }];
         }
 
-        lastOverIdRef.current = overId;
-        return [{ id: overId }];
+        return lastOverIdRef.current ? [{ id: lastOverIdRef.current }] : [];
+      } catch (error) {
+        console.error('Reorder collision detection failed, skipping this frame:', error);
+        return [];
       }
-
-      return lastOverIdRef.current ? [{ id: lastOverIdRef.current }] : [];
     },
     [containers]
   );
@@ -203,64 +213,75 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
   }
 
   // Cross-container moves happen live, on every dragover — onDragEnd only
-  // finalizes same-container reordering.
+  // finalizes same-container reordering. Both are wrapped defensively: an
+  // extreme drag (far outside every panel, near the screen edge on mobile)
+  // can produce rects/positions dnd-kit doesn't expect, and an uncaught throw
+  // here would crash the whole attempt page instead of just cancelling the move.
   function handleDragOver(event: DragOverEvent) {
-    const { active, over } = event;
-    if (!over) return;
+    try {
+      const { active, over } = event;
+      if (!over) return;
 
-    const activeId = String(active.id);
-    const overId = String(over.id);
-    const activeContainer = findContainer(containers, activeId);
-    const overContainer = findContainer(containers, overId);
+      const activeId = String(active.id);
+      const overId = String(over.id);
+      const activeContainer = findContainer(containers, activeId);
+      const overContainer = findContainer(containers, overId);
 
-    if (!activeContainer || !overContainer || activeContainer === overContainer) return;
+      if (!activeContainer || !overContainer || activeContainer === overContainer) return;
 
-    setContainers((prev) => {
-      const activeItems = prev[activeContainer];
-      const overItems = prev[overContainer];
-      const overIndex = overItems.indexOf(overId);
-      const isOverContainerItself = overId === overContainer;
+      setContainers((prev) => {
+        const activeItems = prev[activeContainer];
+        const overItems = prev[overContainer];
+        const overIndex = overItems.indexOf(overId);
+        const isOverContainerItself = overId === overContainer;
 
-      let newIndex: number;
-      if (isOverContainerItself) {
-        newIndex = overItems.length;
-      } else {
-        const isBelowOverItem =
-          active.rect.current.translated != null &&
-          active.rect.current.translated.top > over.rect.top + over.rect.height;
-        newIndex = overIndex >= 0 ? overIndex + (isBelowOverItem ? 1 : 0) : overItems.length;
-      }
+        let newIndex: number;
+        if (isOverContainerItself) {
+          newIndex = overItems.length;
+        } else {
+          const isBelowOverItem =
+            active.rect.current.translated != null &&
+            active.rect.current.translated.top > over.rect.top + over.rect.height;
+          newIndex = overIndex >= 0 ? overIndex + (isBelowOverItem ? 1 : 0) : overItems.length;
+        }
 
-      return {
-        ...prev,
-        [activeContainer]: activeItems.filter((id) => id !== activeId),
-        [overContainer]: [...overItems.slice(0, newIndex), activeId, ...overItems.slice(newIndex)],
-      };
-    });
+        return {
+          ...prev,
+          [activeContainer]: activeItems.filter((id) => id !== activeId),
+          [overContainer]: [...overItems.slice(0, newIndex), activeId, ...overItems.slice(newIndex)],
+        };
+      });
+    } catch (error) {
+      console.error('Reorder drag-over failed, ignoring this move:', error);
+    }
   }
 
   function handleDragEnd(event: DragEndEvent) {
     setActiveId(null);
     if (submitted) return;
 
-    const { active, over } = event;
-    if (!over) return;
+    try {
+      const { active, over } = event;
+      if (!over) return;
 
-    const activeId = String(active.id);
-    const overId = String(over.id);
-    const activeContainer = findContainer(containers, activeId);
-    const overContainer = findContainer(containers, overId);
+      const activeId = String(active.id);
+      const overId = String(over.id);
+      const activeContainer = findContainer(containers, activeId);
+      const overContainer = findContainer(containers, overId);
 
-    if (!activeContainer || !overContainer || activeContainer !== overContainer) return;
+      if (!activeContainer || !overContainer || activeContainer !== overContainer) return;
 
-    const activeIndex = containers[activeContainer].indexOf(activeId);
-    const overIndex = containers[overContainer].indexOf(overId);
+      const activeIndex = containers[activeContainer].indexOf(activeId);
+      const overIndex = containers[overContainer].indexOf(overId);
 
-    if (activeIndex !== overIndex && overIndex !== -1) {
-      setContainers((prev) => ({
-        ...prev,
-        [overContainer]: arrayMove(prev[overContainer], activeIndex, overIndex),
-      }));
+      if (activeIndex !== overIndex && overIndex !== -1) {
+        setContainers((prev) => ({
+          ...prev,
+          [overContainer]: arrayMove(prev[overContainer], activeIndex, overIndex),
+        }));
+      }
+    } catch (error) {
+      console.error('Reorder drag-end failed, drop ignored:', error);
     }
   }
 
@@ -310,6 +331,7 @@ export default function ReorderParagraphsQuestion({ question, onScoreReceived }:
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
+        autoScroll={false}
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <Container

@@ -9,6 +9,7 @@ import {
   createListeningQuestionSchema,
   updateListeningQuestionSchema,
   toggleListeningStatusSchema,
+  listeningTypeSettingsSchema,
   evaluateListeningSchema,
 } from '../validators/listening.validators';
 
@@ -52,8 +53,13 @@ adminListeningRouter.patch(
   validateBody(toggleListeningStatusSchema),
   asyncHandler(listeningController.toggleStatus)
 );
+adminListeningRouter.get(
+  '/type-settings/:type',
+  asyncHandler(listeningController.getTypeSettings)
+);
 adminListeningRouter.patch(
   '/type-settings/:type',
+  validateBody(listeningTypeSettingsSchema),
   asyncHandler(listeningController.updateTypeSettings)
 );
 

@@ -91,13 +91,22 @@ export function useAdminSpeakingToggleStatus(type: string) {
   });
 }
 
+export function useAdminSpeakingTypeSettings(type: string) {
+  return useQuery({
+    queryKey: queryKeys.adminQuestions.typeSettings('speaking', type),
+    queryFn: () => adminSpeakingService.getTypeSettings(type),
+    enabled: !!type,
+  });
+}
+
 export function useAdminSpeakingUpdateTypeSettings(type: string) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (settings: { speakingTime: number; preparationTime?: number }) =>
+    mutationFn: (settings: { speakingTime?: number; preparationTime?: number }) =>
       adminSpeakingService.updateTypeSettings(type, settings),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.adminQuestions.all('speaking') });
+      queryClient.invalidateQueries({ queryKey: queryKeys.adminQuestions.typeSettings('speaking', type) });
       toast.success('Timing updated for all questions of this type.');
     },
     onError: (error: Error) => {

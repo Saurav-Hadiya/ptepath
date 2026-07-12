@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Loader2 } from 'lucide-react';
 import PageHeader from '@/components/shared/PageHeader';
 import FormSection from '@/components/admin/FormSection';
 import { Button } from '@/components/ui/button';
@@ -281,7 +281,8 @@ export default function MockTestForm({ mode, templateId }: MockTestFormProps) {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSaving}>
+            <Button type="submit" disabled={isSaving} className="gap-1.5">
+              {isSaving && <Loader2 className="size-4 animate-spin" />}
               {isSaving ? 'Saving...' : mode === 'create' ? 'Create Template' : 'Save Changes'}
             </Button>
           </div>
