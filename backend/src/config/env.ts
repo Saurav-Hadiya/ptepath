@@ -27,10 +27,15 @@ export const env = {
 
   port: Number(optional('PORT', '5000')),
   frontendUrl: optional('FRONTEND_URL', 'http://localhost:3000'),
-  /** FRONTEND_URL may be a comma-separated list (e.g. multiple deployed frontend domains). */
+  /**
+   * FRONTEND_URL may be a comma-separated list (e.g. multiple deployed frontend
+   * domains). Trailing slashes are stripped — browsers never send a trailing
+   * slash in the Origin header, so an env var like "https://app.com/" would
+   * otherwise never match and CORS would silently fail.
+   */
   frontendUrls: optional('FRONTEND_URL', 'http://localhost:3000')
     .split(',')
-    .map((url) => url.trim())
+    .map((url) => url.trim().replace(/\/+$/, ''))
     .filter(Boolean),
 
   mongoUri: required('MONGO_URI'),
